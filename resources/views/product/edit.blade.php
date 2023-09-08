@@ -2,9 +2,15 @@
     <div class="">
         <!-- Page Heading -->
         <x-slot name="header">
-            <x-button-style-link text="Edit product" route="products.index">
-                Back
-            </x-button-style-link>
+            @role('Admin|Operator')
+                <x-button-style-link text="Edit product" route="products.index">
+                    Back
+                </x-button-style-link>
+            @else
+                <x-button-style-link text="Edit product" route="products.myproducts">
+                    Back
+                </x-button-style-link>
+            @endrole
         </x-slot>
         {{-- Alert Messages --}}
         <x-alert />
@@ -28,56 +34,93 @@
                             <x-create-input-text name="zip" headText="Zip">
                                 {{ $product->zip }}
                             </x-create-input-text>
-                            <div class="col-sm-6 mb-sm-0 mb-3">
-                                <label for="purchase_date"> <span
-                                        style="color:red;">*</span>{{ __('Purchase date') }}</label>
-                                <input type="date"
-                                    class="border @error('purchase_date') border-l-danger-600 @enderror block w-full rounded border-0 p-2 py-1.5 text-2xl text-gray-900 shadow ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    name="purchase_date" value="{{ $product->serializeDate($product->purchase_date) }}">
-                            </div>
-                            <div class="col-sm-6 mb-sm-0 mb-3">
-                                <label for="installation_date"> <span
-                                        style="color:red;">*</span>{{ __('Installation date') }}</label>
-                                <input type="date"
-                                    class="border @error('installation_date') border-l-danger-600 @enderror block w-full rounded border-0 p-2 py-1.5 text-2xl text-gray-900 shadow ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    name="installation_date"
-                                    value="{{ $product->serializeDate($product->installation_date) }}">
-                            </div>
-                            <div class="col-sm-6 mb-sm-0 mb-3">
-                                <label for="warrantee_date"> <span
-                                        style="color:red;">*</span>{{ __('Warrantee date') }}</label>
-                                <input type="date"
-                                    class="border @error('warrantee_date') border-l-danger-600 @enderror block w-full rounded border-0 p-2 py-1.5 text-2xl text-gray-900 shadow ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    name="warrantee_date"
-                                    value="{{ $product->serializeDate($product->warrantee_date) }}">
-                            </div>
-                            <table class="w-full table-auto border-collapse text-sm">
-                                <tbody class="dark:bg-slate-800 bg-white">
-                                    @foreach ($product->users as $user)
-                                        <div class="mb-[0.125rem] block min-h-[1.5rem] pl-[1.5rem]">
-                                            <input name="user_ids[]"
-                                                class="border-neutral-300 before:bg-transparent checked:after:bg-transparent checked:focus:after:bg-transparent dark:border-neutral-600 relative float-left -ml-[1.5rem] mr-[6px] mt-[0.15rem] h-[1.125rem] w-[1.125rem] appearance-none rounded-[0.25rem] border-[0.125rem] border-solid outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                                                type="checkbox" value="{{ $user->id }}" id="user_id"
-                                                @checked(true) />
-                                            <label class="inline-block pl-[0.15rem] hover:cursor-pointer"
-                                                for="user_id">
-                                                {{ $user->name }}
-                                            </label>
+                            <div class="basis-full">
+                                <div class="col-span-full">
+                                    <label for="purchase_date"
+                                        class="my-5 block text-left text-sm font-medium leading-6 text-gray-900">
+                                        <span style="color:red;">*</span>{{ __('Purchase date') }}</label>
+                                    <div class="mt-2">
+                                        <div
+                                            class="flex rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                                            <input type="date"
+                                                class="@error('purchase_date') border-l-danger-600 @enderror block w-full rounded border-0 p-2 py-1.5 text-2xl text-gray-900 shadow ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                name="purchase_date"
+                                                value="{{ $product->serializeDate($product->purchase_date) }}">
                                         </div>
-                                    @endforeach
-                                </tbody>
-                                <x-select-input name="tool_id" headText="Tool">
-                                    @foreach ($tools as $tool)
-                                        <x-select-input-option :value="$tool->id" :selected="$product->tool_id == $tool->id ? true : false">
-                                            {{ $tool->name }}
-                                        </x-select-input-option>
-                                    @endforeach
-                                </x-select-input>
-                            </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="basis-full">
+                                <div class="col-span-full">
+                                    <label for="purchase_date"
+                                        class="my-5 block text-left text-sm font-medium leading-6 text-gray-900">
+                                        <span style="color:red;">*</span>
+                                        {{ __('Installation date') }}
+                                    </label>
+                                    <div class="mt-2">
+                                        <div
+                                            class="flex rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                                            <input type="date"
+                                                class="@error('installation_date') border-l-danger-600 @enderror block w-full rounded border-0 p-2 py-1.5 text-2xl text-gray-900 shadow ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                name="installation_date"
+                                                value="{{ $product->serializeDate($product->installation_date) }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="basis-full">
+                                <div class="col-span-full">
+                                    <label for="purchase_date"
+                                        class="my-5 block text-left text-sm font-medium leading-6 text-gray-900">
+                                        <span style="color:red;">*</span>
+                                        {{ __('Warrantee date') }}
+                                    </label>
+                                    <div class="mt-2">
+                                        <div
+                                            class="flex rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                                            <input type="date"
+                                                class="@error('warrantee_date') border-l-danger-600 @enderror block w-full rounded border-0 p-2 py-1.5 text-2xl text-gray-900 shadow ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                name="warrantee_date"
+                                                value="{{ $product->serializeDate($product->warrantee_date) }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="@role('Servicer|Organizer')hidden @endrole basis-full">
+                                <div class="col-span-full">
+                                    <table class="w-full table-auto border-collapse text-sm">
+                                        <tbody class="dark:bg-slate-800 bg-white">
+                                            @foreach ($product->users as $user)
+                                                <div class="mb-[0.125rem] block min-h-[1.5rem] pl-[1.5rem]">
+                                                    <input name="user_ids[]"
+                                                        class="border-neutral-300 before:bg-transparent checked:after:bg-transparent checked:focus:after:bg-transparent dark:border-neutral-600 relative float-left -ml-[1.5rem] mr-[6px] mt-[0.15rem] h-[1.125rem] w-[1.125rem] appearance-none rounded-[0.25rem] border-[0.125rem] border-solid outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                                                        type="checkbox" value="{{ $user->id }}" id="user_id"
+                                                        @checked(true) />
+                                                    <label class="inline-block pl-[0.15rem] hover:cursor-pointer"
+                                                        for="user_id">
+                                                        {{ $user->name }}
+                                                    </label>
+                                                </div>
+                                            @endforeach
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+
+                            <x-select-input name="tool_id" headText="Tool">
+                                @foreach ($tools as $tool)
+                                    <x-select-input-option :value="$tool->id" :selected="$product->tool_id == $tool->id ? true : false">
+                                        {{ $tool->name }}
+                                    </x-select-input-option>
+                                @endforeach
+                            </x-select-input>
+
                         </div>
                         {{-- Save Button --}}
                         <button type="submit"
-                            class="rounded bg-blue-500 px-4 py-2 text-center font-bold text-white hover:bg-blue-700 focus:outline-none sm:inline-block">
+                            class="w-full rounded bg-blue-500 px-4 py-2 text-center font-bold text-white hover:bg-blue-700 focus:outline-none sm:inline-block">
                             {{ __('Save') }}
                         </button>
                     </form>

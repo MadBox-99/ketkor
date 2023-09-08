@@ -140,6 +140,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int $tool_id
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Visible> $are_visible
+ * @property-read int|null $are_visible_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Organization> $organizations
  * @property-read int|null $organizations_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Partial> $partials
@@ -149,8 +151,6 @@ namespace App\Models{
  * @property-read \App\Models\Tool|null $tool
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
  * @property-read int|null $users_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Visible> $visible
- * @property-read int|null $visible_count
  * @method static \Database\Factories\ProductFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()

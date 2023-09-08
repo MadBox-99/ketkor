@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('visibles', function (Blueprint $table) {
+        Schema::create('are_visible', function (Blueprint $table) {
             $table->id();
             $table->boolean('isVisible')->default(false);
             $table->foreignIdFor(Product::class)->nullable(false);
@@ -26,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('visibles');
+        Schema::dropIfExists('are_visible');
     }
 };

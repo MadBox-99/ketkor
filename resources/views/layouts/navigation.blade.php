@@ -80,15 +80,15 @@
                             </div>
 
                             <!--
-                                        Dropdown menu, show/hide based on menu state.
+                                                                    Dropdown menu, show/hide based on menu state.
 
-                                        Entering: "transition ease-out duration-100"
-                                            From: "transform opacity-0 scale-95"
-                                            To: "transform opacity-100 scale-100"
-                                        Leaving: "transition ease-in duration-75"
-                                            From: "transform opacity-100 scale-100"
-                                            To: "transform opacity-0 scale-95"
-                                        -->
+                                                                    Entering: "transition ease-out duration-100"
+                                                                        From: "transform opacity-0 scale-95"
+                                                                        To: "transform opacity-100 scale-100"
+                                                                    Leaving: "transition ease-in duration-75"
+                                                                        From: "transform opacity-100 scale-100"
+                                                                        To: "transform opacity-0 scale-95"
+                                                                    -->
 
                             <div class="ring-black absolute right-0 z-10 mt-2 hidden w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-opacity-5 focus:outline-none"
                                 role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1"
@@ -151,6 +151,11 @@
                     <x-menu-item :href="route('products.myproducts')" :active="request()->is('product/myproducts')">
                         {{ __('my products') }}
                     </x-menu-item>
+                    @role('Organizer')
+                        <x-menu-item :href="route('organizations.myorganization')" :active="request()->is('organization/myorganization')">
+                            {{ __('my myorganization') }}
+                        </x-menu-item>
+                    @endrole
                 @endrole
             @else
                 <x-menu-item :href="route('login')" :active="request()->is('login')">
@@ -167,8 +172,8 @@
                             alt="">
                     </div>
                     <div class="ml-3">
-                        <div class="text-base font-medium leading-none text-white">Tom Cook</div>
-                        <div class="text-sm font-medium leading-none text-gray-400">tom@example.com</div>
+                        <div class="text-base font-medium leading-none text-white">{{ Auth::user()->name }}</div>
+                        <div class="text-sm font-medium leading-none text-gray-400">{{ Auth::user()->email }}</div>
                     </div>
                     <button type="button"
                         class="relative ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
@@ -182,12 +187,21 @@
                     </button>
                 </div>
                 <div class="mt-3 space-y-1 px-2">
-                    <a href="#"
-                        class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">Your
-                        Profile</a>
-                    <a href="#"
-                        class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">Sign
-                        out</a>
+                    <a wire:navigate href="{{ route('profile.edit') }}"
+                        class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">
+                        {{ __('Your Profile') }}
+                    </a>
+                    <form method="GET" action="{{ route('logout') }}">
+                        <a wire:navigate href="{{ route('logout') }}"
+                            class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                            onclick="event.preventDefault();
+                                                this.closest('form').submit();"
+                            role="menuitem" tabindex="-1" id="user-menu-item-2">
+                            @csrf
+                            <!-- Authentication -->
+                            {{ __('Log Out') }}
+                        </a>
+                    </form>
                 </div>
             </div>
         @endauth

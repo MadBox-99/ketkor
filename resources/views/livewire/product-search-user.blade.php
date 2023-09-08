@@ -1,12 +1,37 @@
 <div>
     <div class="mt-8 space-y-4 px-4">
-        <x-input-label for="owner_name_search">
-            {{ __('Product name') }}
-        </x-input-label>
-        <input class="border w-full border-solid border-gray-300 p-2 md:w-1/4" type="text" placeholder="Search products"
-            wire:model.live="owner_name" name="owner_name_search" />
+        <div class="inline-flex w-full flex-nowrap gap-2">
+            <div class="basis-1/2 md:basis-1/4">
+                <div class="flex flex-wrap">
+                    <div class="basis-full">
+                        <x-input-label for="serial_number_search">
+                            {{ __('Product serial number') }}
+                        </x-input-label>
+                    </div>
+                    <div class="basis-full">
+                        <input class="border type= w-full border-solid border-gray-300 p-2"
+                            placeholder="{{ __('serial number') }}" wire:model.live.throttle.1000ms="serial_number"
+                            name="serial_number_search" />
+                    </div>
+                </div>
 
-        <div wire:loading>{{ __('Searching products...') }}</div>
+            </div>
+            <div class="basis-1/2 md:basis-1/4">
+                <div class="flex flex-wrap">
+                    <div class="basis-full">
+                        <x-input-label for="tool_name_search">
+                            {{ __('Product tool name') }}
+                        </x-input-label>
+                    </div>
+                    <div class="basis-full">
+                        <input class="border type= w-full border-solid border-gray-300 p-2"
+                            placeholder="{{ __('Tool name') }}" wire:model.live.throttle.1000ms="tool_name"
+                            name="tool_name_search" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @forelse ($products as $product)
             @if ($loop->first)
                 <table class="w-full table-auto border-collapse text-sm">
@@ -52,10 +77,14 @@
                     {{ $product->serial_number }}
                 </x-table-td>
                 <td class="hidden sm:hidden sm:basis-1/6 md:hidden md:basis-1/12 xl:table-cell">
-                    @if ($product->visible[0]->isVisible)
+                    @if ($product->are_visible[0]->isVisible)
                         {{ $product->partials[0]->name }}
                     @else
-                        {{ __('Not have permission') }}
+                        <a href="{{ route('accestokens.createAccessToken', ['product' => $product->id]) }}">
+                            <x-primary-button>
+                                {{ __('Require access') }}
+                            </x-primary-button>
+                        </a>
                     @endif
                 </td>
                 <x-table-td class="hidden sm:table-cell sm:basis-1/6 md:table-cell md:basis-1/12">

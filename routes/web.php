@@ -21,23 +21,19 @@ require __DIR__ . '/auth.php';
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', function () {
         return view('index');
     })->name('index');
 });
-/*
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-*/
-Route::middleware('auth')->group(function () {
+
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('products', ProductController::class);
     Route::resource('organizations', OrganizationController::class);
     Route::resource('productlogs', ProductLogController::class);
@@ -47,13 +43,13 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('organization')->name('organizations.')->group(function () {
         Route::get('/{user}/{organization}/{product}', [OrganizationController::class, 'removeUserProduct'])->name('detach');
-        Route::get('/myorganization', [OrganizationController::class, 'myOrganization'])->name('myorganization');
-        Route::get('/myorganizationupdate/{organization}', [OrganizationController::class, 'myOrganizationUpdate'])->name('myorganizationupdate');
-        Route::get('/removeUserFromOrganization/{user}', [OrganizationController::class, 'removeUserFromOrganization'])->name('removeUserFromOrganization');
+        Route::middleware(['role:Organizer'])->group(function () {
+            Route::get('/myorganization', [OrganizationController::class, 'myOrganization'])->name('myorganization');
+            Route::get('/myorganizationupdate/{organization}', [OrganizationController::class, 'myOrganizationUpdate'])->name('myorganizationupdate');
+            Route::get('/removeUserFromOrganization/{user}', [OrganizationController::class, 'removeUserFromOrganization'])->name('removeUserFromOrganization');
+        });
     });
-
-    //Route::resource('users', LogController::class);
-
+    
     Route::prefix('product')->name('products.')->group(function () {
         Route::get('/search', [ProductController::class, 'search'])->name('search');
         Route::get('/myproducts', [ProductController::class, 'myproducts'])->name('myproducts');

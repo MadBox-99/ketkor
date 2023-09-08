@@ -71,7 +71,7 @@ class Product extends Model
     {
         return $this->hasMany(Partial::class);
     }
-    public function visible(): HasMany
+    public function are_visible(): HasMany
     {
         return $this->hasMany(Visible::class);
     }
