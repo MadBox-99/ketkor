@@ -31,7 +31,10 @@
                                     {{ $user->name }}
                                 </x-table-td>
                                 <x-table-td>
-                                    {{ $user->organization->name }}
+                                    @if ($user->organization  != null)
+                                        {{ $user->organization->name }}
+                                    @endif
+
                                 </x-table-td>
                                 <x-table-td>
                                     {{ __($user->getRoleNames()->first()) }}

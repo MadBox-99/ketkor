@@ -8,6 +8,7 @@ use App\Models\AccessToken;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Mail\AccessGrantMail;
+use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 
 class AccessTokenController extends Controller
@@ -25,20 +26,21 @@ class AccessTokenController extends Controller
      */
     public function createAccessToken(Product $product)
     {
-        $operatorEmail = env('MAIL_FROM_ADDRESS');
+        $adminEmail = env('MAIL_FROM_ADDRESS');
+        $admin = User::whereEmail('zoli.szabok@gmail.com')->first();
         $token = Str::random(40); // Generate a unique token
-        //$user_id = auth()->id();
-        $user_id = 1;
+        $user_id = auth()->user()->id;
         // Store the token in the database
         $accessToken = AccessToken::firstOrNew([
             'user_id' => $user_id,
             'product_id' => $product->id,
-            'used' => 0, // Mark the token as not used
+            'used' => 0,
+            // Mark the token as not used
         ]);
 
         $accessToken->update(['token' => $token, 'used' => false]);
         $accessToken->save();
-        Mail::to($operatorEmail)->send(new AccessGrantMail($token));
+        Mail::to('zoli.szabok@gmail.com')->cc($admin)->send(new AccessGrantMail($token));
         return redirect()->route('products.myproducts')->with('success', __('Succesfuly send an email to administrator who will grant an access to private datas, please wait until is access in grant.'));
     }
 

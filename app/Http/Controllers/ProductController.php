@@ -235,7 +235,7 @@ class ProductController extends Controller
         $partials = Partial::where('product_id', $product->id)->latest()->limit(6)->get();
         $users = User::get();
         $tools = Tool::get();
-        return view('product.edit', compact('users', 'tools', 'product', 'partials', 'userVisibility'));
+        return redirect()->route('products.edit', ['product' => $product])->with(compact('users', 'tools', 'product', 'partials', 'userVisibility'));
     }
     public function remove(Product $product)
     {

@@ -33,7 +33,7 @@ class LogController extends Controller
             $log->delete();
 
             DB::commit();
-            return redirect()->route('logs.index')->with('success', 'Organizations deleted successfully.');
+            return redirect()->route('logs.index')->with('success', __('Organizations deleted successfully.'));
         } catch (\Throwable $th) {
             DB::rollback();
             return redirect()->route('logs.index')->with('error', $th->getMessage());

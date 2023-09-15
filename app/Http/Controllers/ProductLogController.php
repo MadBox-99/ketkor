@@ -92,7 +92,7 @@ class ProductLogController extends Controller
                             'what' => 'productlogs.store successfully |' . json_encode($request->all())
                         ]);
                         DB::commit();
-                        return redirect()->back()->withInput()->with('success', 'Products updated successfully.');
+                        return redirect()->back()->withInput()->with('success', __('Product updated successfully.'));
                     }
                 }
                 DB::rollback();
@@ -110,7 +110,7 @@ class ProductLogController extends Controller
                     'what' => 'productlogs.store successfully |' . json_encode($request->all())
                 ]);
                 DB::commit();
-                return redirect()->back()->withInput()->with('success', __('Products updated successfully.'));
+                return redirect()->back()->withInput()->with('success', __('Product updated successfully.'));
             }
         } catch (\Throwable $th) {
             DB::rollback();

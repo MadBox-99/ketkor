@@ -59,7 +59,7 @@ class ToolController extends Controller
                 'what' => 'tool.create Tool created successfully |' . json_encode($request->all())
             ]);
             DB::commit();
-            return redirect()->route('tools.index')->with('success', 'Tool created successfully.');
+            return redirect()->route('tools.index')->with('success', __('Tool created successfully.'));
         } catch (\Throwable $th) {
 
             DB::rollback();
@@ -114,7 +114,7 @@ class ToolController extends Controller
             );
 
             DB::commit();
-            return redirect()->route('tools.index')->with('success', 'Tool updated successfully.');
+            return redirect()->route('tools.index')->with('success', __('Tool updated successfully.'));
         } catch (\Throwable $th) {
             DB::rollback();
             return redirect()->back()->withInput()->with('error', $th->getMessage());

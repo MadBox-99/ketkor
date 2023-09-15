@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Imports\AccorroniProducts;
 use App\Models\Tool;
 use App\Models\User;
 use App\Models\Product;
@@ -62,6 +64,14 @@ class DatabaseSeeder extends Seeder
             'remember_token' => Str::random(10),
             'organization_id' => 1
         ]);
+        $admin = User::factory()->create([
+            'name' => 'Admin',
+            'email' => 'zoli.szabok@gamil.com',
+            'email_verified_at' => now(),
+            'password' => 'password',
+            'remember_token' => Str::random(10),
+        ]);
+        $admin->assignRole('Admin');
         $user1->assignRole('Admin');
         $user2 = User::factory()->create([
             'name' => 'Test User 2',
@@ -96,6 +106,7 @@ $product->users()->attach($user2->id);
 */
 
         Excel::import(new ProductsImport, storage_path('app/import/SIME.xlsx'));
+        Excel::import(new AccorroniProducts, storage_path('app/import/accorroni.xlsx'));
 
 
 

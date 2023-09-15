@@ -32,10 +32,17 @@
                                 @csrf
                                 @method('PUT')
                                 <div class="mb-4">
-                                    <x-create-input-text name="serial_number" headText="Serial number" :required="false"
-                                        disabled="@role('Organizer|Servicer'){{ true }} @endrole">
-                                        {{ $product->serial_number }}
-                                    </x-create-input-text>
+                                    @role('Organizer|Servicer')
+                                        <x-create-input-text name="serial_number" headText="Serial number"
+                                            :disabled="true">
+                                            {{ $product->serial_number }}
+                                        </x-create-input-text>
+                                    @endrole
+                                    @role('Admin|Operator')
+                                        <x-create-input-text name="serial_number" headText="Serial number">
+                                            {{ $product->serial_number }}
+                                        </x-create-input-text>
+                                    @endrole
                                     <x-create-input-text name="city" headText="City" :disabled="!$userVisibility"
                                         :required="false">
                                         {{ $product->city }}

@@ -3,19 +3,20 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Queue\SerializesModels;
 
-class AccessGrantMail extends Mailable
+class OrderShipped extends Mailable
 {
     use Queueable, SerializesModels;
+
     /**
      * Create a new message instance.
      */
-
-    public function __construct(public $token)
+    public function __construct()
     {
         //
     }
@@ -26,7 +27,7 @@ class AccessGrantMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: __('Access Grant Mail'),
+            subject: 'Order Shipped',
         );
     }
 
@@ -36,8 +37,7 @@ class AccessGrantMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.accessRequest',
-            with: ['token' => $this->token]
+            markdown: 'emails.orders.shipped',
         );
     }
 

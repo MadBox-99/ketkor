@@ -53,7 +53,8 @@ class PartialController extends Controller
             DB::commit();
             $users = User::get();
             $tools = Tool::get();
-            return redirect()->route('products.edit', ['product' => $product])->with(['success' => 'Products updated successfully.', 'users' => $users, 'tools' => $tools]);
+            $success = __('Product updated successfully.');
+            return redirect()->route('products.edit', ['product' => $product])->with(compact('tools', 'users', 'success'));
         } catch (\Throwable $th) {
             DB::rollback();
             Log::create([

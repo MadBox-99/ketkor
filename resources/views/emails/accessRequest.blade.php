@@ -1,13 +1,10 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>Access Granted</title>
-</head>
-
-<body>
-    <p>You have been granted access to view the content. Click the link below:</p>
-    <a href="{{ route('accestokens.activateAccessToken', ['token' => $token]) }}">Access Content</a>
-</body>
-
-</html>
+<x-mail::message>
+    <x-mail::panel>
+        {{ __('You have been granted access to view the content. Click the link below:') }}
+    </x-mail::panel>
+    <x-mail::table>
+        <x-mail::button :url="route('accestokens.activateAccessToken', ['token' => $token])" color="success">
+            {{ __('Access Content') }}
+        </x-mail::button>
+    </x-mail::table>
+</x-mail::message>
