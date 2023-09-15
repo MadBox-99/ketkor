@@ -3,9 +3,9 @@
         <x-button-style-link text="Products" route="products.create"> New products create</x-button-style-link>
     </x-slot>
     <x-alert />
-    <div class="mx-20 flex max-w-full flex-row justify-center px-20 py-2">
-        <div class="relative overflow-auto rounded-xl">
-            <div class="my-8 w-full overflow-hidden shadow-sm">
+    <div class="py-12">
+        <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
+            <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
                 @livewire('search-product')
             </div>
         </div>

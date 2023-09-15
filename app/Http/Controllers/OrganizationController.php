@@ -6,6 +6,7 @@ use App\Models\Log;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Organization;
+use App\Models\Visible;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,7 @@ class OrganizationController extends Controller
     public function index()
     {
         Log::create([
-            'user_id' => 1,
+            'user_id' => Auth::user()->id,
             'what' => 'organization.index page open/hover'
         ]);
         $organizations = Organization::get();
@@ -59,15 +60,15 @@ class OrganizationController extends Controller
                 ]
             );
             Log::create([
-                'user_id' => 1,
+                'user_id' => Auth::user()->id,
                 'what' => 'organization.create Organization created successfully |' . json_encode($request->all())
             ]);
             DB::commit();
-            return redirect()->route('organizations.index')->with('success', 'Organization created successfully.');
+            return redirect()->route('organizations.index')->with('success', __('Organization created successfully.'));
         } catch (\Throwable $th) {
             DB::rollback();
             Log::create([
-                'user_id' => 1,
+                'user_id' => Auth::user()->id,
                 'what' => 'organization store failed' . json_encode($request->all()) . " | " . $th->getMessage()
             ]);
             return redirect()->back()->withInput()->with('error', $th->getMessage());
@@ -80,6 +81,47 @@ class OrganizationController extends Controller
     public function show(Organization $organization)
     {
         //
+    }
+    public function productMove(Request $request)
+    {
+
+        DB::beginTransaction();
+        try {
+            //validation
+            $request->validate([
+                'selected_user_id' => 'required',
+                'user_id' => 'required',
+                'product_id' => 'required',
+            ]);
+            $product = Product::with(['users'])->whereId($request->product_id)->first();
+            $selectedUserId = $request->selected_user_id;
+            $isAttached = $product->users->contains($selectedUserId);
+            $product->users()->detach($request->user_id);
+            $visible = Visible::whereUserId($request->user_id)->whereProductId($product->id)->first();
+            if ($isAttached) {
+                Visible::whereUserId($request->selected_user_id)->whereProductId($product->id)->first()->update(['isVisible' => $visible->isVisible]);
+                $visible->delete();
+            } else {
+                $product->users()->attach($request->selected_user_id);
+                $visible->update(['user_id' => $request->selected_user_id]);
+            }
+
+
+            Log::create([
+                'user_id' => Auth::user()->id,
+                'what' => 'product successfully moved from user:' . $request->user_id . ' to user: ' . $request->selected_user_id
+            ]);
+
+            DB::commit();
+            return redirect()->route('organizations.myorganization')->with('success', __('Product successfully moved.'));
+        } catch (\Throwable $th) {
+            DB::rollback();
+            Log::create([
+                'user_id' => 1,
+                'what' => 'user failed moved from:' . $request->user_id . ' to: ' . $request->selected_user_id . " | " . $th->getMessage()
+            ]);
+            return redirect()->back()->withInput()->with('error', $th->getMessage());
+        }
     }
 
     /**
@@ -119,7 +161,7 @@ class OrganizationController extends Controller
             );
 
             DB::commit();
-            return redirect()->route('organizations.index')->with('success', 'Organization updated successfully.');
+            return redirect()->route('organizations.index')->with('success', __('Organization updated successfully.'));
         } catch (\Throwable $th) {
             DB::rollback();
             return redirect()->back()->withInput()->with('error', $th->getMessage());
@@ -137,7 +179,7 @@ class OrganizationController extends Controller
             $organization->delete();
 
             DB::commit();
-            return redirect()->route('organizations.index')->with('success', 'Organizations deleted successfully.');
+            return redirect()->route('organizations.index')->with('success', __('Organizations deleted successfully.'));
         } catch (\Throwable $th) {
             DB::rollback();
             return redirect()->route('organizations.index')->with('error', $th->getMessage());
@@ -148,12 +190,16 @@ class OrganizationController extends Controller
 
         $user->products()->detach($product->id);
         //dd($organization);
-        $organization = Organization::whereId($organization->id)->first();
+        /*$organization = Organization::whereId($organization->id)->first();
         $organization_id = $organization->id;
         $products = Product::whereHas('users.organization', function ($query) use ($organization_id) {
             $query->where('id', $organization_id);
         })->get();
-        return view('organization.edit', compact('organization', 'products'));
+        return view('organization.edit', compact('organization', 'products'));*/
+        $user = Auth::user();
+        $organization_id = $user->organization_id;
+        $organization = Organization::with('users.products')->whereId($organization_id)->first();
+        return view('organization.myorganization', compact('organization'));
     }
 
     public function myOrganization()
@@ -185,7 +231,7 @@ class OrganizationController extends Controller
             );
 
             DB::commit();
-            return redirect()->route('organizations.myorganization')->with('success', 'Organization updated successfully.');
+            return redirect()->route('organizations.myorganization')->with('success', __('Organization updated successfully.'));
         } catch (\Throwable $th) {
             DB::rollback();
             return redirect()->back()->withInput()->with('error', $th->getMessage());

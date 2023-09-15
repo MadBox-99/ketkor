@@ -3,38 +3,63 @@
 
         <!-- Page Heading -->
         <x-slot name="header">
-            <x-button-style-link text="Edit tool" route="tools.index">
+            <x-button-style-link text="Edit tool" route="users.index">
                 Back
             </x-button-style-link>
         </x-slot>
         {{-- Alert Messages --}}
         <x-alert />
-        <div class="card mb-4 shadow">
-            <div class="flex min-h-screen items-center justify-center">
-                <div class="w-full max-w-xs">
-                    <form method="POST" action="{{ route('tools.update', ['tool' => $tool->id]) }}"
-                        class="mb-4 rounded bg-white px-8 pb-8 pt-6 shadow-md">
-                        @csrf
-                        @method('PUT')
-                        <div class="mb-4">
-                            <x-create-input-text name="name"
-                                headText="Tool name">{{ $tool->name }}</x-create-input-text>
-                            <x-create-input-text name="category"
-                                headText="Category">{{ $tool->category }}</x-create-input-text>
-                            <x-create-input-text name="tag" headText="tag">{{ $tool->tag }}</x-create-input-text>
-                            <x-create-input-text name="factory_name"
-                                headText="Factory name">{{ $tool->factory_name }}</x-create-input-text>
-                        </div>
-                        {{-- Save Button --}}
-                        <button type="submit"
-                            class="rounded bg-blue-500 px-4 py-2 text-center font-bold text-white hover:bg-blue-700 focus:outline-none sm:inline-block">
-                            {{ __('Save') }}
-                        </button>
+        <div class="py-12">
+            <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
+                <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                    <div class="max-w-xl">
+                        <section>
+                            <header>
+                                <h2 class="text-lg font-medium text-gray-900">
+                                    {{ __('Product Information') }}
+                                </h2>
+                                <p class="mt-1 text-sm text-gray-600">
+                                    {{ __("Update product's informations.") }}
+                                </p>
+                            </header>
+                            <form class="mt-6 space-y-6" method="POST"
+                                action="{{ route('users.update', ['user' => $user->id]) }}">
+                                @csrf
+                                @method('PUT')
+                                <div class="mb-4">
+                                    <x-create-input-text name="name" headText="User name">
+                                        {{ $user->name }}
+                                    </x-create-input-text>
+                                    <x-create-input-text name="email" headText="Email">
+                                        {{ $user->email }}
+                                    </x-create-input-text>
+                                    <x-select-input name="organization" headText="Organization">
+                                        <option value="">{{ __('Remove from organization.') }}</option>
+                                        @foreach ($organizations as $organization)
+                                            <x-select-input-option :value="$organization->id" :selected="$user->organization_id == $organization->id ? true : false">
+                                                {{ $organization->name }}
+                                            </x-select-input-option>
+                                        @endforeach
+                                    </x-select-input>
+                                    <x-select-input name="role" headText="Role">
+                                        @foreach ($roles as $role)
+                                            <x-select-input-option :value="$role->name" :selected="$role->id == $user->roles->first()->id ? true : false">
+                                                {{ $role->name }}
+                                            </x-select-input-option>
+                                        @endforeach
+                                    </x-select-input>
+                                </div>
+                                {{-- Save Button --}}
+                                <button
+                                    class="rounded bg-blue-500 px-4 py-2 text-center font-bold text-white hover:bg-blue-700 focus:outline-none sm:inline-block"
+                                    type="submit">
+                                    {{ __('Save') }}
+                                </button>
 
-                    </form>
+                            </form>
+                    </div>
                 </div>
             </div>
         </div>
-
     </div>
 </x-app-layout>

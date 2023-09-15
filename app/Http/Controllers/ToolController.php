@@ -18,8 +18,7 @@ class ToolController extends Controller
             'user_id' => 1,
             'what' => 'tool.index page open/hover'
         ]);
-        $tools = Tool::get();
-        return view('tool.index', compact('tools'));
+        return view('tool.index');
     }
 
     /**
@@ -43,9 +42,9 @@ class ToolController extends Controller
         try {
             $request->validate([
                 'name' => 'required|string',
-                'category' => 'required|string',
-                'tag' => 'required|string',
-                'factory_name' => 'required|string',
+                'category' => 'string',
+                'tag' => 'string',
+                'factory_name' => 'string',
             ]);
             Tool::create(
                 [
@@ -101,9 +100,9 @@ class ToolController extends Controller
         try {
             $request->validate([
                 'name' => 'required|string',
-                'category' => 'required|string',
-                'tag' => 'required|string',
-                'factory_name' => 'required|string',
+                'category' => 'string',
+                'tag' => 'string',
+                'factory_name' => 'string',
             ]);
             $tool->update(
                 [

@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use DateTime;
 use Carbon\Carbon;
 use App\Models\Tool;
 use App\Models\User;
@@ -28,12 +29,20 @@ class ProductsImport implements ToModel, WithHeadingRow
             !isset($row['Gyári szám'])
             || !isset($row['Beüzemelés dátuma'])
             || is_null($row['Beuzemelo'])
+            || (!isset($row['Beüzemelés dátuma']) && !isset($row['Vásárlás dátuma']))
         ) {
             return null;
         }
         $row['Beüzemelés dátuma'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['Beüzemelés dátuma'] - 2);
         $row['Vásárlás dátuma'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['Vásárlás dátuma'] - 2);
-
+        $install_date = Carbon::createFromInterface(new DateTime($row['Beüzemelés dátuma']));
+        $purchase_date = Carbon::createFromInterface(new DateTime($row['Vásárlás dátuma']));
+        $warrantee = null;
+        if ($purchase_date->diffInMonths($install_date) <= 3) {
+            $warrantee = $purchase_date->copy()->addYear();
+        } else {
+            $warrantee = $install_date->copy()->addYear();
+        }
         $user = User::where('name', $row['Beuzemelo'])->first();
 
         if (!$user) {
@@ -49,7 +58,7 @@ class ProductsImport implements ToModel, WithHeadingRow
             dd($row['Beuzemelo']);
         */
 
-        $tool = Tool::firstOrCreate(['name' => $row['Kazán típus']]);
+        $tool = Tool::firstOrCreate(['name' => $row['Kazán típus'], 'factory_name' => 'Sime']);
         $product = Product::Create(
             [
                 'tool_id' => $tool->id,
@@ -63,6 +72,7 @@ class ProductsImport implements ToModel, WithHeadingRow
                 'purchase_date' => $row['Vásárlás dátuma'],
                 'installation_date' => $row['Beüzemelés dátuma'],
                 'serial_number' => $row['Gyári szám'],
+                'warrantee_date' => $warrantee
             ]
         );
         Partial::create(

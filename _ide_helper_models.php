@@ -245,6 +245,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AccessToken> $AccessTokens
  * @property-read int|null $access_tokens_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Visible> $are_visible
+ * @property-read int|null $are_visible_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Log> $logs
  * @property-read int|null $logs_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications

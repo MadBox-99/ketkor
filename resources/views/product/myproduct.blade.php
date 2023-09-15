@@ -7,9 +7,9 @@
         </h2>
     </x-slot>
     <x-alert />
-    <div class="mx-2 flex max-w-full flex-row justify-center px-2 py-2 text-3xl xl:mx-20 xl:px-20">
-        <div class="relative overflow-auto rounded-xl">
-            <div class="my-8 w-full overflow-hidden shadow-sm">
+    <div class="py-12">
+        <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
+            <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
                 @livewire('product-search-user')
             </div>
         </div>

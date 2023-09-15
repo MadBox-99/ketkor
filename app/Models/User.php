@@ -52,7 +52,10 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-
+    public function setPasswordAttribute($password)
+    {
+        $this->attributes['password'] = bcrypt($password);
+    }
     public function organization(): BelongsTo
     {
         return $this->belongsTo(Organization::class);
@@ -69,6 +72,10 @@ class User extends Authenticatable
     public function AccessTokens(): HasMany
     {
         return $this->hasMany(AccessToken::class);
+    }
+    public function are_visible(): HasMany
+    {
+        return $this->hasMany(Visible::class);
     }
 
 }

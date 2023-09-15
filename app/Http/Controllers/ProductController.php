@@ -95,7 +95,7 @@ class ProductController extends Controller
                 'what' => 'product.create Product Partial save successfully |' . json_encode($request->all())
             ]);
             DB::commit();
-            return redirect()->route('products.index')->with('success', 'Product created successfully.');
+            return redirect()->route('products.index')->with('success', __('Product created successfully.'));
         } catch (\Throwable $th) {
             DB::rollback();
             Log::create([
@@ -119,8 +119,7 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //$userId = auth()->user()->id;
-        $user = User::find(1);
+        $user = auth()->user();
         Log::create([
             'user_id' => 1,
             'what' => 'product.edit page open/hover'
@@ -128,6 +127,8 @@ class ProductController extends Controller
         $product = Product::whereId($product->id)->with(['users'])->first();
         $userVisibility = Visible::where('user_id', $user->id)->where('product_id', $product->id)->where('isVisible', true)->first();
         $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
+        if ($user->getRoleNames()->first() == 'Admin' || $user->getRoleNames()->first() == 'Operator')
+            $userVisibility = true;
         $partials = Partial::where('product_id', $product->id)->latest()->limit(6)->get();
         $users = User::get();
         $tools = Tool::get();
@@ -142,8 +143,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        // $user = auth()->user();
-        $user = User::find(1);
+        $user = auth()->user();
         DB::beginTransaction();
         try {
             $request->validate([
@@ -172,7 +172,11 @@ class ProductController extends Controller
             DB::commit();
             $users = User::get();
             $tools = Tool::get();
-            return redirect()->route('products.index')->with('success', 'Products updated successfully.');
+            $partials = Partial::where('product_id', $product->id)->latest()->limit(6)->get();
+            $userVisibility = Visible::whereRelation('product', 'user_id', $user->id)->whereRelation('product', 'product_id', $product->id)->whereRelation('product', 'isVisible', true)->first();
+            $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
+            $success = __('Products updated successfully.');
+            return redirect()->route('products.edit', ['product' => $product])->with(compact('success', 'users', 'tools', 'product', 'partials', 'userVisibility'));
         } catch (\Throwable $th) {
             DB::rollback();
             Log::create([
@@ -196,14 +200,13 @@ class ProductController extends Controller
     {
         DB::beginTransaction();
         try {
-
             $product->delete();
             Log::create([
                 'user_id' => 1,
                 'what' => 'product.delete successfully |' . json_encode($product->all())
             ]);
             DB::commit();
-            return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+            return redirect()->route('products.index')->with('success', __('Product deleted successfully.'));
         } catch (\Throwable $th) {
             DB::rollback();
             Log::create([
@@ -215,8 +218,7 @@ class ProductController extends Controller
     }
     public function add(Product $product)
     {
-        //$userId = auth()->user()->id;
-        $userId = 1;
+        $userId = auth()->user()->id;
         $userVisibility = Visible::firstOrCreate([
             'product_id' => $product->id,
             'user_id' => $userId,
@@ -237,8 +239,7 @@ class ProductController extends Controller
     }
     public function remove(Product $product)
     {
-        //$userId = auth()->user()->id;
-        $userId = 1;
+        $userId = auth()->user()->id;
         $userVisibility = Visible::where('product_id', $product->id)->where('user_id', $userId)->first();
         $accessToken = AccessToken::where('product_id', $product->id)->where('user_id', $userId)->first();
         if (!is_null($accessToken))

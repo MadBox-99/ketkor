@@ -39,7 +39,7 @@ class AccessTokenController extends Controller
         $accessToken->update(['token' => $token, 'used' => false]);
         $accessToken->save();
         Mail::to($operatorEmail)->send(new AccessGrantMail($token));
-        return redirect()->route('products.myproducts')->with('success', 'Succesfuly send an email to administrator how will grant an access to private datas pleese wait until is access in grant.');
+        return redirect()->route('products.myproducts')->with('success', __('Succesfuly send an email to administrator who will grant an access to private datas, please wait until is access in grant.'));
     }
 
 
@@ -57,14 +57,13 @@ class AccessTokenController extends Controller
     public function activateAccessToken($token)
     {
         $accessToken = AccessToken::with('user')->where('token', $token)->first();
-        if ($accessToken && !$accessToken->used) {
+        if (!$accessToken->used) {
             $accessToken->update(['used' => 1]);
             $visibility = Visible::firstOrNew([
                 'product_id' => $accessToken->product_id,
                 'user_id' => $accessToken->user_id,
             ]);
             $visibility->update(['isVisible' => 1]);
-
             return redirect()->route('products.index')->with('success', 'access grated to ' . $accessToken->user->name);
         }
         return redirect()->route('products.index')->with('error', 'access token is expired or used');

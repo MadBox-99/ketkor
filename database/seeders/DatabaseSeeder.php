@@ -5,6 +5,8 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Tool;
 use App\Models\User;
+use App\Models\Product;
+use App\Models\Visible;
 use Illuminate\Support\Str;
 use App\Imports\ProductsImport;
 use Illuminate\Database\Seeder;
@@ -56,11 +58,11 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'admin@admin.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+            'password' => 'password',
             'remember_token' => Str::random(10),
             'organization_id' => 1
         ]);
-        $user1->assignRole('Organizer');
+        $user1->assignRole('Admin');
         $user2 = User::factory()->create([
             'name' => 'Test User 2',
             'email' => 'test@example2.com',
@@ -92,6 +94,31 @@ $product = Product::factory()->create([
 $product->users()->attach($user1->id);
 $product->users()->attach($user2->id);
 */
+
         Excel::import(new ProductsImport, storage_path('app/import/SIME.xlsx'));
+
+
+
+        $productTest1 = Product::whereId(1)->first();
+        $productTest2 = Product::whereId(2)->first();
+        $user1->products()->attach($productTest1);
+        $user1->products()->attach($productTest2);
+        $user2->products()->attach($productTest2);
+        Visible::create([
+            'user_id' => $user1->id,
+            'product_id' => $productTest1->id,
+            'isVisible' => 1
+        ]);
+        Visible::create([
+            'user_id' => $user1->id,
+            'product_id' => $productTest2->id,
+            'isVisible' => 1
+        ]);
+        Visible::create([
+            'user_id' => $user2->id,
+            'product_id' => $productTest2->id,
+            'isVisible' => 1
+        ]);
+
     }
 }
