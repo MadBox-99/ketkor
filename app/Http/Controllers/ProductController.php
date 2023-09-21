@@ -36,8 +36,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $users = User::get();
-        $tools = Tool::get();
+        $users = User::orderBy('name')->get();
+        $tools = Tool::orderBy('name')->get();
         Log::create([
             'user_id' => 1,
             'what' => 'product.create page open/hover'
@@ -130,13 +130,12 @@ class ProductController extends Controller
         if ($user->getRoleNames()->first() == 'Admin' || $user->getRoleNames()->first() == 'Operator')
             $userVisibility = true;
         $partials = Partial::where('product_id', $product->id)->latest()->limit(6)->get();
-        $users = User::get();
-        $tools = Tool::get();
+        $users = User::orderBy('name')->get();
+        $tools = Tool::orderBy('name')->get();
         return view('product.edit', compact('users', 'tools', 'product', 'partials', 'userVisibility'));
     }
     public function partialUpdate(Request $request, Product $product)
     {
-
     }
     /**
      * Update the specified resource in storage.
@@ -147,7 +146,6 @@ class ProductController extends Controller
         DB::beginTransaction();
         try {
             $request->validate([
-                'serial_number' => 'required|string|min:4|max:200',
                 'tool_id' => 'required',
                 'user_ids' => 'required',
             ]);
@@ -170,8 +168,8 @@ class ProductController extends Controller
                 'what' => 'product.update successfully |' . json_encode($request->all())
             ]);
             DB::commit();
-            $users = User::get();
-            $tools = Tool::get();
+            $users = User::orderBy('name')->get();
+            $tools = Tool::orderBy('name')->get();
             $partials = Partial::where('product_id', $product->id)->latest()->limit(6)->get();
             $userVisibility = Visible::whereRelation('product', 'user_id', $user->id)->whereRelation('product', 'product_id', $product->id)->whereRelation('product', 'isVisible', true)->first();
             $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
@@ -186,8 +184,8 @@ class ProductController extends Controller
             $userVisibility = Visible::whereRelation('product', 'user_id', $user->id)->whereRelation('product', 'product_id', $product->id)->whereRelation('product', 'isVisible', true)->first();
             $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
             $partials = Partial::where('product_id', $product->id)->latest()->limit(6)->get();
-            $users = User::get();
-            $tools = Tool::get();
+            $users = User::orderBy('name')->get();
+            $tools = Tool::orderBy('name')->get();
             $error = $th->getMessage();
             return redirect()->route('products.edit', ['product' => $product])->with(compact('error', 'users', 'tools', 'product', 'partials', 'userVisibility'));
         }
@@ -203,7 +201,7 @@ class ProductController extends Controller
             $product->delete();
             Log::create([
                 'user_id' => 1,
-                'what' => 'product.delete successfully |' . json_encode($product->all())
+                'what' => 'product.delete successfully | product id:' . $product->id
             ]);
             DB::commit();
             return redirect()->route('products.index')->with('success', __('Product deleted successfully.'));
@@ -233,8 +231,8 @@ class ProductController extends Controller
         $userVisibility = Visible::whereRelation('product', 'user_id', $user->id)->whereRelation('product', 'product_id', $product->id)->whereRelation('product', 'isVisible', true)->first();
         $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
         $partials = Partial::where('product_id', $product->id)->latest()->limit(6)->get();
-        $users = User::get();
-        $tools = Tool::get();
+        $users = User::orderBy('name')->get();
+        $tools = Tool::orderBy('name')->get();
         return redirect()->route('products.edit', ['product' => $product])->with(compact('users', 'tools', 'product', 'partials', 'userVisibility'));
     }
     public function remove(Product $product)

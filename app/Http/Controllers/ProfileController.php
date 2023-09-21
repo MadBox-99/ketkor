@@ -36,7 +36,7 @@ class ProfileController extends Controller
                 [
                     'name' => $validated['name'],
                     'email' => $validated['email'],
-                    'password' => "12345678",
+                    'password' => $validated['password'],
                     'organization_id' => $validated['organization_id'],
                 ]
             );
@@ -47,7 +47,6 @@ class ProfileController extends Controller
             DB::rollBack();
             return redirect()->back()->withInput()->with('error', $th->getMessage());
         }
-
     }
 
     public function show(User $user): View
@@ -90,7 +89,7 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::back('profile.edit')->with('status', __('profile-updated'));
+        return redirect()->back()->with('status', __('profile-updated'));
     }
 
     /**

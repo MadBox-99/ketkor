@@ -101,7 +101,6 @@ class ToolController extends Controller
             $request->validate([
                 'name' => 'required|string',
                 'category' => 'string',
-                'tag' => 'string',
                 'factory_name' => 'string',
             ]);
             $tool->update(

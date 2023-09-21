@@ -37,24 +37,41 @@
                                             :disabled="true">
                                             {{ $product->serial_number }}
                                         </x-create-input-text>
+
+                                        <x-create-input-text name="city" headText="City" :type="!$userVisibility ?? 'hidden'">
+                                            {{ $product->city }}
+                                        </x-create-input-text>
+                                        <x-create-input-text name="street" headText="Street" :type="!$userVisibility ?? 'hidden'"
+                                            :required="false">
+                                            {{ $product->street }}
+                                        </x-create-input-text>
+                                        <x-create-input-text name="zip" headText="Zip" :type="!$userVisibility ?? 'hidden'"
+                                            :required="false">
+                                            {{ $product->zip }}
+                                        </x-create-input-text>
                                     @endrole
                                     @role('Admin|Operator')
                                         <x-create-input-text name="serial_number" headText="Serial number">
                                             {{ $product->serial_number }}
                                         </x-create-input-text>
+                                        <x-create-input-text name="city" headText="City" :disabled="!$userVisibility"
+                                            :required="false">
+                                            {{ $product->city }}
+                                        </x-create-input-text>
+                                        <x-create-input-text name="street" headText="Street" :disabled="!$userVisibility"
+                                            :required="false">
+                                            {{ $product->street }}
+                                        </x-create-input-text>
+                                        <x-create-input-text name="zip" headText="Zip" :disabled="!$userVisibility"
+                                            :required="false">
+                                            {{ $product->zip }}
+                                        </x-create-input-text>
                                     @endrole
-                                    <x-create-input-text name="city" headText="City" :disabled="!$userVisibility"
-                                        :required="false">
-                                        {{ $product->city }}
+                                    <x-create-input-text name="owner_name" :disabled="true" headText="Owner name"
+                                        :type="!$userVisibility ?? 'hidden'">
+                                        {{ $product->owner_name }}
                                     </x-create-input-text>
-                                    <x-create-input-text name="street" headText="Street" :disabled="!$userVisibility"
-                                        :required="false">
-                                        {{ $product->street }}
-                                    </x-create-input-text>
-                                    <x-create-input-text name="zip" headText="Zip" :disabled="!$userVisibility"
-                                        :required="false">
-                                        {{ $product->zip }}
-                                    </x-create-input-text>
+
                                     <div class="basis-full">
                                         <div class="col-span-full">
                                             <label
@@ -68,7 +85,7 @@
                                                         class="@error('purchase_date') border-l-danger-600 @enderror block w-full rounded border-0 p-2 py-1.5 text-2xl text-gray-900 shadow ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         name="purchase_date" type="date"
                                                         value="{{ $product->serializeDate($product->purchase_date) }}"
-                                                        @if (!$userVisibility) {!! 'disabled ' !!} @endif>
+                                                        @hasrole('Organizer|Servicer'){!! 'readonly ' !!} @endhasrole>
                                                 </div>
                                             </div>
                                         </div>
@@ -88,7 +105,7 @@
                                                         class="@error('installation_date') border-l-danger-600 @enderror block w-full rounded border-0 p-2 py-1.5 text-2xl text-gray-900 shadow ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         name="installation_date" type="date"
                                                         value="{{ $product->serializeDate($product->installation_date) }}"
-                                                        @if (!$userVisibility) {!! 'disabled ' !!} @endif>
+                                                        @hasrole('Organizer|Servicer'){!! 'readonly ' !!} @endhasrole>
                                                 </div>
                                             </div>
                                         </div>
@@ -108,7 +125,7 @@
                                                         class="@error('warrantee_date') border-l-danger-600 @enderror block w-full rounded border-0 p-2 py-1.5 text-2xl text-gray-900 shadow ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         name="warrantee_date" type="date"
                                                         value="{{ $product->serializeDate($product->warrantee_date) }}"
-                                                        @if (!$userVisibility) {!! 'disabled ' !!} @endif>
+                                                        @hasrole('Organizer|Servicer'){!! 'readonly ' !!} @endhasrole>
                                                 </div>
                                             </div>
                                         </div>
@@ -135,9 +152,10 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <x-select-input name="tool_id" headText="Tool" :disabled="!$userVisibility">
+                                    <x-select-input name="tool_id" headText="Tool">
                                         @foreach ($tools as $tool)
-                                            <x-select-input-option :value="$tool->id" :selected="$product->tool_id == $tool->id ? true : false">
+                                            <x-select-input-option :value="$tool->id" :selected="$product->tool_id == $tool->id ? true : false"
+                                                :disabled="!$userVisibility">
                                                 {{ $tool->name }}
                                             </x-select-input-option>
                                         @endforeach

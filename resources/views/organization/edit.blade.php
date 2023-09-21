@@ -17,13 +17,13 @@
                         <div class="flex flex-wrap">
                             <x-create-input-text name="name"
                                 headText="Organization name">{{ $organization->name }}</x-create-input-text>
-                            <x-create-input-text name="city"
+                            <x-create-input-text name="city" :required="false"
                                 headText="City">{{ $organization->city }}</x-create-input-text>
-                            <x-create-input-text name="address"
+                            <x-create-input-text name="address" :required="false"
                                 headText="Address">{{ $organization->address }}</x-create-input-text>
-                            <x-create-input-text name="tax_number"
+                            <x-create-input-text name="tax_number" :required="false"
                                 headText="Tax number">{{ $organization->tax_number }}</x-create-input-text>
-                            <x-create-input-text name="zip"
+                            <x-create-input-text name="zip" :required="false"
                                 headText="zip">{{ $organization->zip }}</x-create-input-text>
                         </div>
                         <div class="basis-full text-left">
@@ -36,53 +36,55 @@
                         </div>
 
                     </form>
-                    <div class="mb-4 rounded bg-white px-8 pb-8 pt-6 shadow-md">
+                    <div class="mb-4 basis-full rounded bg-white px-8 pb-8 pt-6 shadow-md">
                         <div class="flex flex-wrap">
-                            <div class="flex basis-full flex-nowrap text-left">
-                                <div class="basis-2/12 rounded shadow-sm">
-                                    {{ __('Owner name') }}
-                                </div>
-                                <div class="basis-2/12 rounded shadow-sm">
-                                    {{ __('Serial number') }}
-                                </div>
-                                <div class="basis-1/12 rounded shadow-sm">
-                                    {{ __('City') }}
-                                </div>
-                                <div class="basis-1/12 rounded shadow-sm">
-                                    {{ __('Purchase place') }}
-                                </div>
-                                <div class="basis-1/12 rounded shadow-sm">
-                                    {{ __('Name') }}
-                                </div>
-                                <div class="basis-1/12 rounded shadow-sm">
-                                    {{ __('Warrantee date') }}
-                                </div>
-                                <div class="basis-1/12 rounded shadow-sm">
-                                    {{ __('Actions') }}
+                            <div class="basis-full text-center">
+                                <div class="flex flex-nowrap">
+                                    <div class="basis-2/12 rounded">
+                                        {{ __('Owner name') }}
+                                    </div>
+                                    <div class="basis-2/12 rounded">
+                                        {{ __('Serial number') }}
+                                    </div>
+                                    <div class="basis-2/12 rounded">
+                                        {{ __('City') }}
+                                    </div>
+                                    <div class="basis-2/12 rounded">
+                                        {{ __('Purchase place') }}
+                                    </div>
+                                    <div class="basis-2/12 rounded">
+                                        {{ __('Tool name') }}
+                                    </div>
+                                    <div class="basis-2/12 rounded">
+                                        {{ __('Warrantee date') }}
+                                    </div>
                                 </div>
                             </div>
-                            @foreach ($products as $product)
-                                <div class="m-auto my-1 flex basis-full flex-nowrap self-auto py-1 text-left">
-                                    <div class="basis-2/12 rounded shadow-sm">
-                                        {{ $product->owner_name }}
+                            <div class="basis-full text-center">
+                                @foreach ($products as $product)
+                                    <div
+                                        class="m-auto my-1 flex flex-nowrap self-auto py-1 text-center odd:bg-gray-400">
+                                        <div class="basis-2/12 rounded">
+                                            {{ $product->owner_name }}
+                                        </div>
+                                        <div class="basis-2/12 rounded">
+                                            {{ $product->serial_number }}
+                                        </div>
+                                        <div class="basis-2/12 rounded">
+                                            {{ $product->city }}
+                                        </div>
+                                        <div class="basis-2/12 rounded">
+                                            {{ $product->purchase_place }}
+                                        </div>
+                                        <div class="basis-2/12 rounded">
+                                            {{ $product->tool->name }}
+                                        </div>
+                                        <div class="basis-2/12 rounded">
+                                            {{ $product->serializeDate($product->warrantee_date) }}
+                                        </div>
                                     </div>
-                                    <div class="basis-2/12 rounded shadow-sm">
-                                        {{ $product->serial_number }}
-                                    </div>
-                                    <div class="basis-1/12 rounded shadow-sm">
-                                        {{ $product->city }}
-                                    </div>
-                                    <div class="basis-1/12 rounded shadow-sm">
-                                        {{ $product->purchase_place }}
-                                    </div>
-                                    <div class="basis-1/12 rounded shadow-sm">
-                                        {{ $product->tool->name }}
-                                    </div>
-                                    <div class="basis-1/12 rounded shadow-sm">
-                                        {{ $product->warrantee_date }}
-                                    </div>
-                                </div>
-                            @endforeach
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>

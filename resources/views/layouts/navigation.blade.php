@@ -12,22 +12,22 @@
                                 <x-nav-link :href="route('index')" :active="request()->routeIs('index')">
                                     {{ __('index') }}
                                 </x-nav-link>
-                                <x-nav-link :href="route('organizations.index')" :active="request()->is('organizations')">
-                                    {{ __('organizations') }}
-                                </x-nav-link>
                                 <x-nav-link :href="route('products.index')" :active="request()->is('products')">
-                                    {{ __('products') }}
+                                    {{ __('Products') }}
                                 </x-nav-link>
-                                <x-nav-link :href="route('tools.index')" :active="request()->is('tools')">
-                                    {{ __('tools') }}
+                                <x-nav-link :href="route('organizations.index')" :active="request()->is('organizations')">
+                                    {{ __('Organizations') }}
                                 </x-nav-link>
                                 <x-nav-link :href="route('users.index')" :active="request()->is('users')">
-                                    {{ __('users') }}
+                                    {{ __('Users') }}
+                                </x-nav-link>
+                                <x-nav-link :href="route('tools.index')" :active="request()->is('tools')">
+                                    {{ __('Tools') }}
                                 </x-nav-link>
                             @endrole
                             @role('Admin')
                                 <x-nav-link :href="route('logs.index')" :active="request()->is('logs')">
-                                    {{ __('logs') }}
+                                    {{ __('Logs') }}
                                 </x-nav-link>
                             @endrole
                             <!--  HIDDEN WHEN ADMIN   -->
@@ -80,15 +80,15 @@
                             </div>
 
                             <!--
-                                                                                                            Dropdown menu, show/hide based on menu state.
+                                                                                                                                    Dropdown menu, show/hide based on menu state.
 
-                                                                                                            Entering: "transition ease-out duration-100"
-                                                                                                                From: "transform opacity-0 scale-95"
-                                                                                                                To: "transform opacity-100 scale-100"
-                                                                                                            Leaving: "transition ease-in duration-75"
-                                                                                                                From: "transform opacity-100 scale-100"
-                                                                                                                To: "transform opacity-0 scale-95"
-                                                                                                            -->
+                                                                                                                                    Entering: "transition ease-out duration-100"
+                                                                                                                                        From: "transform opacity-0 scale-95"
+                                                                                                                                        To: "transform opacity-100 scale-100"
+                                                                                                                                    Leaving: "transition ease-in duration-75"
+                                                                                                                                        From: "transform opacity-100 scale-100"
+                                                                                                                                        To: "transform opacity-0 scale-95"
+                                                                                                                                    -->
 
                             <div class="ring-black absolute right-0 z-10 mt-2 hidden w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-opacity-5 focus:outline-none"
                                 id="profile-dropdown" role="menu" aria-orientation="vertical"

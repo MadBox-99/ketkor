@@ -38,6 +38,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('organization')->name('organizations.')->group(function () {
         Route::get('/{user}/{organization}/{product}', [OrganizationController::class, 'removeUserProduct'])->name('detach');
         Route::middleware(['role:Organizer'])->group(function () {
+            Route::put('/storeEmployee', [OrganizationController::class, 'storeEmployee'])->name('storeEmployee');
+            Route::get('/createEmployee', [OrganizationController::class, 'createEmployee'])->name('createEmployee');
             Route::get('/myorganization', [OrganizationController::class, 'myOrganization'])->name('myorganization');
             Route::post('/move', [OrganizationController::class, 'productMove'])->name('productMove');
             Route::get('/myorganizationupdate/{organization}', [OrganizationController::class, 'myOrganizationUpdate'])->name('myorganizationupdate');
@@ -62,7 +64,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/create', [ProfileController::class, 'create'])->name('create');
         Route::put('/store', [ProfileController::class, 'store'])->name('store');
         Route::put('/update/{user}', [ProfileController::class, 'userUpdate'])->name('update');
-
     });
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -1,3 +1,4 @@
-@props(['value' => '', 'selected' => false])
+@props(['value' => '', 'selected' => false, 'disabled' => false])
 
-<option {{ $selected ? 'selected' : '' }} value='{{ $value }}'>{{ $slot }}</option>
+<option value='{{ $value }}' {{ $selected ? 'selected' : '' }} {{ $disabled ? 'disabled ' : '' }}>{{ $slot }}
+</option>

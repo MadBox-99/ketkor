@@ -1,8 +1,11 @@
-@props(['name' => '', 'headText' => ''])
+@props(['name' => '', 'headText' => '', 'required' => true])
 <div class="basis-full">
     <div class="col-span-full">
-        <label class="my-5 block text-left text-lg font-medium leading-6 text-gray-900" for="{{ $name }}"> <span
-                style="color:red;">*</span>{{ __($headText) }}</label>
+        <label class="my-5 block text-left text-lg font-medium leading-6 text-gray-900" for="{{ $name }}">
+            @if ($required)
+                <span style="color:red;">*</span>
+            @endif{{ __($headText) }}
+        </label>
         <div class="mt-2">
             <div
                 class="flex rounded-md shadow-sm focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">

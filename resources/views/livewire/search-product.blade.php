@@ -74,19 +74,26 @@
                             <x-table-td class="basis-1/12">
                                 {{ $product->serializeDate($product->installation_date) }}
                             </x-table-td>
-                            <td class="basis-1/12 self-center text-center">
-                                <div class="flex" class="btn btn-primary m-2"
-                                    href="{{ route('products.edit', ['product' => $product->id]) }}" <a wire:navigate>
-                                    <x-svg.eye />
-                                    </a>
-                                    <form method="POST"
-                                        action="{{ route('products.destroy', ['product' => $product->id]) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-danger m-2" type="submit">
-                                            <x-svg.trash />
-                                        </button>
-                                    </form>
+                            <td class="basis-1/12 text-center">
+                                <div class="flex">
+                                    <div class="basis-1/2 self-center">
+                                        <x-secondary-button class="my-1 bg-primary-400">
+                                            <a href="{{ route('products.edit', ['product' => $product->id]) }}"
+                                                wire:navigate>
+                                                <x-svg.eye />
+                                            </a>
+                                        </x-secondary-button>
+                                    </div>
+                                    <div class="basis-1/2 self-center">
+                                        <form method="POST"
+                                            action="{{ route('products.destroy', ['product' => $product->id]) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <x-danger-button class="btn btn-danger m-2" type="submit">
+                                                <x-svg.trash />
+                                            </x-danger-button>
+                                        </form>
+                                    </div>
                                 </div>
                             </td>
                         </tr>

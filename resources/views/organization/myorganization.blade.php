@@ -1,11 +1,9 @@
 <x-app-layout>
     <!-- Page Heading -->
     <x-slot name="header">
-        <div class="mb-4 flex items-center justify-between font-bold">
-            <div class="basis-auto">
-                <h1 class="mx-4 px-20 text-primary">{{ __('Organization edit') }}</h1>
-            </div>
-        </div>
+        <x-button-style-link text="Organization edit" route="organizations.createEmployee">
+            Create Employee
+        </x-button-style-link>
     </x-slot>
     {{-- Alert Messages --}}
     <x-alert />
