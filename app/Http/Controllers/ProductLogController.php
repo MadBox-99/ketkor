@@ -96,7 +96,7 @@ class ProductLogController extends Controller
                     }
                 }
                 DB::rollback();
-                return redirect()->back()->withInput()->with(['error' => __('Cant create maintenance in 11 month from last maintenance or after 13 month or cant extend warrantee more than 3 year')]);
+                return redirect()->back()->withInput()->with(['error' => __("Can't create maintenance in 11 month from last maintenance or after 13 month or cant extend warrantee more than 3 year")]);
             }
 
             if ($request->what != ProductLogType::Maintenance) {

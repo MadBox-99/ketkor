@@ -17,7 +17,7 @@
         <div class="py-12">
             <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
                 <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                    <div class="max-w-xl">
+                    <div class="max-w-4xl">
                         <section>
                             <header>
                                 <h2 class="text-lg font-medium text-gray-900">
@@ -185,7 +185,7 @@
         <div class="py-12">
             <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
                 <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                    <div class="max-w-xl">
+                    <div class="max-w-3xl">
                         <section>
                             <header>
                                 <h2 class="text-lg font-medium text-gray-900">
@@ -233,7 +233,7 @@
         <div class="py-12">
             <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
                 <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                    <div class="max-w-xl">
+                    <div class="max-w-3xl">
                         <section>
                             <header>
                                 <h2 class="text-lg font-medium text-gray-900">
@@ -247,13 +247,13 @@
                                 <table class="w-min-full">
                                     <thead>
                                         <tr>
-                                            <x-th-field scope="col">
+                                            <x-th-field class="px-2" scope="col">
                                                 event
                                             </x-th-field>
-                                            <x-th-field scope="col">
+                                            <x-th-field class="px-2" scope="col">
                                                 event content
                                             </x-th-field>
-                                            <x-th-field scope="col">
+                                            <x-th-field class="px-2" scope="col">
                                                 event time
                                             </x-th-field>
                                         </tr>
@@ -261,24 +261,24 @@
                                     <tbody class="border-gray-300 even:border-y-1">
                                         @forelse  ($product->product_logs as $log)
                                             <tr>
-                                                <x-table-td class="py-4">
+                                                <x-table-td class="mx-auto px-5 py-4">
                                                     {{ __($log->what) }}
                                                 </x-table-td>
-                                                <x-table-td class="py-4">
+                                                <x-table-td class="mx-auto px-5 py-4">
                                                     {{ $log->comment }}
                                                 </x-table-td>
-                                                <x-table-td class="py-4">
+                                                <x-table-td class="mx-auto px-5 py-4">
                                                     {{ $product->serializeDate($log->when) }}
                                                 </x-table-td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <x-table-td class="py-4">
+                                                <x-table-td class="mx-auto px-5 py-4">
                                                 </x-table-td>
-                                                <x-table-td class="py-4">
+                                                <x-table-td class="mx-auto px-5 py-4">
                                                     {{ __('No product log') }}
                                                 </x-table-td>
-                                                <x-table-td class="py-4">
+                                                <x-table-td class="mx-auto px-5 py-4">
                                                 </x-table-td>
                                             </tr>
                                         @endforelse
@@ -294,7 +294,7 @@
             <div class="py-12">
                 <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
                     <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                        <div class="max-w-xl">
+                        <div class="max-w-3xl">
                             <section>
                                 <header>
                                     <h2 class="text-lg font-medium text-gray-900">
@@ -323,10 +323,10 @@
                                                 </x-create-input-text>
                                             @endif
                                         @endforeach
-                                        <div class="py-12">
+                                        <div class="basis-full">
                                             <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
                                                 <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
-                                                    <div class="max-w-xl">
+                                                    <div class="max-w-3xl">
                                                         <section>
                                                             <header>
                                                                 <h2 class="text-lg font-medium text-gray-900">
@@ -340,13 +340,13 @@
                                                                 <table class="w-min-full">
                                                                     <thead class="bg-primary-200">
                                                                         <tr>
-                                                                            <x-th-field scope="col">
+                                                                            <x-th-field class="w-1/3" scope="col">
                                                                                 name
                                                                             </x-th-field>
-                                                                            <x-th-field scope="col">
+                                                                            <x-th-field class="w-1/3" scope="col">
                                                                                 email
                                                                             </x-th-field>
-                                                                            <x-th-field scope="col">
+                                                                            <x-th-field class="w-1/3" scope="col">
                                                                                 mobile
                                                                             </x-th-field>
                                                                         </tr>
@@ -357,13 +357,13 @@
                                                                                 @continue
                                                                             @endif
                                                                             <tr>
-                                                                                <x-table-td class="py-4">
+                                                                                <x-table-td class="w-1/3 py-5">
                                                                                     {{ $partial->name }}
                                                                                 </x-table-td>
-                                                                                <x-table-td class="py-4">
+                                                                                <x-table-td class="w-1/3 py-5">
                                                                                     {{ $partial->email }}
                                                                                 </x-table-td>
-                                                                                <x-table-td class="py-4">
+                                                                                <x-table-td class="w-1/3 py-5">
                                                                                     {{ $partial->phone }}
                                                                                 </x-table-td>
                                                                             </tr>

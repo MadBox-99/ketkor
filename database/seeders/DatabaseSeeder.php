@@ -56,31 +56,42 @@ class DatabaseSeeder extends Seeder
                 $permission->assignRole($toRole);
             }
         }
-        $user1 = User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'admin@admin.com',
-            'email_verified_at' => now(),
-            'password' => 'password',
-            'remember_token' => Str::random(10),
-            'organization_id' => 1
-        ]);
         $admin = User::factory()->create([
             'name' => 'Admin',
             'email' => 'zoli.szabok@gamil.com',
             'email_verified_at' => now(),
-            'password' => 'password',
+            'password' => '1234',
             'remember_token' => Str::random(10),
         ]);
-        $admin->assignRole('Admin');
-        $user1->assignRole('Admin');
-        $user2 = User::factory()->create([
-            'name' => 'Test User 2',
-            'email' => 'test@example2.com',
+        $user1 = User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'admin@admin.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('1234'),
+            'password' => '1234',
             'remember_token' => Str::random(10),
             'organization_id' => 1
         ]);
+        $user2 = User::factory()->create([
+            'name' => 'Test User 2',
+            'email' => 'test@test2.com',
+            'email_verified_at' => now(),
+            'password' => '1234',
+            'remember_token' => Str::random(10),
+            'organization_id' => 1
+        ]);
+        $user3 = User::factory()->create([
+            'name' => 'Test User 3',
+            'email' => 'test@test3.com',
+            'email_verified_at' => now(),
+            'password' => '1234',
+            'remember_token' => Str::random(10),
+            'organization_id' => 1
+        ]);
+
+        $admin->assignRole('Admin');
+        $user1->assignRole('Operator');
+        $user2->assignRole('Organizer');
+        $user3->assignRole('Servicer');
         Tool::factory()->create([
             'id' => '1',
             'name' => 'Brava Slim 25 BT',

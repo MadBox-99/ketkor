@@ -42,7 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/createEmployee', [OrganizationController::class, 'createEmployee'])->name('createEmployee');
             Route::get('/myorganization', [OrganizationController::class, 'myOrganization'])->name('myorganization');
             Route::post('/move', [OrganizationController::class, 'productMove'])->name('productMove');
-            Route::get('/myorganizationupdate/{organization}', [OrganizationController::class, 'myOrganizationUpdate'])->name('myorganizationupdate');
+            Route::PUT('/myorganizationupdate/{organization}', [OrganizationController::class, 'myOrganizationUpdate'])->name('myorganizationupdate');
             Route::get('/removeUserFromOrganization/{user}', [OrganizationController::class, 'removeUserFromOrganization'])->name('removeUserFromOrganization');
         });
     });
