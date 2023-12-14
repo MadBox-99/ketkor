@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignIdFor(Product::class);
             $table->string('what', 500)->nullable()->default('');
-            $table->text('comment')->nullable()->default('');
+            $table->string('comment')->nullable();
             $table->timestamp('when')->useCurrent();
             $table->timestamps();
         });

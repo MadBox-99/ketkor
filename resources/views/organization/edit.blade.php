@@ -36,56 +36,13 @@
                         </div>
 
                     </form>
-                    <div class="mb-4 basis-full rounded bg-white px-8 pb-8 pt-6 shadow-md">
-                        <div class="flex flex-wrap">
-                            <div class="basis-full text-center">
-                                <div class="flex flex-nowrap">
-                                    <div class="basis-2/12 rounded">
-                                        {{ __('Owner name') }}
-                                    </div>
-                                    <div class="basis-2/12 rounded">
-                                        {{ __('Serial number') }}
-                                    </div>
-                                    <div class="basis-2/12 rounded">
-                                        {{ __('City') }}
-                                    </div>
-                                    <div class="basis-2/12 rounded">
-                                        {{ __('Purchase place') }}
-                                    </div>
-                                    <div class="basis-2/12 rounded">
-                                        {{ __('Tool name') }}
-                                    </div>
-                                    <div class="basis-2/12 rounded">
-                                        {{ __('Warrantee date') }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="basis-full text-center">
-                                @foreach ($products as $product)
-                                    <div
-                                        class="m-auto my-1 flex flex-nowrap self-auto py-1 text-center odd:bg-gray-400">
-                                        <div class="basis-2/12 rounded">
-                                            {{ $product->owner_name }}
-                                        </div>
-                                        <div class="basis-2/12 rounded">
-                                            {{ $product->serial_number }}
-                                        </div>
-                                        <div class="basis-2/12 rounded">
-                                            {{ $product->city }}
-                                        </div>
-                                        <div class="basis-2/12 rounded">
-                                            {{ $product->purchase_place }}
-                                        </div>
-                                        <div class="basis-2/12 rounded">
-                                            {{ $product->tool->name }}
-                                        </div>
-                                        <div class="basis-2/12 rounded">
-                                            {{ $product->serializeDate($product->warrantee_date) }}
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
+
+                </div>
+            </div>
+            <div class="mb-4 basis-full rounded bg-white px-8 pb-8 pt-6 shadow-md">
+                <div class="flex flex-wrap">
+                    <div class="basis-full">
+                        <livewire:organization-details-users-table :organization="$organization->id" />
                     </div>
                 </div>
             </div>

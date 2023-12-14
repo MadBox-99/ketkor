@@ -10,7 +10,9 @@ export default {
         './resources/views/**/*.blade.php',
         "./node_modules/tw-elements/dist/js/**/*.js"
     ],
-
+    presets: [
+        require("./vendor/power-components/livewire-powergrid/tailwind.config.js"),
+    ],
     theme: {
         extend: {
             gridTemplateRows: {
@@ -175,6 +177,7 @@ export default {
             },
             'gray-light': '#d3dce6',
             'white': '#fff',
+            "pg-primary": '#008ddd',
         },
         extend: {
             fontFamily: {
@@ -187,5 +190,7 @@ export default {
         },
     },
 
-    plugins: [forms, twelement, require('@tailwindcss/forms'),],
+    plugins: [forms, twelement, require("@tailwindcss/forms")({
+        strategy: 'class',
+    }),],
 };

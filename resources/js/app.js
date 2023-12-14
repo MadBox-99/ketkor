@@ -2,10 +2,17 @@ import './bootstrap';
 import './../css/app.css';
 import { Datepicker, Input, initTE } from "tw-elements";
 initTE({ Datepicker, Input });
+import flatpickr from "flatpickr";
 import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
 import.meta.glob([
     '../img/**',
 ]);
+import TomSelect from "tom-select";
+window.TomSelect = TomSelect;
+import './../../vendor/power-components/livewire-powergrid/dist/powergrid';
+
+// If you use Tailwind
+import './../../vendor/power-components/livewire-powergrid/dist/tailwind.css';
 const menuButton = document.getElementById('menu-toggle');
 const mobileMenu = document.getElementById('mobile-menu');
 // Add a click event listener to the button

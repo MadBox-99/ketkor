@@ -23,11 +23,11 @@ return new class extends Migration {
             $table->string('purchase_place', 200)->nullable()->default('');
             $table->string('serial_number', 200)->nullable(false)->default('');
             $table->string('comments', 500)->nullable()->default('');
-            $table->date('installation_date')->nullable(false)->useCurrent();
-            $table->date('warrantee_date')->nullable()->useCurrent();
-            $table->date('purchase_date')->nullable()->useCurrent();
-            $table->timestamps();
+            $table->date('installation_date')->nullable();
+            $table->date('warrantee_date')->nullable();
+            $table->date('purchase_date')->nullable();
             $table->foreignIdFor(Tool::class);
+            $table->timestamps();
         });
     }
 

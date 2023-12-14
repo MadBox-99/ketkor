@@ -31,6 +31,12 @@ class AccorroniProducts implements ToModel, WithHeadingRow
         ) {
             return null;
         }
+
+        if ($row['beüzemelés ideje'] == '?')
+            $row['beüzemelés ideje'] = null;
+        if ($row['vásárlás ideje'] == '?')
+            $row['vásárlás ideje'] = null;
+
         $row['beüzemelés ideje'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['beüzemelés ideje'] - 2);
         $row['vásárlás ideje'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['vásárlás ideje'] - 2);
 
@@ -53,25 +59,21 @@ class AccorroniProducts implements ToModel, WithHeadingRow
             ]);
             $user->assignRole('Organizer');
         }
-        /*if (is_null($organization))
-            dd($row['Beuzemelo']);
-        */
-
         $tool = Tool::firstOrCreate(['name' => $row['tipus'], 'factory_name' => 'Accorroni']);
         $product = Product::Create(
             [
                 'tool_id' => $tool->id,
-                'owner_name' => $row['név'],
-                'installer_name' => $row['beüzemelő szerviz'],
+                'owner_name' => $row['név'] ?? null,
+                'installer_name' => $row['beüzemelő szerviz'] ?? null,
                 'user_id' => $user->id,
-                'city' => $row['Város'],
-                'street' => $row['Utca'],
-                'zip' => $row['Ir.szám'],
-                'purchase_place' => $row['vásárlás helye'],
-                'purchase_date' => $row['vásárlás ideje'],
-                'installation_date' => $row['beüzemelés ideje'],
-                'serial_number' => $row['gyáriszám'],
-                'warrantee_date' => $warrantee
+                'city' => $row['Város'] ?? null,
+                'street' => $row['Utca'] ?? null,
+                'zip' => $row['Ir.szám'] ?? null,
+                'purchase_place' => $row['vásárlás helye'] ?? null,
+                'purchase_date' => $row['vásárlás ideje'] ?? null,
+                'installation_date' => $row['beüzemelés ideje'] ?? null,
+                'serial_number' => $row['gyáriszám'] ?? null,
+                'warrantee_date' => $warrantee ?? null
             ]
         );
         Partial::create(

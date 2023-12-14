@@ -11,7 +11,6 @@ class Tool extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id',
         'name',
         'category',
         'tag',

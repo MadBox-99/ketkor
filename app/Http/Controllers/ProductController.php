@@ -225,7 +225,7 @@ class ProductController extends Controller
             'user_id' => 1,
             'what' => 'product.edit page open/hover'
         ]);
-        $user = User::find($userId)->first();
+        $user = auth()->user();
         $user->products()->attach($product->id);
         $product = Product::whereId($product->id)->with(['users'])->first();
         $userVisibility = Visible::whereRelation('product', 'user_id', $user->id)->whereRelation('product', 'product_id', $product->id)->whereRelation('product', 'isVisible', true)->first();

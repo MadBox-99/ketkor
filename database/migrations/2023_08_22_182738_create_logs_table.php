@@ -15,8 +15,8 @@ return new class extends Migration {
         Schema::create('logs', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class);
-            $table->text('what')->nullable(false)->default('nem besorolt művelet');
-            $table->date('when')->useCurrent()->default(Carbon::now());
+            $table->text('what')->nullable(false);
+            $table->date('when')->useCurrent();
             $table->timestamps();
         });
     }

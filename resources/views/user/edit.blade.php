@@ -3,7 +3,7 @@
 
         <!-- Page Heading -->
         <x-slot name="header">
-            <x-button-style-link text="Edit tool" route="users.index">
+            <x-button-style-link text="Edit user" route="users.index">
                 Back
             </x-button-style-link>
         </x-slot>
@@ -16,10 +16,10 @@
                         <section>
                             <header>
                                 <h2 class="text-lg font-medium text-gray-900">
-                                    {{ __('Product Information') }}
+                                    {{ __('User Information') }}
                                 </h2>
                                 <p class="mt-1 text-sm text-gray-600">
-                                    {{ __("Update product's informations.") }}
+                                    {{ __("Update user's informations.") }}
                                 </p>
                             </header>
                             <form class="mt-6 space-y-6" method="POST"
@@ -43,9 +43,11 @@
                                     </x-select-input>
                                     <x-select-input name="role" headText="Role">
                                         @foreach ($roles as $role)
-                                            <x-select-input-option :value="$role->name" :selected="$role->id == $user->roles->first()->id ? true : false">
-                                                {{ $role->name }}
-                                            </x-select-input-option>
+                                            @if ($role->name != 'Admin')
+                                                <x-select-input-option :value="$role->name" :selected="$role->id == $user->roles->first()->id ? true : false">
+                                                    {{ __($role->name) }}
+                                                </x-select-input-option>
+                                            @endif
                                         @endforeach
                                     </x-select-input>
                                 </div>

@@ -15,7 +15,7 @@ class AccessGrantMail extends Mailable
      * Create a new message instance.
      */
 
-    public function __construct(public $token)
+    public function __construct(public $token, public $name)
     {
         //
     }
@@ -37,7 +37,7 @@ class AccessGrantMail extends Mailable
     {
         return new Content(
             markdown: 'emails.accessRequest',
-            with: ['token' => $this->token]
+            with: ['token' => $this->token, 'name' => $this->name],
         );
     }
 

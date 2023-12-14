@@ -4,18 +4,22 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Imports\AccorroniProducts;
 use App\Models\Tool;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Visible;
 use Illuminate\Support\Str;
+use App\Imports\LEBTORImport;
 use App\Imports\ProductsImport;
 use Illuminate\Database\Seeder;
+use App\Imports\AccorroniProducts;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\FerroliProductsImport;
+use Database\Seeders\SimeProductSeeder;
 use Spatie\Permission\Models\Permission;
+use Database\Seeders\AccorroniProductsSeeder;
 use Maatwebsite\Excel\Excel as ExcelExtension;
 
 class DatabaseSeeder extends Seeder
@@ -116,8 +120,13 @@ $product->users()->attach($user1->id);
 $product->users()->attach($user2->id);
 */
 
-        Excel::import(new ProductsImport, storage_path('app/import/SIME.xlsx'));
-        Excel::import(new AccorroniProducts, storage_path('app/import/accorroni.xlsx'));
+        $this->call([
+            SimeProductSeeder::class,
+            AccorroniProductsSeeder::class,
+            FerroliProductsSeeder::class,
+            LEBTORProductsSeeder::class,
+        ]);
+
 
 
 

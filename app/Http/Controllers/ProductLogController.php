@@ -50,7 +50,7 @@ class ProductLogController extends Controller
             if ($request->what == ProductLogType::Maintenance) {
 
                 //get last maintenance created_at
-                $lastProductLog = $product->whereRelation('product_logs', 'product_id', $product->id)->whereRelation('product_logs', 'what', ProductLogType::Maintenance)->latest('created_at')->get('created_at');
+                $lastProductLog = $product->whereRelation('product_logs', 'product_id', $product->id)->whereRelation('product_logs', 'what', ProductLogType::Maintenance)->latest('created_at')->first();
                 $maintenanceCount = $product->whereRelation('product_logs', 'product_id', $product->id)->whereRelation('product_logs', 'what', ProductLogType::Maintenance)->count();
                 //if last maintenance created_at isn't null
                 if ($maintenanceCount == 0) {
@@ -58,7 +58,7 @@ class ProductLogController extends Controller
                     $product_warrantee_date = Carbon::parse($product_warrantee_date);
                     $elevenMonthsLater = $product_warrantee_date->copy()->addMonths(11);
                     $thirteenMonthsLater = $product_warrantee_date->copy()->addMonths(13);
-                    if ($elevenMonthsLater >= Carbon::now() && Carbon::now() <= $thirteenMonthsLater) {
+                    if (Carbon::now() >= $product_warrantee_date->subMonth() && Carbon::now() <= $product_warrantee_date->addMonths(2)) {
                         ProductLog::create([
                             'comment' => $request->comment,
                             'what' => $request->what,
@@ -66,7 +66,7 @@ class ProductLogController extends Controller
                         ]);
                         $product->update(['warrantee_date' => $product_warrantee_date->addYear()]);
                         Log::create([
-                            'user_id' => 1,
+                            'user_id' => auth()->user()->id,
                             'what' => 'productlogs.store successfully |' . json_encode($request->all())
                         ]);
                         DB::commit();
@@ -77,10 +77,8 @@ class ProductLogController extends Controller
                 if ($maintenanceCount < 3 && $maintenanceCount > 0) {
                     $product_warrantee_date = $product->warrantee_date;
                     $product_warrantee_date = Carbon::parse($product_warrantee_date);
-                    $creationDate = Carbon::parse($lastProductLog);
-                    $elevenMonthsLater = $creationDate->copy()->addMonths(11);
-                    $thirteenMonthsLater = $creationDate->copy()->addMonths(13);
-                    if ($elevenMonthsLater >= Carbon::now() && Carbon::now() <= $thirteenMonthsLater) {
+                    $creationDate = Carbon::parse($lastProductLog->created_at);
+                    if (Carbon::now() >= $product_warrantee_date->subMonth() && Carbon::now() <= $product_warrantee_date->addMonths(2)) {
                         ProductLog::create([
                             'comment' => $request->comment,
                             'what' => $request->what,
@@ -88,7 +86,7 @@ class ProductLogController extends Controller
                         ]);
                         $product->update(['warrantee_date' => $product_warrantee_date->addYear()]);
                         Log::create([
-                            'user_id' => 1,
+                            'user_id' => auth()->user()->id,
                             'what' => 'productlogs.store successfully |' . json_encode($request->all())
                         ]);
                         DB::commit();
@@ -96,6 +94,10 @@ class ProductLogController extends Controller
                     }
                 }
                 DB::rollback();
+                Log::create([
+                    'user_id' => auth()->user()->id,
+                    'what' => 'productlogs.store failed |' . json_encode($request->all())
+                ]);
                 return redirect()->back()->withInput()->with(['error' => __("Can't create maintenance in 11 month from last maintenance or after 13 month or cant extend warrantee more than 3 year")]);
             }
 
@@ -115,7 +117,7 @@ class ProductLogController extends Controller
         } catch (\Throwable $th) {
             DB::rollback();
             Log::create([
-                'user_id' => 1,
+                'user_id' => auth()->user()->id,
                 'what' => 'product store failed' . json_encode($request->all()) . " | " . $th->getMessage()
             ]);
             $product = Product::whereId($request->product_id)->first();

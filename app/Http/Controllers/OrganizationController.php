@@ -197,6 +197,7 @@ class OrganizationController extends Controller
             $organization->update(
                 [
                     'name' => $request->name,
+                    'city' => $request->city,
                     'address' => $request->address,
                     'tax_number' => $request->tax_number,
                     'zip' => $request->zip,
@@ -258,12 +259,12 @@ class OrganizationController extends Controller
             $organization->update(
                 [
                     'name' => $request->name,
+                    'city' => $request->city,
                     'address' => $request->address,
                     'tax_number' => $request->tax_number,
                     'zip' => $request->zip,
                 ]
             );
-
             DB::commit();
             return redirect()->route('organizations.myorganization')->with('success', __('Organization updated successfully.'));
         } catch (\Throwable $th) {

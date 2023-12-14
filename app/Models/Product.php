@@ -17,7 +17,6 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',
         'owner_name',
         'installer_name',
         'city',
