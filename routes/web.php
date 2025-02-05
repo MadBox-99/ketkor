@@ -1,16 +1,16 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AccessTokenController;
 use App\Http\Controllers\LogController;
-use App\Http\Controllers\ToolController;
+use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PartialController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductLogController;
-use App\Http\Controllers\AccessTokenController;
-use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ToolController;
+use Illuminate\Support\Facades\Route;
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
 /*
 |--------------------------------------------------------------------------
 | Web Routes

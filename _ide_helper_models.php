@@ -134,12 +134,12 @@ namespace App\Models{
  * @property string|null $purchase_place
  * @property string $serial_number
  * @property string|null $comments
- * @property \Illuminate\Support\Carbon $installation_date
+ * @property \Illuminate\Support\Carbon|null $installation_date
  * @property \Illuminate\Support\Carbon|null $warrantee_date
  * @property \Illuminate\Support\Carbon|null $purchase_date
+ * @property int $tool_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property int $tool_id
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Visible> $are_visible
  * @property-read int|null $are_visible_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Organization> $organizations
@@ -276,7 +276,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  */
-	class User extends \Eloquent {}
+	class User extends \Eloquent implements \Illuminate\Contracts\Auth\MustVerifyEmail {}
 }
 
 namespace App\Models{
