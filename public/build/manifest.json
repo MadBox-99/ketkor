@@ -4,14 +4,14 @@
     "src": "resources/img/ketkor_logo.webp"
   },
   "resources/js/app.css": {
-    "file": "assets/app-56850173.css",
+    "file": "assets/app-7a897cd8.css",
     "src": "resources/js/app.css"
   },
   "resources/js/app.js": {
     "css": [
-      "assets/app-56850173.css"
+      "assets/app-7a897cd8.css"
     ],
-    "file": "assets/app-86071384.js",
+    "file": "assets/app-6f623544.js",
     "isEntry": true,
     "src": "resources/js/app.js"
   }
