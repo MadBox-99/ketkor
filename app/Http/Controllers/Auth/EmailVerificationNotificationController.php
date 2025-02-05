@@ -19,7 +19,7 @@ class EmailVerificationNotificationController extends Controller
             return redirect()->intended(RouteServiceProvider::HOME);
         }
 
-        User::whereEmail('zoltan@cegem360.hu')->first()->sendEmailVerificationNotification();
+        User::whereEmail('sarkozi.viktor@ketkorkft.hu')->first()->sendEmailVerificationNotification();
 
         return back()->with('status', 'verification-link-sent');
     }
