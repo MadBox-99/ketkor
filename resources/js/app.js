@@ -10,9 +10,8 @@ import.meta.glob([
 import TomSelect from "tom-select";
 window.TomSelect = TomSelect;
 import './../../vendor/power-components/livewire-powergrid/dist/powergrid';
+import './../../vendor/power-components/livewire-powergrid/dist/tailwind.css'// bootstrap5.css
 
-// If you use Tailwind
-import './../../vendor/power-components/livewire-powergrid/dist/tailwind.css';
 const menuButton = document.getElementById('menu-toggle');
 const mobileMenu = document.getElementById('mobile-menu');
 // Add a click event listener to the button

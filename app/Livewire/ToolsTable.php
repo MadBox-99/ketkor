@@ -3,20 +3,15 @@
 namespace App\Livewire;
 
 use App\Models\Tool;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
-use PowerComponents\LivewirePowerGrid\Footer;
-use PowerComponents\LivewirePowerGrid\Header;
-use PowerComponents\LivewirePowerGrid\PowerGrid;
+use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridColumns;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
-
-use function React\Promise\all;
 
 final class ToolsTable extends PowerGridComponent
 {
@@ -27,10 +22,10 @@ final class ToolsTable extends PowerGridComponent
         $this->showCheckBox();
 
         return [
-            Exportable::make('export')
+            PowerGrid::exportable('export')
                 ->striped()
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
-            Footer::make()
+            PowerGrid::footer()
                 ->showPerPage()
                 ->showRecordCount(),
         ];
@@ -74,7 +69,7 @@ final class ToolsTable extends PowerGridComponent
             Column::add()
                 ->title('Gyártó')
                 ->field('factory_name', 'factory_name'),
-            Column::action('Művelet')
+            Column::action('Művelet'),
         ];
     }
 
@@ -102,7 +97,7 @@ final class ToolsTable extends PowerGridComponent
                 ->slot('Szerkesztés')
                 ->id()
                 ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
-                ->dispatch('edit', ['rowId' => $row->id])
+                ->dispatch('edit', ['rowId' => $row->id]),
         ];
     }
 

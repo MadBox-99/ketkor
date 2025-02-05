@@ -3,15 +3,12 @@
 namespace App\Livewire;
 
 use App\Models\Organization;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
-use PowerComponents\LivewirePowerGrid\Footer;
-use PowerComponents\LivewirePowerGrid\Header;
-use PowerComponents\LivewirePowerGrid\PowerGrid;
+use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridColumns;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
@@ -25,10 +22,10 @@ final class OrganizationsTable extends PowerGridComponent
         $this->showCheckBox();
 
         return [
-            Exportable::make('export')
+            PowerGrid::exportable('export')
                 ->striped()
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
-            Footer::make()
+            PowerGrid::footer()
                 ->showPerPage()
                 ->showRecordCount(),
         ];
@@ -51,7 +48,7 @@ final class OrganizationsTable extends PowerGridComponent
             ->addColumn('name')
 
             /** Example of custom column using a closure **/
-            ->addColumn('name_lower', fn(Organization $model) => strtolower(e($model->name)))
+            ->addColumn('name_lower', fn (Organization $model) => strtolower(e($model->name)))
 
             ->addColumn('city')
             ->addColumn('address')
@@ -77,7 +74,7 @@ final class OrganizationsTable extends PowerGridComponent
             Column::make('Irányítószám', 'zip')
                 ->sortable()
                 ->searchable(),
-            Column::action('Műveletek')
+            Column::action('Műveletek'),
         ];
     }
 
@@ -105,7 +102,7 @@ final class OrganizationsTable extends PowerGridComponent
                 ->slot('szerkesztés')
                 ->id()
                 ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
-                ->dispatch('edit', ['rowId' => $row->id])
+                ->dispatch('edit', ['rowId' => $row->id]),
         ];
     }
 

@@ -2,35 +2,36 @@
 
 namespace App\Livewire;
 
-use App\Models\Product;
 use App\Models\Organization;
-use Illuminate\Support\Carbon;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Footer;
-use PowerComponents\LivewirePowerGrid\Header;
-use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\Exportable;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
+use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
+use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGridColumns;
-use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class OrganizationDetailsUsersTable extends PowerGridComponent
 {
     use WithExport;
+
     public $organization;
+
     public function setUp(): array
     {
         $this->showCheckBox();
 
         return [
-            Exportable::make('export')
+            PowerGrid::exportable('export')
                 ->striped()
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             Header::make()->showSearchInput(),
-            Footer::make()
+            PowerGrid::footer()
                 ->showPerPage()
                 ->showRecordCount(),
         ];
@@ -39,10 +40,11 @@ final class OrganizationDetailsUsersTable extends PowerGridComponent
     public function datasource(): Builder
     {
         $organization = Organization::find($this->organization)->id;
+
         return Product::whereHas('users.organization', function ($query) use ($organization) {
             $query->where('id', $organization);
         });
-        ;
+
     }
 
     public function relationSearch(): array
@@ -57,7 +59,7 @@ final class OrganizationDetailsUsersTable extends PowerGridComponent
             ->addColumn('serial_number')
             ->addColumn('city')
             ->addColumn('tool_name')
-            ->addColumn('warrantee_date_formatted', fn(Product $model) => Carbon::parse($model->warrantee_date)->format('Y-m-d'));
+            ->addColumn('warrantee_date_formatted', fn (Product $model) => Carbon::parse($model->warrantee_date)->format('Y-m-d'));
     }
 
     public function columns(): array
@@ -75,7 +77,7 @@ final class OrganizationDetailsUsersTable extends PowerGridComponent
                 ->searchable(),
             Column::make('Warrantee date', 'warrantee_date_formatted', 'warrantee_date')
                 ->sortable(),
-            Column::action('Action')
+            Column::action('Action'),
         ];
     }
 
@@ -94,17 +96,17 @@ final class OrganizationDetailsUsersTable extends PowerGridComponent
     #[\Livewire\Attributes\On('edit')]
     public function edit($rowId): void
     {
-        $this->js('alert(' . $rowId . ')');
+        $this->js('alert('.$rowId.')');
     }
 
     public function actions(\App\Models\Product $row): array
     {
         return [
             Button::add('edit')
-                ->slot('Edit: ' . $row->id)
+                ->slot('Edit: '.$row->id)
                 ->id()
                 ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
-                ->dispatch('edit', ['rowId' => $row->id])
+                ->dispatch('edit', ['rowId' => $row->id]),
         ];
     }
 

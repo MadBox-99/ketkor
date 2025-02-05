@@ -2,20 +2,19 @@
 
 namespace App\Livewire;
 
-use App\Models\Tool;
 use App\Models\Product;
-use Livewire\Attributes\On;
-use Illuminate\Support\Carbon;
+use App\Models\Tool;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
+use Livewire\Attributes\On;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Footer;
-use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\Exportable;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
+use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridColumns;
-use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class ProductAdminTable extends PowerGridComponent
 {
@@ -26,13 +25,12 @@ final class ProductAdminTable extends PowerGridComponent
         $this->showCheckBox();
 
         return [
-            Exportable::make('export')
+            PowerGrid::exportable('export')
                 ->striped()
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV)
                 ->queues('6')
-                ->onConnection('database')
-            ,
-            Footer::make()
+                ->onConnection('database'),
+            PowerGrid::footer()
                 ->showPerPage()
                 ->showRecordCount(),
         ];
@@ -44,18 +42,20 @@ final class ProductAdminTable extends PowerGridComponent
             'partials' => function ($query) {
                 $query->latest()->limit(1);
             },
-            'tool'
+            'tool',
         ]);
     }
+
     public function header(): array
     {
         return [
             Button::add('bulk-delete')
-                ->slot(__('Bulk delete (<span x-text="window.pgBulkActions.count(\'' . $this->tableName . '\')"></span>)'))
+                ->slot(__('Bulk delete (<span x-text="window.pgBulkActions.count(\''.$this->tableName.'\')"></span>)'))
                 ->class('cursor-pointer block bg-white-200 text-gray-700 ')
                 ->dispatch('bulkDeleteProduct', []),
         ];
     }
+
     protected function getListeners()
     {
         return array_merge(
@@ -65,6 +65,7 @@ final class ProductAdminTable extends PowerGridComponent
             ]
         );
     }
+
     public function bulkDeleteProduct()
     {
         if (count($this->checkboxValues) == 0) {
@@ -78,6 +79,7 @@ final class ProductAdminTable extends PowerGridComponent
         $this->redirect(route('products.index'), true);
 
     }
+
     public function relationSearch(): array
     {
         return ['tool' => ['name']];
@@ -94,10 +96,10 @@ final class ProductAdminTable extends PowerGridComponent
             ->addColumn('zip')
             ->addColumn('purchase_place')
             ->addColumn('serial_number')
-            ->addColumn('purchase_date_formatted', fn(Product $model) => Carbon::parse($model->purchase_date)->format('Y-m-d'))
-            ->addColumn('installation_date_formatted', fn(Product $model) => Carbon::parse($model->installation_date)->format('Y-m-d'))
-            ->addColumn('warrantee_date_formatted', fn(Product $model) => Carbon::parse($model->warrantee_date)->format('Y-m-d'))
-            ->addColumn('tool_name', fn(Product $model) => $model->tool->name);
+            ->addColumn('purchase_date_formatted', fn (Product $model) => Carbon::parse($model->purchase_date)->format('Y-m-d'))
+            ->addColumn('installation_date_formatted', fn (Product $model) => Carbon::parse($model->installation_date)->format('Y-m-d'))
+            ->addColumn('warrantee_date_formatted', fn (Product $model) => Carbon::parse($model->warrantee_date)->format('Y-m-d'))
+            ->addColumn('tool_name', fn (Product $model) => $model->tool->name);
 
     }
 
@@ -146,7 +148,7 @@ final class ProductAdminTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::action(__('Actions'))
+            Column::action(__('Actions')),
         ];
     }
 
@@ -188,15 +190,15 @@ final class ProductAdminTable extends PowerGridComponent
     {
         return [
             Button::add('edit')
-                ->slot('Edit: ' . $row->id)
+                ->slot('Edit: '.$row->id)
                 ->id()
                 ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
                 ->dispatch('edit', ['rowId' => $row->id]),
             Button::add('delete')
-                ->slot('delete: ' . $row->id)
+                ->slot('delete: '.$row->id)
                 ->id()
                 ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
-                ->dispatch('delete', ['rowId' => $row->id])
+                ->dispatch('delete', ['rowId' => $row->id]),
         ];
     }
 

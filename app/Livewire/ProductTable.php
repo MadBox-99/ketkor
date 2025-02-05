@@ -3,15 +3,14 @@
 namespace App\Livewire;
 
 use App\Models\Product;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
-use PowerComponents\LivewirePowerGrid\Footer;
+use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\Header;
-use PowerComponents\LivewirePowerGrid\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridColumns;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
@@ -25,11 +24,11 @@ final class ProductTable extends PowerGridComponent
         $this->showCheckBox();
 
         return [
-            Exportable::make('export')
+            PowerGrid::exportable('export')
                 ->striped()
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
             Header::make()->showSearchInput(),
-            Footer::make()
+            PowerGrid::footer()
                 ->showPerPage()
                 ->showRecordCount(),
         ];
@@ -52,7 +51,7 @@ final class ProductTable extends PowerGridComponent
             ->addColumn('owner_name')
 
             /** Example of custom column using a closure **/
-            ->addColumn('owner_name_lower', fn(Product $model) => strtolower(e($model->owner_name)))
+            ->addColumn('owner_name_lower', fn (Product $model) => strtolower(e($model->owner_name)))
 
             ->addColumn('installer_name')
             ->addColumn('city')
@@ -60,13 +59,13 @@ final class ProductTable extends PowerGridComponent
             ->addColumn('zip')
             ->addColumn('purchase_place')
             ->addColumn('serial_number')
-            ->addColumn('purchase_date_formatted', fn(Product $model) => Carbon::parse($model->purchase_date)->format('d/m/Y'))
-            ->addColumn('installation_date_formatted', fn(Product $model) => Carbon::parse($model->installation_date)->format('d/m/Y'))
-            ->addColumn('warrantee_date_formatted', fn(Product $model) => Carbon::parse($model->warrantee_date)->format('d/m/Y'))
+            ->addColumn('purchase_date_formatted', fn (Product $model) => Carbon::parse($model->purchase_date)->format('d/m/Y'))
+            ->addColumn('installation_date_formatted', fn (Product $model) => Carbon::parse($model->installation_date)->format('d/m/Y'))
+            ->addColumn('warrantee_date_formatted', fn (Product $model) => Carbon::parse($model->warrantee_date)->format('d/m/Y'))
             ->addColumn('tool_id')
             ->addColumn('user_id')
-            ->addColumn('created_at_formatted', fn(Product $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'))
-            ->addColumn('created_at_formatted', fn(Product $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
+            ->addColumn('created_at_formatted', fn (Product $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'))
+            ->addColumn('created_at_formatted', fn (Product $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
     }
 
     public function columns(): array
@@ -114,7 +113,7 @@ final class ProductTable extends PowerGridComponent
             Column::make('Tool id', 'tool_id'),
             Column::make('Created at', 'created_at_formatted', 'created_at')
                 ->sortable(),
-            Column::action('Action')
+            Column::action('Action'),
         ];
     }
 
@@ -138,17 +137,17 @@ final class ProductTable extends PowerGridComponent
     #[\Livewire\Attributes\On('edit')]
     public function edit($rowId): void
     {
-        $this->js('alert(' . $rowId . ')');
+        $this->js('alert('.$rowId.')');
     }
 
     public function actions(\App\Models\Product $row): array
     {
         return [
             Button::add('edit')
-                ->slot('Edit: ' . $row->id)
+                ->slot('Edit: '.$row->id)
                 ->id()
                 ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
-                ->dispatch('edit', ['rowId' => $row->id])
+                ->dispatch('edit', ['rowId' => $row->id]),
         ];
     }
 
