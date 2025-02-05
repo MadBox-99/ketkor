@@ -39,10 +39,12 @@
                     {{ __('Forgot your password?') }}
                 </a>
             @endif
-            <a class="text-sm text-gray-600 underline rounded-md dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+
+            <a class="px-4 py-2 ml-3 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 href="{{ route('register') }}">
                 {{ __('Regisztráció') }}
             </a>
+
             <x-primary-button class="ml-3">
                 {{ __('Log in') }}
             </x-primary-button>
