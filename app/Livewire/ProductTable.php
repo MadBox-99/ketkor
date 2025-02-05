@@ -19,6 +19,8 @@ final class ProductTable extends PowerGridComponent
 {
     use WithExport;
 
+    public string $tableName = 'product-table';
+
     public function setUp(): array
     {
         $this->showCheckBox();

@@ -17,6 +17,8 @@ final class ToolsTable extends PowerGridComponent
 {
     use WithExport;
 
+    public string $tableName = 'tools-table';
+
     public function setUp(): array
     {
         $this->showCheckBox();

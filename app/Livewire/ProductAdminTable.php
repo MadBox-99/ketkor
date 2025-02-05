@@ -20,6 +20,8 @@ final class ProductAdminTable extends PowerGridComponent
 {
     use WithExport;
 
+    public string $tableName = 'product-admin-table';
+
     public function setUp(): array
     {
         $this->showCheckBox();

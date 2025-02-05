@@ -17,6 +17,8 @@ final class OrganizationsTable extends PowerGridComponent
 {
     use WithExport;
 
+    public string $tableName = 'organizations-table';
+
     public function setUp(): array
     {
         $this->showCheckBox();

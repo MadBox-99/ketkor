@@ -22,6 +22,8 @@ final class OrganizationDetailsUsersTable extends PowerGridComponent
 
     public $organization;
 
+    public string $tableName = 'organization-details-users-table';
+
     public function setUp(): array
     {
         $this->showCheckBox();
