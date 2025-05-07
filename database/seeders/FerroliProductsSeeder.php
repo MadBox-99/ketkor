@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Imports\FerroliProductsImport;
 use Illuminate\Database\Seeder;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\FerroliProductsImport;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class FerroliProductsSeeder extends Seeder
 {
@@ -14,6 +13,6 @@ class FerroliProductsSeeder extends Seeder
      */
     public function run(): void
     {
-        Excel::import(new FerroliProductsImport, storage_path('app/import/Ferroli Garanciális táblázat.xls'));
+        // Excel::import(new FerroliProductsImport, storage_path('app/import/Ferroli Garanciális táblázat.xls'));
     }
 }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
     <head>
         <meta charset="utf-8" />
 
@@ -16,7 +17,7 @@
         </style>
 
         @filamentStyles
-        @vite('resources/css/app.css')
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
 
     <body class="antialiased">
@@ -25,6 +26,6 @@
         @livewire('notifications')
 
         @filamentScripts
-        @vite('resources/js/app.js')
     </body>
+
 </html>

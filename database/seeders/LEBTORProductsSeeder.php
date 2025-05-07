@@ -13,6 +13,6 @@ class LEBTORProductsSeeder extends Seeder
      */
     public function run(): void
     {
-        Excel::import(new LEBTORImport, storage_path('app/import/lebtor kazán beüzemelések.xlsx'));
+        // Excel::import(new LEBTORImport, storage_path('app/import/lebtor kazán beüzemelések.xlsx'));
     }
 }

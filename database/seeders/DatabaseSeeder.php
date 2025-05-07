@@ -4,23 +4,15 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Product;
 use App\Models\Tool;
 use App\Models\User;
-use App\Models\Product;
 use App\Models\Visible;
-use Illuminate\Support\Str;
-use App\Imports\LEBTORImport;
-use App\Imports\ProductsImport;
 use Illuminate\Database\Seeder;
-use App\Imports\AccorroniProducts;
-use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\FerroliProductsImport;
-use Database\Seeders\SimeProductSeeder;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
-use Database\Seeders\AccorroniProductsSeeder;
-use Maatwebsite\Excel\Excel as ExcelExtension;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -65,32 +57,32 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'zoli.szabok@gamil.com',
             'email_verified_at' => now(),
-            'password' => '1234',
+            'password' => Hash::make('1234'), // password
             'remember_token' => Str::random(10),
         ]);
         $user1 = User::factory()->create([
             'name' => 'Test User',
             'email' => 'admin@admin.com',
             'email_verified_at' => now(),
-            'password' => '1234',
+            'password' => Hash::make('1234'), // password
             'remember_token' => Str::random(10),
-            'organization_id' => 1
+            'organization_id' => 1,
         ]);
         $user2 = User::factory()->create([
             'name' => 'Test User 2',
             'email' => 'test@test2.com',
             'email_verified_at' => now(),
-            'password' => '1234',
+            'password' => Hash::make('1234'), // password
             'remember_token' => Str::random(10),
-            'organization_id' => 1
+            'organization_id' => 1,
         ]);
         $user3 = User::factory()->create([
             'name' => 'Test User 3',
             'email' => 'test@test3.com',
             'email_verified_at' => now(),
-            'password' => '1234',
+            'password' => Hash::make('1234'), // password
             'remember_token' => Str::random(10),
-            'organization_id' => 1
+            'organization_id' => 1,
         ]);
 
         $admin->assignRole('Admin');
@@ -128,9 +120,6 @@ $product->users()->attach($user2->id);
             LEBTORProductsSeeder::class,
         ]);
 
-
-
-
         $productTest1 = Product::whereId(1)->first();
         $productTest2 = Product::whereId(2)->first();
         $user1->products()->attach($productTest1);
@@ -139,17 +128,17 @@ $product->users()->attach($user2->id);
         Visible::create([
             'user_id' => $user1->id,
             'product_id' => $productTest1->id,
-            'isVisible' => 1
+            'isVisible' => 1,
         ]);
         Visible::create([
             'user_id' => $user1->id,
             'product_id' => $productTest2->id,
-            'isVisible' => 1
+            'isVisible' => 1,
         ]);
         Visible::create([
             'user_id' => $user2->id,
             'product_id' => $productTest2->id,
-            'isVisible' => 1
+            'isVisible' => 1,
         ]);
 
     }

@@ -13,7 +13,7 @@ export default {
     ],
     presets: [
         preset,
-        require("./vendor/power-components/livewire-powergrid/tailwind.config.js"),
+        /* require("./vendor/power-components/livewire-powergrid/tailwind.config.js"), */
     ],
     theme: {
         extend: {

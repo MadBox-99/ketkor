@@ -22,7 +22,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store($request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
 
         $credentials = $request->validate([

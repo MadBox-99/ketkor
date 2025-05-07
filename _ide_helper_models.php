@@ -239,8 +239,8 @@ namespace App\Models{
  * @property string $name
  * @property string|null $email
  * @property int|null $organization_id
- * @property \Illuminate\Support\Carbon|null $email_verified_at
- * @property mixed|null $password
+ * @property string|null $email_verified_at
+ * @property string|null $password
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

@@ -30,6 +30,7 @@ class AccorroniProducts implements ToModel, WithHeadingRow
         ) {
             return null;
         }
+
         if ($row['beüzemelés ideje'] == '?') {
             $row['beüzemelés ideje'] = null;
         }

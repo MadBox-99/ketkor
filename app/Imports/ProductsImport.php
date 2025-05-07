@@ -63,6 +63,7 @@ class ProductsImport implements ToModel, WithHeadingRow
         } catch (Throwable $throwable) {
             echo $throwable;
         }
+
         if ($row['Beüzemelés dátuma'] == '?') {
             $row['Beüzemelés dátuma'] = null;
         }

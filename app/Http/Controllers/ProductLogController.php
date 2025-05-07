@@ -134,6 +134,7 @@ class ProductLogController extends Controller
             $error = $throwable->getMessage();
             return redirect()->route('products.edit', ['product' => $product])->with(['error' => $error, 'users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials, 'userVisibility' => $userVisibility]);
         }
+
         return null;
     }
 
