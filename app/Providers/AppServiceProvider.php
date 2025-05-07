@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Database\Eloquent\Builder;
-use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 
-class AppServiceProvider extends ServiceProvider
+final class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
@@ -21,9 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        HeadingRowFormatter::default('none');
-        Builder::macro('whereLike', function (string $attribute, string $searchTerm) {
-            return $this->orWhere($attribute, 'LIKE', sprintf('%%%s%%', $searchTerm));
-        });
+        //
     }
 }
