@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Livewire\Attributes\On;
 use App\Models\Organization;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
@@ -90,7 +91,7 @@ final class OrganizationsTable extends PowerGridComponent
         ];
     }
 
-    #[\Livewire\Attributes\On('edit')]
+    #[On('edit')]
     public function edit($rowId): void
     {
         $organization = Organization::find($rowId);

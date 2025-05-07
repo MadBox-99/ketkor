@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Livewire\Attributes\On;
 use App\Models\Tool;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
@@ -85,14 +86,14 @@ final class ToolsTable extends PowerGridComponent
         ];
     }
 
-    #[\Livewire\Attributes\On('edit')]
+    #[On('edit')]
     public function edit($rowId): void
     {
         $tool = Tool::find($rowId);
         $this->redirect(route('tools.edit', $tool->id), true);
     }
 
-    public function actions(\App\Models\Tool $row): array
+    public function actions(Tool $row): array
     {
         return [
             Button::add('edit')

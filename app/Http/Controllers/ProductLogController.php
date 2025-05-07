@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Enums\ProductLogType;
 use Carbon\Carbon;
 use App\Models\Log;
@@ -93,6 +94,7 @@ class ProductLogController extends Controller
                         return redirect()->back()->withInput()->with('success', __('Product updated successfully.'));
                     }
                 }
+
                 DB::rollback();
                 Log::create([
                     'user_id' => auth()->user()->id,
@@ -114,11 +116,11 @@ class ProductLogController extends Controller
                 DB::commit();
                 return redirect()->back()->withInput()->with('success', __('Product updated successfully.'));
             }
-        } catch (\Throwable $th) {
+        } catch (Throwable $throwable) {
             DB::rollback();
             Log::create([
                 'user_id' => auth()->user()->id,
-                'what' => 'product store failed' . json_encode($request->all()) . " | " . $th->getMessage()
+                'what' => 'product store failed' . json_encode($request->all()) . " | " . $throwable->getMessage()
             ]);
             $product = Product::whereId($request->product_id)->first();
 
@@ -129,15 +131,16 @@ class ProductLogController extends Controller
             $partials = Partial::where('product_id', $product->id)->latest()->limit(6)->get();
             $users = User::get();
             $tools = Tool::get();
-            $error = $th->getMessage();
-            return redirect()->route('products.edit', ['product' => $product])->with(compact('error', 'users', 'tools', 'product', 'partials', 'userVisibility'));
+            $error = $throwable->getMessage();
+            return redirect()->route('products.edit', ['product' => $product])->with(['error' => $error, 'users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials, 'userVisibility' => $userVisibility]);
         }
+        return null;
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(ProductLog $productLog)
+    public function show(ProductLog $productLog): void
     {
         //
     }
@@ -145,7 +148,7 @@ class ProductLogController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ProductLog $productLog)
+    public function edit(ProductLog $productLog): void
     {
         //
     }
@@ -153,7 +156,7 @@ class ProductLogController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ProductLog $productLog)
+    public function update(Request $request, ProductLog $productLog): void
     {
         //
     }
@@ -161,7 +164,7 @@ class ProductLogController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProductLog $productLog)
+    public function destroy(ProductLog $productLog): void
     {
         //
     }

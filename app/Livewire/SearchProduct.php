@@ -17,17 +17,18 @@ class SearchProduct extends Component
     {
         if ($this->owner_name != '') {
             $products = Product::with([
-                'partials' => function ($query) {
+                'partials' => function ($query): void {
                     $query->latest()->limit(1);
                 }
             ])->where('owner_name', 'LIKE', '%' . $this->owner_name . '%')->paginate(10);
         } else {
             $products = Product::with([
-                'partials' => function ($query) {
+                'partials' => function ($query): void {
                     $query->latest()->limit(1);
                 }
             ])->paginate(10);
         }
+
         return view('livewire.search-product', ['products' => $products]);
 
     }

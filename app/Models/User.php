@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -11,10 +13,12 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
-    use HasApiTokens, HasFactory, HasRoles, Notifiable;
-
+    use HasApiTokens;
+    use HasFactory;
+    use HasRoles;
+    use Notifiable;
     /**
      * The attributes that are mass assignable.
      *
@@ -47,7 +51,7 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function setPasswordAttribute($password)
+    public function setPasswordAttribute($password): void
     {
         $this->attributes['password'] = bcrypt($password);
     }
@@ -75,5 +79,10 @@ class User extends Authenticatable
     public function are_visible(): HasMany
     {
         return $this->hasMany(Visible::class);
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return str_ends_with($this->email, '') && $this->hasVerifiedEmail();
     }
 }

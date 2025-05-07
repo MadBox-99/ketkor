@@ -16,10 +16,12 @@ class Organization extends Model
         'address',
         'zip',
     ];
+
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }
+
     public function products()
     {
         return $this->hasManyThrough(Product::class, User::class);

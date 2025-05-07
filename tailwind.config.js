@@ -1,6 +1,7 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 import twelement from 'tw-elements/dist/plugin.cjs';
+import preset from './vendor/filament/support/tailwind.config.preset'
 //import plugin from '@tailwindcss/aspect-ratio';
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -11,6 +12,7 @@ export default {
         "./node_modules/tw-elements/dist/js/**/*.js"
     ],
     presets: [
+        preset,
         require("./vendor/power-components/livewire-powergrid/tailwind.config.js"),
     ],
     theme: {

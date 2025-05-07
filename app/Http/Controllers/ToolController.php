@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\Log;
 use App\Models\Tool;
 use Illuminate\Http\Request;
@@ -60,21 +61,21 @@ class ToolController extends Controller
             ]);
             DB::commit();
             return redirect()->route('tools.index')->with('success', __('Tool created successfully.'));
-        } catch (\Throwable $th) {
+        } catch (Throwable $throwable) {
 
             DB::rollback();
             Log::create([
                 'user_id' => 1,
-                'what' => 'tool store failed' . json_encode($request->all()) . " | " . $th->getMessage()
+                'what' => 'tool store failed' . json_encode($request->all()) . " | " . $throwable->getMessage()
             ]);
-            return redirect()->back()->withInput()->with('error', $th->getMessage());
+            return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Tool $tool)
+    public function show(Tool $tool): void
     {
         //
     }
@@ -88,7 +89,7 @@ class ToolController extends Controller
             'user_id' => 1,
             'what' => 'tool.edit page open/hover | id:' . $tool->id
         ]);
-        return view('tool.edit', compact('tool'));
+        return view('tool.edit', ['tool' => $tool]);
     }
 
     /**
@@ -114,16 +115,16 @@ class ToolController extends Controller
 
             DB::commit();
             return redirect()->route('tools.index')->with('success', __('Tool updated successfully.'));
-        } catch (\Throwable $th) {
+        } catch (Throwable $throwable) {
             DB::rollback();
-            return redirect()->back()->withInput()->with('error', $th->getMessage());
+            return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tool $tool)
+    public function destroy(Tool $tool): void
     {
         //
     }

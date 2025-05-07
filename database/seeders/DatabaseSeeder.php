@@ -60,6 +60,7 @@ class DatabaseSeeder extends Seeder
                 $permission->assignRole($toRole);
             }
         }
+
         $admin = User::factory()->create([
             'name' => 'Admin',
             'email' => 'zoli.szabok@gamil.com',

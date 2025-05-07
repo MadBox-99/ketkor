@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_user', function (Blueprint $table) {
+        Schema::create('product_user', function (Blueprint $table): void {
             $table->id();
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Product::class);

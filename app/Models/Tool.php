@@ -16,6 +16,7 @@ class Tool extends Model
         'tag',
         'factory_name',
     ];
+
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);

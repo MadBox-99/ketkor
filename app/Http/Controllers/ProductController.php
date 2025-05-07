@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\AccessToken;
 use App\Models\Log;
 use App\Models\Tool;
@@ -42,7 +43,7 @@ class ProductController extends Controller
             'user_id' => 1,
             'what' => 'product.create page open/hover'
         ]);
-        return view('product.create', compact('tools', 'users'));
+        return view('product.create', ['tools' => $tools, 'users' => $users]);
     }
 
     /**
@@ -53,11 +54,11 @@ class ProductController extends Controller
         DB::beginTransaction();
         try {
             $validator = Validator::make($request->all(), [
-                'serial_number' => 'required|string|max:200|unique:products,serial_number,except,id',
-                'purchase_date' => 'sometimes|nullable',
-                'installation_date' => 'sometimes|nullable',
-                'tool_id' => 'required',
-                'owner_name' => 'required',
+                'serial_number' => ['required', 'string', 'max:200', 'unique:products,serial_number,except,id'],
+                'purchase_date' => ['sometimes', 'nullable'],
+                'installation_date' => ['sometimes', 'nullable'],
+                'tool_id' => ['required'],
+                'owner_name' => ['required'],
             ]);
             $validator->validate();
             $product = Product::create(
@@ -96,20 +97,20 @@ class ProductController extends Controller
             ]);
             DB::commit();
             return redirect()->route('products.index')->with('success', __('Product created successfully.'));
-        } catch (\Throwable $th) {
+        } catch (Throwable $throwable) {
             DB::rollback();
             Log::create([
                 'user_id' => 1,
-                'what' => 'product store failed' . json_encode($request->all()) . " | " . $th->getMessage()
+                'what' => 'product store failed' . json_encode($request->all()) . " | " . $throwable->getMessage()
             ]);
-            return redirect()->back()->withInput()->with('error', $th->getMessage());
+            return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show(Product $product): void
     {
         //
     }
@@ -127,16 +128,20 @@ class ProductController extends Controller
         $product = Product::whereId($product->id)->with(['users'])->first();
         $userVisibility = Visible::where('user_id', $user->id)->where('product_id', $product->id)->where('isVisible', true)->first();
         $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
-        if ($user->getRoleNames()->first() == 'Admin' || $user->getRoleNames()->first() == 'Operator')
+        if ($user->getRoleNames()->first() == 'Admin' || $user->getRoleNames()->first() == 'Operator') {
             $userVisibility = true;
+        }
+
         $partials = Partial::where('product_id', $product->id)->latest()->limit(6)->get();
         $users = User::orderBy('name')->get();
         $tools = Tool::orderBy('name')->get();
-        return view('product.edit', compact('users', 'tools', 'product', 'partials', 'userVisibility'));
+        return view('product.edit', ['users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials, 'userVisibility' => $userVisibility]);
     }
+
     public function partialUpdate(Request $request, Product $product)
     {
     }
+
     /**
      * Update the specified resource in storage.
      */
@@ -174,20 +179,20 @@ class ProductController extends Controller
             $userVisibility = Visible::whereRelation('product', 'user_id', $user->id)->whereRelation('product', 'product_id', $product->id)->whereRelation('product', 'isVisible', true)->first();
             $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
             $success = __('Products updated successfully.');
-            return redirect()->route('products.edit', ['product' => $product])->with(compact('success', 'users', 'tools', 'product', 'partials', 'userVisibility'));
-        } catch (\Throwable $th) {
+            return redirect()->route('products.edit', ['product' => $product])->with(['success' => $success, 'users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials, 'userVisibility' => $userVisibility]);
+        } catch (Throwable $throwable) {
             DB::rollback();
             Log::create([
                 'user_id' => 1,
-                'what' => 'product update failed' . json_encode($request->all()) . " | " . $th->getMessage()
+                'what' => 'product update failed' . json_encode($request->all()) . " | " . $throwable->getMessage()
             ]);
             $userVisibility = Visible::whereRelation('product', 'user_id', $user->id)->whereRelation('product', 'product_id', $product->id)->whereRelation('product', 'isVisible', true)->first();
             $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
             $partials = Partial::where('product_id', $product->id)->latest()->limit(6)->get();
             $users = User::orderBy('name')->get();
             $tools = Tool::orderBy('name')->get();
-            $error = $th->getMessage();
-            return redirect()->route('products.edit', ['product' => $product])->with(compact('error', 'users', 'tools', 'product', 'partials', 'userVisibility'));
+            $error = $throwable->getMessage();
+            return redirect()->route('products.edit', ['product' => $product])->with(['error' => $error, 'users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials, 'userVisibility' => $userVisibility]);
         }
     }
 
@@ -205,15 +210,16 @@ class ProductController extends Controller
             ]);
             DB::commit();
             return redirect()->route('products.index')->with('success', __('Product deleted successfully.'));
-        } catch (\Throwable $th) {
+        } catch (Throwable $throwable) {
             DB::rollback();
             Log::create([
                 'user_id' => 1,
                 'what' => 'product.delete failed |'
             ]);
-            return redirect()->route('products.index')->with('error', $th->getMessage());
+            return redirect()->route('products.index')->with('error', $throwable->getMessage());
         }
     }
+
     public function add(Product $product)
     {
         $userId = auth()->user()->id;
@@ -230,20 +236,26 @@ class ProductController extends Controller
         $product = Product::whereId($product->id)->with(['users'])->first();
         $userVisibility = Visible::whereRelation('product', 'user_id', $user->id)->whereRelation('product', 'product_id', $product->id)->whereRelation('product', 'isVisible', true)->first();
         $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
+
         $partials = Partial::where('product_id', $product->id)->latest()->limit(6)->get();
         $users = User::orderBy('name')->get();
         $tools = Tool::orderBy('name')->get();
-        return redirect()->route('products.edit', ['product' => $product])->with(compact('users', 'tools', 'product', 'partials', 'userVisibility'));
+        return redirect()->route('products.edit', ['product' => $product])->with(['users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials, 'userVisibility' => $userVisibility]);
     }
+
     public function remove(Product $product)
     {
         $userId = auth()->user()->id;
         $userVisibility = Visible::where('product_id', $product->id)->where('user_id', $userId)->first();
         $accessToken = AccessToken::where('product_id', $product->id)->where('user_id', $userId)->first();
-        if (!is_null($accessToken))
+        if (!is_null($accessToken)) {
             $userVisibility->delete();
-        if (!is_null($accessToken))
+        }
+
+        if (!is_null($accessToken)) {
             $accessToken->delete();
+        }
+
         Log::create([
             'user_id' => 1,
             'what' => 'product.remove from user success'
@@ -252,10 +264,12 @@ class ProductController extends Controller
         $user->products()->detach($product->id);
         return redirect()->route('products.myproducts')->with('success', __('Succesfuly removed the product from your account.'));
     }
+
     public function search()
     {
         return view('product.search');
     }
+
     public function myproducts(): View
     {
         return view('product.myproduct');

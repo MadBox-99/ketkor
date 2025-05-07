@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Livewire\Attributes\On;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
@@ -135,13 +136,13 @@ final class ProductTable extends PowerGridComponent
         ];
     }
 
-    #[\Livewire\Attributes\On('edit')]
-    public function edit($rowId): void
+    #[On('edit')]
+    public function edit(string $rowId): void
     {
         $this->js('alert('.$rowId.')');
     }
 
-    public function actions(\App\Models\Product $row): array
+    public function actions(Product $row): array
     {
         return [
             Button::add('edit')

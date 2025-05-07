@@ -32,19 +32,19 @@ class Product extends Model
         'comments',
         'created_at',
     ];
+
     protected $dateFormat = 'Y-m-d';
+
     protected $casts = [
         'warrantee_date' => 'date:Y-m-d',
         'purchase_date' => 'date:Y-m-d',
         'installation_date' => 'date:Y-m-d',
     ];
-    public function serializeDate($date): string
+
+    protected function serializeDate($date): string
     {
-        if (is_null($date)) {
-            $date = new DateTime();
-        } else {
-            $date = new DateTime($date);
-        }
+        $date = is_null($date) ? new DateTime() : new DateTime($date);
+
         return $date->format('Y-m-d');
     }
 
@@ -52,10 +52,12 @@ class Product extends Model
     {
         return $this->belongsTo(Tool::class);
     }
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
     }
+
     public function product_logs(): HasMany
     {
         return $this->hasMany(ProductLog::class);
@@ -63,17 +65,17 @@ class Product extends Model
 
     /**
      * Get all of the comments for the Product
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function partials(): HasMany
     {
         return $this->hasMany(Partial::class);
     }
+
     public function are_visible(): HasMany
     {
         return $this->hasMany(Visible::class);
     }
+
     public function organizations(): HasManyThrough
     {
         return $this->hasManyThrough(Organization::class, User::class);

@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_logs', function (Blueprint $table) {
+        Schema::create('product_logs', function (Blueprint $table): void {
             $table->id();
             $table->foreignIdFor(Product::class);
             $table->string('what', 500)->nullable()->default('');

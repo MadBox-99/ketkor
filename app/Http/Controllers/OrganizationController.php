@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\Log;
 use App\Models\User;
 use App\Models\Product;
@@ -49,6 +50,7 @@ class OrganizationController extends Controller
     {
         return view('organization.createEmployee');
     }
+
     public function storeEmployee(StoreUserRequest $request): RedirectResponse
     {
         DB::beginTransaction();
@@ -65,10 +67,10 @@ class OrganizationController extends Controller
             $user->assignRole('Servicer');
             $success = __('Successfully created an new employee.');
             DB::commit();
-            return redirect()->route('organizations.myorganization')->with(compact('success'));
-        } catch (\Throwable $th) {
+            return redirect()->route('organizations.myorganization')->with(['success' => $success]);
+        } catch (Throwable $throwable) {
             DB::rollBack();
-            return redirect()->back()->withInput()->with('error', $th->getMessage());
+            return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
     }
 
@@ -103,23 +105,24 @@ class OrganizationController extends Controller
             );
             DB::commit();
             return redirect()->route('organizations.index')->with('success', __('Organization created successfully.'));
-        } catch (\Throwable $th) {
+        } catch (Throwable $throwable) {
             DB::rollback();
             Log::create([
                 'user_id' => Auth::user()->id,
-                'what' => 'organization store failed' . json_encode($request->all()) . " | " . $th->getMessage()
+                'what' => 'organization store failed' . json_encode($request->all()) . " | " . $throwable->getMessage()
             ]);
-            return redirect()->back()->withInput()->with('error', $th->getMessage());
+            return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Organization $organization)
+    public function show(Organization $organization): void
     {
         //
     }
+
     public function productMove(Request $request)
     {
         DB::beginTransaction();
@@ -152,6 +155,7 @@ class OrganizationController extends Controller
                     ]
                 );
             }
+
             Log::create(
                 [
                     'user_id' => Auth::user()->id,
@@ -161,13 +165,13 @@ class OrganizationController extends Controller
 
             DB::commit();
             return redirect()->route('organizations.myorganization')->with('success', __('Product successfully moved.'));
-        } catch (\Throwable $th) {
+        } catch (Throwable $throwable) {
             DB::rollback();
             Log::create([
                 'user_id' => 1,
-                'what' => 'user failed moved from:' . $request->user_id . ' to: ' . $request->selected_user_id . " | " . $th->getMessage()
+                'what' => 'user failed moved from:' . $request->user_id . ' to: ' . $request->selected_user_id . " | " . $throwable->getMessage()
             ]);
-            return redirect()->back()->withInput()->with('error', $th->getMessage());
+            return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
     }
 
@@ -178,10 +182,10 @@ class OrganizationController extends Controller
     {
         $organization = Organization::whereId($organization->id)->first();
         $organization_id = $organization->id;
-        $products = Product::whereHas('users.organization', function ($query) use ($organization_id) {
+        $products = Product::whereHas('users.organization', function ($query) use ($organization_id): void {
             $query->where('id', $organization_id);
         })->get();
-        return view('organization.edit', compact('organization', 'products'));
+        return view('organization.edit', ['organization' => $organization, 'products' => $products]);
     }
 
     /**
@@ -205,9 +209,9 @@ class OrganizationController extends Controller
             );
             DB::commit();
             return redirect()->route('organizations.index')->with('success', __('Organization updated successfully.'));
-        } catch (\Throwable $th) {
+        } catch (Throwable $throwable) {
             DB::rollback();
-            return redirect()->back()->withInput()->with('error', $th->getMessage());
+            return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
     }
 
@@ -221,11 +225,12 @@ class OrganizationController extends Controller
             $organization->delete();
             DB::commit();
             return redirect()->route('organizations.index')->with('success', __('Organizations deleted successfully.'));
-        } catch (\Throwable $th) {
+        } catch (Throwable $throwable) {
             DB::rollback();
-            return redirect()->route('organizations.index')->with('error', $th->getMessage());
+            return redirect()->route('organizations.index')->with('error', $throwable->getMessage());
         }
     }
+
     public function removeUserProduct(User $user, Organization $organization, Product $product)
     {
 
@@ -233,7 +238,7 @@ class OrganizationController extends Controller
         $user = Auth::user();
         $organization_id = $user->organization_id;
         $organization = Organization::with('users.products')->whereId($organization_id)->first();
-        return view('organization.myorganization', compact('organization'));
+        return view('organization.myorganization', ['organization' => $organization]);
     }
 
     public function myOrganization()
@@ -241,8 +246,9 @@ class OrganizationController extends Controller
         $user = Auth::user();
         $organization_id = $user->organization_id;
         $organization = Organization::with('users.products')->whereId($organization_id)->first();
-        return view('organization.myorganization', compact('organization'));
+        return view('organization.myorganization', ['organization' => $organization]);
     }
+
     public function myOrganizationUpdate(Request $request, Organization $organization)
     {
         DB::beginTransaction();
@@ -267,11 +273,12 @@ class OrganizationController extends Controller
             );
             DB::commit();
             return redirect()->route('organizations.myorganization')->with('success', __('Organization updated successfully.'));
-        } catch (\Throwable $th) {
+        } catch (Throwable $throwable) {
             DB::rollback();
-            return redirect()->back()->withInput()->with('error', $th->getMessage());
+            return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
     }
+
     public function removeUserFromOrganization(User $user)
     {
         DB::beginTransaction();
@@ -283,10 +290,11 @@ class OrganizationController extends Controller
                 DB::commit();
                 return redirect()->route('organizations.myorganization')->with('success', __('Successfully removed the user from your organization.'));
             }
+
             return redirect()->route('organizations.myorganization')->with('error', __("The user could not be removed from the organisation. You cannot delete your account here."));
-        } catch (\Throwable $th) {
+        } catch (Throwable $throwable) {
             DB::rollback();
-            return redirect()->route('organizations.myorganization')->with('error', __("The user could not be removed from the organisation. You cannot delete your account here." . $th->getMessage()));
+            return redirect()->route('organizations.myorganization')->with('error', __("The user could not be removed from the organisation. You cannot delete your account here." . $throwable->getMessage()));
         }
     }
 }

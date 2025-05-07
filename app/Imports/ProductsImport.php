@@ -2,6 +2,8 @@
 
 namespace App\Imports;
 
+use Throwable;
+use Illuminate\Database\Eloquent\Model;
 use DateTime;
 use Carbon\Carbon;
 use App\Models\Tool;
@@ -33,9 +35,7 @@ class ProductsImport implements ToModel, WithHeadingRow
      *  'created_at',
      */
     /**
-     * @param array $row
-     *
-     * @return \Illuminate\Database\Eloquent\Model|null
+     * @return Model|null
      */
     public function model(array $row)
     {
@@ -47,23 +47,29 @@ class ProductsImport implements ToModel, WithHeadingRow
         ) {
             return null;
         }
+
         try {
-            if ($row['Beüzemelés dátuma'] != '?')
+            if ($row['Beüzemelés dátuma'] != '?') {
                 $row['Beüzemelés dátuma'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['Beüzemelés dátuma'] - 2);
-        } catch (\Throwable $th) {
-            echo $th;
-        }
-        try {
-            if ($row['Vásárlás dátuma'] !== '?')
-                $row['Vásárlás dátuma'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['Vásárlás dátuma'] - 2);
-        } catch (\Throwable $th) {
-            echo $th;
+            }
+        } catch (Throwable $throwable) {
+            echo $throwable;
         }
 
-        if ($row['Beüzemelés dátuma'] == '?')
+        try {
+            if ($row['Vásárlás dátuma'] !== '?') {
+                $row['Vásárlás dátuma'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['Vásárlás dátuma'] - 2);
+            }
+        } catch (Throwable $throwable) {
+            echo $throwable;
+        }
+        if ($row['Beüzemelés dátuma'] == '?') {
             $row['Beüzemelés dátuma'] = null;
-        if ($row['Vásárlás dátuma'] == '?')
+        }
+
+        if ($row['Vásárlás dátuma'] == '?') {
             $row['Vásárlás dátuma'] = null;
+        }
 
 
         $install_date = Carbon::createFromInterface(new DateTime($row['Beüzemelés dátuma']));
@@ -74,6 +80,7 @@ class ProductsImport implements ToModel, WithHeadingRow
         } else {
             $warrantee = $install_date->copy()->addYear();
         }
+
         $user = User::where('name', $row['Beüzemelő szerviz'])->first();
 
         if (!$user) {
@@ -85,6 +92,7 @@ class ProductsImport implements ToModel, WithHeadingRow
             ]);
             $user->assignRole('Organizer');
         }
+
         /*if (is_null($organization))
             dd($row['Beüzemelő szerviz']);
         */

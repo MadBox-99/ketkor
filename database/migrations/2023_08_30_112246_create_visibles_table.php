@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('are_visible', function (Blueprint $table) {
+        Schema::create('are_visible', function (Blueprint $table): void {
             $table->id();
             $table->boolean('isVisible')->default(false);
             $table->foreignIdFor(Product::class)->nullable(false);

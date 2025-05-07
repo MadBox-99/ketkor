@@ -41,7 +41,7 @@ final class ProductAdminTable extends PowerGridComponent
     public function datasource(): Builder
     {
         return Product::with([
-            'partials' => function ($query) {
+            'partials' => function ($query): void {
                 $query->latest()->limit(1);
             },
             'tool',
@@ -68,16 +68,18 @@ final class ProductAdminTable extends PowerGridComponent
         );
     }
 
-    public function bulkDeleteProduct()
+    public function bulkDeleteProduct(): void
     {
         if (count($this->checkboxValues) == 0) {
             $this->dispatchBrowserEvent('showAlert', ['message' => 'You must select at least one item!']);
 
             return;
         }
+
         foreach (Product::find($this->checkboxValues) as $product) {
             $product->delete();
         }
+
         $this->redirect(route('products.index'), true);
 
     }

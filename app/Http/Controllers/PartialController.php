@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\Log;
 use App\Models\Tool;
 use App\Models\User;
@@ -15,7 +16,7 @@ class PartialController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): void
     {
         //
     }
@@ -23,7 +24,7 @@ class PartialController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): void
     {
         //
     }
@@ -54,23 +55,23 @@ class PartialController extends Controller
             $users = User::get();
             $tools = Tool::get();
             $success = __('Product updated successfully.');
-            return redirect()->route('products.edit', ['product' => $product])->with(compact('tools', 'users', 'success'));
-        } catch (\Throwable $th) {
+            return redirect()->route('products.edit', ['product' => $product])->with(['tools' => $tools, 'users' => $users, 'success' => $success]);
+        } catch (Throwable $throwable) {
             DB::rollback();
             Log::create([
                 'user_id' => 1,
-                'what' => 'Partial create failed' . json_encode($request->all()) . " | " . $th->getMessage()
+                'what' => 'Partial create failed' . json_encode($request->all()) . " | " . $throwable->getMessage()
             ]);
             $users = User::get();
             $tools = Tool::get();
-            return redirect()->route('products.edit', ['product' => $product])->with(['error' => $th->getMessage(), 'users' => $users, 'tools' => $tools]);
+            return redirect()->route('products.edit', ['product' => $product])->with(['error' => $throwable->getMessage(), 'users' => $users, 'tools' => $tools]);
         }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Partial $productPartial)
+    public function show(Partial $productPartial): void
     {
         //
     }
@@ -78,7 +79,7 @@ class PartialController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Partial $productPartial)
+    public function edit(Partial $productPartial): void
     {
         //
     }
@@ -86,7 +87,7 @@ class PartialController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Partial $productPartial)
+    public function update(Request $request, Partial $productPartial): void
     {
         //
     }
@@ -94,7 +95,7 @@ class PartialController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Partial $productPartial)
+    public function destroy(Partial $productPartial): void
     {
         //
     }

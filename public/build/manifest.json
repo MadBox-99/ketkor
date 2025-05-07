@@ -1,18 +1,21 @@
 {
+  "resources/css/app.css": {
+    "file": "assets/app-B1FQBmc_.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
   "resources/img/ketkor_logo.webp": {
-    "file": "assets/ketkor_logo-88519b2d.webp",
+    "file": "assets/ketkor_logo-D074BRo9.webp",
     "src": "resources/img/ketkor_logo.webp"
   },
-  "resources/js/app.css": {
-    "file": "assets/app-7a897cd8.css",
-    "src": "resources/js/app.css"
-  },
   "resources/js/app.js": {
-    "css": [
-      "assets/app-7a897cd8.css"
-    ],
-    "file": "assets/app-6f623544.js",
+    "file": "assets/app-BFu4h46D.js",
+    "name": "app",
+    "src": "resources/js/app.js",
     "isEntry": true,
-    "src": "resources/js/app.js"
+    "css": [
+      "assets/app-ehFyFt0y.css",
+      "assets/app-B1FQBmc_.css"
+    ]
   }
 }

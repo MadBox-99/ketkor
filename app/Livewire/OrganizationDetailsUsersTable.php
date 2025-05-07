@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Livewire\Attributes\On;
 use App\Models\Organization;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
@@ -42,7 +43,7 @@ final class OrganizationDetailsUsersTable extends PowerGridComponent
     {
         $organization = Organization::find($this->organization)->id;
 
-        return Product::whereHas('users.organization', function ($query) use ($organization) {
+        return Product::whereHas('users.organization', function ($query) use ($organization): void {
             $query->where('id', $organization);
         });
 
@@ -94,13 +95,13 @@ final class OrganizationDetailsUsersTable extends PowerGridComponent
         ];
     }
 
-    #[\Livewire\Attributes\On('edit')]
-    public function edit($rowId): void
+    #[On('edit')]
+    public function edit(string $rowId): void
     {
         $this->js('alert('.$rowId.')');
     }
 
-    public function actions(\App\Models\Product $row): array
+    public function actions(Product $row): array
     {
         return [
             Button::add('edit')

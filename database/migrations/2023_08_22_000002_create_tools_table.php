@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tools', function (Blueprint $table) {
+        Schema::create('tools', function (Blueprint $table): void {
             $table->id();
             $table->string('name', 200)->nullable(false)->default('');
             $table->string('category', 200)->nullable()->default('');

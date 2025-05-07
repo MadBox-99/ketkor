@@ -16,9 +16,13 @@ class ProductSearchUser extends Component
     use WithPagination;
     #[URL]
     public string $serial_number = '';
+
     public string $warrantee_date_start = '';
+
     public string $warrantee_date_end = '';
+
     public string $tool_name = '';
+
     public function render()
     {
         $user = Auth::user();
@@ -31,6 +35,6 @@ class ProductSearchUser extends Component
             return $query->whereBetween('warrantee_date', [$this->warrantee_date_start, $this->warrantee_date_end]);
         })
             ->paginate(10);
-        return view('livewire.product-search-user', compact('products'));
+        return view('livewire.product-search-user', ['products' => $products]);
     }
 }

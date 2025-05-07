@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use Illuminate\Database\Eloquent\Model;
 use DateTime;
 use Carbon\Carbon;
 use App\Models\Tool;
@@ -17,9 +18,7 @@ class AccorroniProducts implements ToModel, WithHeadingRow
 {
 
     /**
-     * @param array $row
-     *
-     * @return \Illuminate\Database\Eloquent\Model|null
+     * @return Model|null
      */
     public function model(array $row)
     {
@@ -31,11 +30,13 @@ class AccorroniProducts implements ToModel, WithHeadingRow
         ) {
             return null;
         }
-
-        if ($row['beüzemelés ideje'] == '?')
+        if ($row['beüzemelés ideje'] == '?') {
             $row['beüzemelés ideje'] = null;
-        if ($row['vásárlás ideje'] == '?')
+        }
+
+        if ($row['vásárlás ideje'] == '?') {
             $row['vásárlás ideje'] = null;
+        }
 
         $row['beüzemelés ideje'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['beüzemelés ideje'] - 2);
         $row['vásárlás ideje'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['vásárlás ideje'] - 2);
@@ -48,6 +49,7 @@ class AccorroniProducts implements ToModel, WithHeadingRow
         } else {
             $warrantee = $install_date->copy()->addYear();
         }
+
         $user = User::where('name', $row['beüzemelő szerviz'])->first();
 
         if (!$user) {
@@ -59,6 +61,7 @@ class AccorroniProducts implements ToModel, WithHeadingRow
             ]);
             $user->assignRole('Organizer');
         }
+
         $tool = Tool::firstOrCreate(['name' => $row['tipus'], 'factory_name' => 'Accorroni']);
         $product = Product::Create(
             [

@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use Illuminate\Database\Eloquent\Model;
 use DateTime;
 use App\Models\Tool;
 use App\Models\User;
@@ -31,9 +32,7 @@ class LEBTORImport implements ToModel, WithHeadingRow
      *  'created_at',
      */
     /**
-     * @param array $row
-     *
-     * @return \Illuminate\Database\Eloquent\Model|null
+     * @return Model|null
      */
     public function model(array $row)
     {
@@ -45,25 +44,28 @@ class LEBTORImport implements ToModel, WithHeadingRow
         ) {
             return null;
         }
-
-        if ($row['Beüzemelés dátuma'] == '?')
+        if ($row['Beüzemelés dátuma'] == '?') {
             $row['Beüzemelés dátuma'] = null;
-        if ($row['Vásárlás dátuma'] == '?')
-            $row['Vásárlás dátuma'] = null;
+        }
 
-        if ($row['Beüzemelés dátuma'] !== '?')
+        if ($row['Vásárlás dátuma'] == '?') {
+            $row['Vásárlás dátuma'] = null;
+        }
+        if ($row['Beüzemelés dátuma'] !== '?') {
             if (is_numeric(['Beüzemelés dátuma'])) {
                 $row['Beüzemelés dátuma'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['Beüzemelés dátuma'] - 2);
             } else {
                 $row['Beüzemelés dátuma'] = null;
             }
-
-        if ($row['Vásárlás dátuma'] !== '?')
+        }
+        if ($row['Vásárlás dátuma'] !== '?') {
             if (is_numeric(['Vásárlás dátuma'])) {
                 $row['Vásárlás dátuma'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['Vásárlás dátuma'] - 2);
             } else {
                 $row['Vásárlás dátuma'] = null;
             }
+        }
+
         $row['Beüzemelés dátuma'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['Beüzemelés dátuma'] - 2);
         $row['Vásárlás dátuma'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['Vásárlás dátuma'] - 2);
         $install_date = Carbon::createFromInterface(new DateTime($row['Beüzemelés dátuma']));
@@ -74,6 +76,7 @@ class LEBTORImport implements ToModel, WithHeadingRow
         } else {
             $warrantee = $install_date->copy()->addYear();
         }
+
         $user = User::where('name', $row['beüzemelő szerviz'])->first();
 
         if (!$user) {

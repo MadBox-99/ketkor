@@ -12,5 +12,6 @@ use BenSampo\Enum\Enum;
 final class ProductLogType extends Enum
 {
     const Maintenance = 'maintenance';
+
     const Installation = 'installation';
 }

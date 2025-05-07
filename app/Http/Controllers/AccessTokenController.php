@@ -16,7 +16,7 @@ class AccessTokenController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): void
     {
         //
     }
@@ -26,7 +26,7 @@ class AccessTokenController extends Controller
      */
     public function createAccessToken(Product $product)
     {
-        $adminEmail = config('mail.from.address');
+        config('mail.from.address');
         $admin = User::whereEmail('zoli.szabok@gmail.com')->first();
         $token = Str::random(40); // Generate a unique token
         $user_id = auth()->user()->id;
@@ -40,6 +40,7 @@ class AccessTokenController extends Controller
 
         $accessToken->update(['token' => $token, 'used' => false]);
         $accessToken->save();
+
         $user = auth()->user();
         Mail::to('zoli.szabok@gmail.com')->cc($admin)->send(new AccessGrantMail($token, $user->name));
         return redirect()->route('products.myproducts')->with('success', __('Succesfuly send an email to administrator who will grant an access to private datas, please wait until is access in grant.'));
@@ -49,7 +50,7 @@ class AccessTokenController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): void
     {
         //
     }
@@ -69,6 +70,7 @@ class AccessTokenController extends Controller
             $visibility->update(['isVisible' => 1]);
             return redirect()->route('products.index')->with('success', 'access grated to ' . $accessToken->user->name);
         }
+
         return redirect()->route('products.index')->with('error', 'access token is expired or used');
     }
 
@@ -76,7 +78,7 @@ class AccessTokenController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(AccessToken $accessToken)
+    public function edit(AccessToken $accessToken): void
     {
         //
     }
@@ -84,7 +86,7 @@ class AccessTokenController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, AccessToken $accessToken)
+    public function update(Request $request, AccessToken $accessToken): void
     {
         //
     }
@@ -92,7 +94,7 @@ class AccessTokenController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AccessToken $accessToken)
+    public function destroy(AccessToken $accessToken): void
     {
         //
     }

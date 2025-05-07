@@ -21,13 +21,13 @@ require __DIR__.'/auth.php';
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('/', function () {
         return view('index');
     })->name('index');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::resource('products', ProductController::class);
     Route::resource('organizations', OrganizationController::class);
     Route::resource('productlogs', ProductLogController::class);
@@ -35,9 +35,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('tools', ToolController::class);
     Route::resource('logs', LogController::class);
 
-    Route::prefix('organization')->name('organizations.')->group(function () {
+    Route::prefix('organization')->name('organizations.')->group(function (): void {
         Route::get('/{user}/{organization}/{product}', [OrganizationController::class, 'removeUserProduct'])->name('detach');
-        Route::middleware(['role:Organizer'])->group(function () {
+        Route::middleware(['role:Organizer'])->group(function (): void {
             Route::put('/storeEmployee', [OrganizationController::class, 'storeEmployee'])->name('storeEmployee');
             Route::get('/createEmployee', [OrganizationController::class, 'createEmployee'])->name('createEmployee');
             Route::get('/myorganization', [OrganizationController::class, 'myOrganization'])->name('myorganization');
@@ -47,18 +47,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
     });
 
-    Route::prefix('product')->name('products.')->group(function () {
+    Route::prefix('product')->name('products.')->group(function (): void {
         Route::get('/search', [ProductController::class, 'search'])->name('search');
         Route::get('/myproducts', [ProductController::class, 'myproducts'])->name('myproducts');
         Route::get('/add/{product}', [ProductController::class, 'add'])->name('add');
         Route::delete('/remove/{product}', [ProductController::class, 'remove'])->name('remove');
         Route::get('/partialUpdate/{product}', [ProductController::class, 'partialUpdate']);
     });
-    Route::prefix('accestoken')->name('accestokens.')->group(function () {
+    Route::prefix('accestoken')->name('accestokens.')->group(function (): void {
         Route::get('/createAccessToken/{product}', [AccessTokenController::class, 'createAccessToken'])->name('createAccessToken');
         Route::get('/activateAccessToken/{token}', [AccessTokenController::class, 'activateAccessToken'])->name('activateAccessToken');
     });
-    Route::prefix('user')->name('users.')->group(function () {
+    Route::prefix('user')->name('users.')->group(function (): void {
         Route::get('/', [ProfileController::class, 'index'])->name('index');
         Route::get('/edit/{user}', [ProfileController::class, 'show'])->name('show');
         Route::get('/create', [ProfileController::class, 'create'])->name('create');

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('access_tokens', function (Blueprint $table) {
+        Schema::create('access_tokens', function (Blueprint $table): void {
             $table->id();
             $table->string('token', 40)->nullable()->default(null)->unique();
             $table->boolean('used')->default(false);

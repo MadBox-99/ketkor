@@ -10,11 +10,13 @@ class Visible extends Model
 {
     use HasFactory;
     protected $table = 'are_visible';
+
     protected $fillable = [
         'isVisible',
         'product_id',
         'user_id',
     ];
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);

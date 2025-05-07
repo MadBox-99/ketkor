@@ -11,8 +11,11 @@ class ProductSearch extends Component
 {
     #[Rule('required|min:3|max:20')]
     public $serial_number = '';
+
     public ?Product $product = null;
+
     public bool $owns = false;
+
     public function find()
     {
         $user = Auth::user();
@@ -27,7 +30,7 @@ class ProductSearch extends Component
     {
         $product = $this->product;
         //$owns = true;
-        return view('livewire.product-search', compact('product'));
+        return view('livewire.product-search', ['product' => $product]);
 
     }
 }
