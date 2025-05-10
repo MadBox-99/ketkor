@@ -2,19 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Validation\Rules\Password;
-use Illuminate\Validation\ValidationException;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Notifications\AdminUserRegistered;
-use App\Providers\RouteServiceProvider;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
-use Notification;
 
 class RegisteredUserController extends Controller
 {
@@ -42,13 +38,13 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => $request->password,
         ]);
 
-        $admin = User::where('email', 'sarkozi.viktor@ketkorkft.hu')->first();
-        Notification::send($admin, new AdminUserRegistered($user));
-        //Auth::login($user);
+        event(new Registered($user));
 
-        return redirect(RouteServiceProvider::HOME);
+        Auth::login($user);
+
+        return redirect(route('index'));
     }
 }

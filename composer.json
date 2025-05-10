@@ -9,7 +9,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "bensampo/laravel-enum": "^6.6",
         "filament/filament": "^3.3",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^12.12.0",
