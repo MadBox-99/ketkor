@@ -100,9 +100,9 @@ final class ProductAdminTable extends PowerGridComponent
             ->addColumn('zip')
             ->addColumn('purchase_place')
             ->addColumn('serial_number')
-            ->addColumn('purchase_date_formatted', fn (Product $model) => Carbon::parse($model->purchase_date)->format('Y-m-d'))
-            ->addColumn('installation_date_formatted', fn (Product $model) => Carbon::parse($model->installation_date)->format('Y-m-d'))
-            ->addColumn('warrantee_date_formatted', fn (Product $model) => Carbon::parse($model->warrantee_date)->format('Y-m-d'))
+            ->addColumn('purchase_date_formatted', fn (Product $model): string => Carbon::parse($model->purchase_date)->format('Y-m-d'))
+            ->addColumn('installation_date_formatted', fn (Product $model): string => Carbon::parse($model->installation_date)->format('Y-m-d'))
+            ->addColumn('warrantee_date_formatted', fn (Product $model): string => Carbon::parse($model->warrantee_date)->format('Y-m-d'))
             ->addColumn('tool_name', fn (Product $model) => $model->tool->name);
 
     }

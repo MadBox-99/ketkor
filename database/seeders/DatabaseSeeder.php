@@ -125,7 +125,7 @@ $product->users()->attach($user2->id);
         $user1->products()->attach($productTest1);
         $user1->products()->attach($productTest2);
         $user2->products()->attach($productTest2);
-        Visible::create([
+        /* Visible::create([
             'user_id' => $user1->id,
             'product_id' => $productTest1->id,
             'isVisible' => 1,
@@ -139,7 +139,7 @@ $product->users()->attach($user2->id);
             'user_id' => $user2->id,
             'product_id' => $productTest2->id,
             'isVisible' => 1,
-        ]);
+        ]); */
 
     }
 }

@@ -61,7 +61,7 @@ final class OrganizationDetailsUsersTable extends PowerGridComponent
             ->addColumn('serial_number')
             ->addColumn('city')
             ->addColumn('tool_name')
-            ->addColumn('warrantee_date_formatted', fn (Product $model) => Carbon::parse($model->warrantee_date)->format('Y-m-d'));
+            ->addColumn('warrantee_date_formatted', fn (Product $model): string => Carbon::parse($model->warrantee_date)->format('Y-m-d'));
     }
 
     public function columns(): array

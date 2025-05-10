@@ -2,25 +2,30 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AccessTokenResource\Pages\CreateAccessToken;
-use App\Filament\Resources\AccessTokenResource\Pages\EditAccessToken;
-use App\Filament\Resources\AccessTokenResource\Pages\ListAccessTokens;
-use App\Models\AccessToken;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\TextColumn;
+use App\Filament\Resources\ProductLogResource\Pages\ListProductLogs;
+use App\Filament\Resources\ProductLogResource\Pages\CreateProductLog;
+use App\Filament\Resources\ProductLogResource\Pages\EditProductLog;
+use App\Filament\Resources\ProductLogResource\Pages;
+use App\Filament\Resources\ProductLogResource\RelationManagers;
+use App\Models\ProductLog;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AccessTokenResource extends Resource
+class ProductLogResource extends Resource
 {
-    protected static ?string $model = AccessToken::class;
+    protected static ?string $model = ProductLog::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -28,15 +33,14 @@ class AccessTokenResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('token')
-                    ->maxLength(40),
-                Toggle::make('used')
-                    ->required(),
-                Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required(),
                 Select::make('product_id')
                     ->relationship('product', 'id')
+                    ->required(),
+                TextInput::make('what')
+                    ->maxLength(500),
+                TextInput::make('comment')
+                    ->maxLength(255),
+                DateTimePicker::make('when')
                     ->required(),
             ]);
     }
@@ -45,15 +49,15 @@ class AccessTokenResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('token')
-                    ->searchable(),
-                IconColumn::make('used')
-                    ->boolean(),
-                TextColumn::make('user.name')
+                TextColumn::make('product.id')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('product.name')
-                    ->numeric()
+                TextColumn::make('what')
+                    ->searchable(),
+                TextColumn::make('comment')
+                    ->searchable(),
+                TextColumn::make('when')
+                    ->dateTime()
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -87,9 +91,9 @@ class AccessTokenResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListAccessTokens::route('/'),
-            'create' => CreateAccessToken::route('/create'),
-            'edit' => EditAccessToken::route('/{record}/edit'),
+            'index' => ListProductLogs::route('/'),
+            'create' => CreateProductLog::route('/create'),
+            'edit' => EditProductLog::route('/{record}/edit'),
         ];
     }
 }

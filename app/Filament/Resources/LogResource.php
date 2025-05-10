@@ -2,23 +2,30 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ToolResource\Pages\CreateTool;
-use App\Filament\Resources\ToolResource\Pages\EditTool;
-use App\Filament\Resources\ToolResource\Pages\ListTools;
-use App\Models\Tool;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
+use App\Filament\Resources\LogResource\Pages\ListLogs;
+use App\Filament\Resources\LogResource\Pages\CreateLog;
+use App\Filament\Resources\LogResource\Pages\EditLog;
+use App\Filament\Resources\LogResource\Pages;
+use App\Filament\Resources\LogResource\RelationManagers;
+use App\Models\Log;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ToolResource extends Resource
+class LogResource extends Resource
 {
-    protected static ?string $model = Tool::class;
+    protected static ?string $model = Log::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -26,16 +33,13 @@ class ToolResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->required()
-                    ->maxLength(200),
-                Select::make('category')
-                    ->relationship('category', 'name')
+                Select::make('user_id')
+                    ->relationship('user', 'name')
                     ->required(),
-                TextInput::make('tag')
-                    ->maxLength(200),
-                TextInput::make('factory_name')
-                    ->maxLength(200),
+                Textarea::make('what')
+                    ->required()
+                    ->columnSpanFull(),
+                DatePicker::make('when'),
             ]);
     }
 
@@ -43,14 +47,12 @@ class ToolResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('category')
-                    ->searchable(),
-                TextColumn::make('tag')
-                    ->searchable(),
-                TextColumn::make('factory_name')
-                    ->searchable(),
+                TextColumn::make('user.name')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('when')
+                    ->date()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -83,9 +85,9 @@ class ToolResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListTools::route('/'),
-            'create' => CreateTool::route('/create'),
-            'edit' => EditTool::route('/{record}/edit'),
+            'index' => ListLogs::route('/'),
+            'create' => CreateLog::route('/create'),
+            'edit' => EditLog::route('/{record}/edit'),
         ];
     }
 }
