@@ -23,7 +23,7 @@
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "*",
-        "barryvdh/laravel-ide-helper": "*",
+        "barryvdh/laravel-ide-helper": "^3.5",
         "composer/composer": "^2.6",
         "driftingly/rector-laravel": "^2.0",
         "fakerphp/faker": "^1.9.1",
