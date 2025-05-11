@@ -2,14 +2,21 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Auth\Events\Lockout;
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @method array only(array|string $keys)
+ * @method bool boolean(string $key, mixed $default = null)
+ * @method string input(string $key, mixed $default = null)
+ * @method string|null get(string $key, mixed $default = null)
+ * @method string|null ip(string $key = null, mixed $default = null)
+ */
 class LoginRequest extends FormRequest
 {
     /**
@@ -42,7 +49,7 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (! Auth::attempt($this->only('email'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
