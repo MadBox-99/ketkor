@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-layouts.app>
     <!-- Page Heading -->
     <x-slot name="header">
         <x-button-style-link text="Users" route="users.create">New user create</x-button-style-link>
@@ -31,7 +31,7 @@
                                     {{ $user->name }}
                                 </x-table-td>
                                 <x-table-td>
-                                    @if ($user->organization  != null)
+                                    @if ($user->organization != null)
                                         {{ $user->organization->name }}
                                     @endif
 
@@ -69,4 +69,4 @@
         </div>
     </div>
 
-</x-app-layout>
+</x-layouts.app>

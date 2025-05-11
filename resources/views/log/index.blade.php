@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-layouts.app>
     <x-slot name="header">
         <h2 class="text-xl font-semibold leading-tight text-primary">
             <div class="">
@@ -62,4 +62,4 @@
         </div>
     </div>
 
-</x-app-layout>
+</x-layouts.app>

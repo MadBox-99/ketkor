@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-layouts.app>
     <div class="">
 
         <!-- Page Heading -->
@@ -47,4 +47,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-layouts.app>

@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-layouts.app>
     <x-slot name="header">
         <div class="mb-4 flex items-center justify-between font-bold">
             <div class="flex-auto">
@@ -11,4 +11,4 @@
         @livewire('product-search')
     </div>
 
-</x-app-layout>
+</x-layouts.app>

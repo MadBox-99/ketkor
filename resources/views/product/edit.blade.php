@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-layouts.app>
     <div class="">
         <!-- Page Heading -->
         <x-slot name="header">
@@ -390,4 +390,4 @@
             </div>
         @endif
     </div>
-</x-app-layout>
+</x-layouts.app>

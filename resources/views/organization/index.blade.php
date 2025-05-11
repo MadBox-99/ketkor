@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-layouts.app>
     <x-slot name="header">
         <x-button-style-link text="Organizations" route="organizations.create"> New organization create
         </x-button-style-link>
@@ -10,4 +10,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-layouts.app>
