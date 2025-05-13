@@ -13,6 +13,6 @@ class AccorroniProductsSeeder extends Seeder
      */
     public function run(): void
     {
-        // Excel::import(new AccorroniProducts, storage_path('app/import/ACCORRONI GHIBLI.xlsx'));
+        Excel::import(new AccorroniProducts, storage_path('app/import/ACCORRONI GHIBLI.xlsx'));
     }
 }
