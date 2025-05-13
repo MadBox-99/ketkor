@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\BulkActionGroup;
@@ -11,15 +12,12 @@ use App\Filament\Resources\PartialResource\Pages\ListPartials;
 use App\Filament\Resources\PartialResource\Pages\CreatePartial;
 use App\Filament\Resources\PartialResource\Pages\EditPartial;
 use App\Filament\Resources\PartialResource\Pages;
-use App\Filament\Resources\PartialResource\RelationManagers;
 use App\Models\Partial;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PartialResource extends Resource
 {
@@ -39,9 +37,9 @@ class PartialResource extends Resource
                     ->maxLength(255),
                 TextInput::make('name')
                     ->maxLength(255),
-                TextInput::make('product_id')
-                    ->required()
-                    ->numeric(),
+                Select::make('product_id')
+                    ->relationship('product', 'id')
+                    ->required(),
             ]);
     }
 
@@ -55,7 +53,7 @@ class PartialResource extends Resource
                     ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('product_id')
+                TextColumn::make('product.id')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')

@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Throwable;
 use App\Models\Log;
-use App\Models\User;
-use App\Models\Product;
-use App\Models\Visible;
 use App\Models\Organization;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Product;
+use App\Models\User;
+use App\Models\Visible;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\RedirectResponse;
-use App\Http\Requests\StoreUserRequest;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class OrganizationController extends Controller
 {
@@ -25,7 +23,7 @@ class OrganizationController extends Controller
         Log::create(
             [
                 'user_id' => Auth::user()->id,
-                'what' => 'organization.index page open/hover'
+                'what' => 'organization.index page open/hover',
             ]
         );
 
@@ -40,38 +38,11 @@ class OrganizationController extends Controller
         Log::create(
             [
                 'user_id' => 1,
-                'what' => 'organization.create page open/hover'
+                'what' => 'organization.create page open/hover',
             ]
         );
+
         return view('organization.create');
-    }
-
-    public function createEmployee(): View
-    {
-        return view('organization.createEmployee');
-    }
-
-    public function storeEmployee(StoreUserRequest $request): RedirectResponse
-    {
-        DB::beginTransaction();
-        try {
-            $validated = $request->validated();
-            $user = User::createOrFirst(
-                [
-                    'name' => $validated['name'],
-                    'email' => $validated['email'],
-                    'password' => $validated['password'],
-                    'organization_id' => $validated['organization_id'],
-                ]
-            );
-            $user->assignRole('Servicer');
-            $success = __('Successfully created an new employee.');
-            DB::commit();
-            return redirect()->route('organizations.myorganization')->with(['success' => $success]);
-        } catch (Throwable $throwable) {
-            DB::rollBack();
-            return redirect()->back()->withInput()->with('error', $throwable->getMessage());
-        }
     }
 
     /**
@@ -100,17 +71,19 @@ class OrganizationController extends Controller
             Log::create(
                 [
                     'user_id' => Auth::user()->id,
-                    'what' => 'organization.create Organization created successfully |' . json_encode($request->all())
+                    'what' => 'organization.create Organization created successfully |'.json_encode($request->all()),
                 ]
             );
             DB::commit();
+
             return redirect()->route('organizations.index')->with('success', __('Organization created successfully.'));
         } catch (Throwable $throwable) {
             DB::rollback();
             Log::create([
                 'user_id' => Auth::user()->id,
-                'what' => 'organization store failed' . json_encode($request->all()) . " | " . $throwable->getMessage()
+                'what' => 'organization store failed'.json_encode($request->all()).' | '.$throwable->getMessage(),
             ]);
+
             return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
     }
@@ -127,7 +100,7 @@ class OrganizationController extends Controller
     {
         DB::beginTransaction();
         try {
-            //validation
+            // validation
             $request->validate(
                 [
                     'selected_user_id' => 'required',
@@ -143,7 +116,7 @@ class OrganizationController extends Controller
             if ($isAttached) {
                 Visible::whereUserId($request->selected_user_id)->whereProductId($product->id)->first()->update(
                     [
-                        'isVisible' => $visible->isVisible
+                        'isVisible' => $visible->isVisible,
                     ]
                 );
                 $visible->delete();
@@ -151,7 +124,7 @@ class OrganizationController extends Controller
                 $product->users()->attach($request->selected_user_id);
                 $visible->update(
                     [
-                        'user_id' => $request->selected_user_id
+                        'user_id' => $request->selected_user_id,
                     ]
                 );
             }
@@ -159,18 +132,20 @@ class OrganizationController extends Controller
             Log::create(
                 [
                     'user_id' => Auth::user()->id,
-                    'what' => 'product successfully moved from user:' . $request->user_id . ' to user: ' . $request->selected_user_id
+                    'what' => 'product successfully moved from user:'.$request->user_id.' to user: '.$request->selected_user_id,
                 ]
             );
 
             DB::commit();
+
             return redirect()->route('organizations.myorganization')->with('success', __('Product successfully moved.'));
         } catch (Throwable $throwable) {
             DB::rollback();
             Log::create([
                 'user_id' => 1,
-                'what' => 'user failed moved from:' . $request->user_id . ' to: ' . $request->selected_user_id . " | " . $throwable->getMessage()
+                'what' => 'user failed moved from:'.$request->user_id.' to: '.$request->selected_user_id.' | '.$throwable->getMessage(),
             ]);
+
             return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
     }
@@ -185,6 +160,7 @@ class OrganizationController extends Controller
         $products = Product::whereHas('users.organization', function ($query) use ($organization_id): void {
             $query->where('id', $organization_id);
         })->get();
+
         return view('organization.edit', ['organization' => $organization, 'products' => $products]);
     }
 
@@ -208,9 +184,11 @@ class OrganizationController extends Controller
                 ]
             );
             DB::commit();
+
             return redirect()->route('organizations.index')->with('success', __('Organization updated successfully.'));
         } catch (Throwable $throwable) {
             DB::rollback();
+
             return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
     }
@@ -224,9 +202,11 @@ class OrganizationController extends Controller
         try {
             $organization->delete();
             DB::commit();
+
             return redirect()->route('organizations.index')->with('success', __('Organizations deleted successfully.'));
         } catch (Throwable $throwable) {
             DB::rollback();
+
             return redirect()->route('organizations.index')->with('error', $throwable->getMessage());
         }
     }
@@ -238,6 +218,7 @@ class OrganizationController extends Controller
         $user = Auth::user();
         $organization_id = $user->organization_id;
         $organization = Organization::with('users.products')->whereId($organization_id)->first();
+
         return view('organization.myorganization', ['organization' => $organization]);
     }
 
@@ -246,6 +227,7 @@ class OrganizationController extends Controller
         $user = Auth::user();
         $organization_id = $user->organization_id;
         $organization = Organization::with('users.products')->whereId($organization_id)->first();
+
         return view('organization.myorganization', ['organization' => $organization]);
     }
 
@@ -272,9 +254,11 @@ class OrganizationController extends Controller
                 ]
             );
             DB::commit();
+
             return redirect()->route('organizations.myorganization')->with('success', __('Organization updated successfully.'));
         } catch (Throwable $throwable) {
             DB::rollback();
+
             return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
     }
@@ -283,18 +267,20 @@ class OrganizationController extends Controller
     {
         DB::beginTransaction();
         try {
-            if ($user->id != Auth::user()->id && !$user->hasRole('Organizer')) {
+            if ($user->id != Auth::user()->id && ! $user->hasRole('Organizer')) {
                 $user->products()->detach();
                 $user->are_visible()->delete();
                 $user->delete();
                 DB::commit();
+
                 return redirect()->route('organizations.myorganization')->with('success', __('Successfully removed the user from your organization.'));
             }
 
-            return redirect()->route('organizations.myorganization')->with('error', __("The user could not be removed from the organisation. You cannot delete your account here."));
+            return redirect()->route('organizations.myorganization')->with('error', __('The user could not be removed from the organisation. You cannot delete your account here.'));
         } catch (Throwable $throwable) {
             DB::rollback();
-            return redirect()->route('organizations.myorganization')->with('error', __("The user could not be removed from the organisation. You cannot delete your account here." . $throwable->getMessage()));
+
+            return redirect()->route('organizations.myorganization')->with('error', __('The user could not be removed from the organisation. You cannot delete your account here.'.$throwable->getMessage()));
         }
     }
 }

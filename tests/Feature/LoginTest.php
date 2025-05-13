@@ -7,8 +7,8 @@ use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
-describe('Login (Livewire)', function () {
-    it('allows user to login with correct credentials', function () {
+describe('Login (Livewire)', function (): void {
+    it('allows user to login with correct credentials', function (): void {
         $user = User::factory()->create([
             'password' => Hash::make('password123'),
         ]);
@@ -22,7 +22,7 @@ describe('Login (Livewire)', function () {
         $this->assertAuthenticatedAs($user);
     });
 
-    it('does not allow user to login with invalid credentials', function () {
+    it('does not allow user to login with invalid credentials', function (): void {
         $user = User::factory()->create([
             'password' => Hash::make('password123'),
         ]);

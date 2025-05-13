@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
+use DateTimeInterface;
 use DateTime;
-use App\Models\Tool;
-use App\Models\Partial;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Product extends Model
@@ -35,15 +34,22 @@ class Product extends Model
 
     protected $dateFormat = 'Y-m-d';
 
-    protected $casts = [
-        'warrantee_date' => 'date:Y-m-d',
-        'purchase_date' => 'date:Y-m-d',
-        'installation_date' => 'date:Y-m-d',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'warrantee_date' => 'date:Y-m-d',
+            'purchase_date' => 'date:Y-m-d',
+            'installation_date' => 'date:Y-m-d',
+        ];
+    }
 
     protected function serializeDate($date): string
     {
-        $date = is_null($date) ? new DateTime() : new DateTime($date);
+        if (is_null($date)) {
+            $date = new DateTime;
+        } elseif (! $date instanceof DateTimeInterface) {
+            $date = new DateTime($date);
+        }
 
         return $date->format('Y-m-d');
     }
@@ -80,5 +86,4 @@ class Product extends Model
     {
         return $this->hasManyThrough(Organization::class, User::class);
     }
-
 }

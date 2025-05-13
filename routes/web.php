@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccessTokenController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PartialController;
@@ -21,13 +22,11 @@ require __DIR__.'/auth.php';
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
 Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('/', function () {
         return view('index');
     })->name('index');
-});
-
-Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::resource('products', ProductController::class);
     Route::resource('organizations', OrganizationController::class);
     Route::resource('productlogs', ProductLogController::class);
@@ -38,11 +37,11 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::prefix('organization')->name('organizations.')->group(function (): void {
         Route::get('/{user}/{organization}/{product}', [OrganizationController::class, 'removeUserProduct'])->name('detach');
         Route::middleware(['role:Organizer'])->group(function (): void {
-            Route::put('/storeEmployee', [OrganizationController::class, 'storeEmployee'])->name('storeEmployee');
-            Route::get('/createEmployee', [OrganizationController::class, 'createEmployee'])->name('createEmployee');
+            Route::put('/store', [EmployeeController::class, 'store'])->name('store');
+            Route::get('/create', [EmployeeController::class, 'create'])->name('create');
             Route::get('/myorganization', [OrganizationController::class, 'myOrganization'])->name('myorganization');
             Route::post('/move', [OrganizationController::class, 'productMove'])->name('productMove');
-            Route::PUT('/myorganizationupdate/{organization}', [OrganizationController::class, 'myOrganizationUpdate'])->name('myorganizationupdate');
+            Route::put('/myorganizationupdate/{organization}', [OrganizationController::class, 'myOrganizationUpdate'])->name('myorganizationupdate');
             Route::get('/removeUserFromOrganization/{user}', [OrganizationController::class, 'removeUserFromOrganization'])->name('removeUserFromOrganization');
         });
     });
