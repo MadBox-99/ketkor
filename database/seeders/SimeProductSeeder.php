@@ -13,6 +13,6 @@ class SimeProductSeeder extends Seeder
      */
     public function run(): void
     {
-        Excel::import(new ProductsImport, storage_path('app/import/SIME garancialis tablazat.xls'));
+        Excel::import(new ProductsImport, storage_path('app/import/sime garanciаlis tаblаzat.xls'));
     }
 }
