@@ -13,6 +13,6 @@ class FerroliProductsSeeder extends Seeder
      */
     public function run(): void
     {
-        Excel::import(new FerroliProductsImport, storage_path('app/import/Ferroli Garanciális táblázat.xls'));
+        Excel::import(new FerroliProductsImport, storage_path('app/import/ferroli_gar.xls'));
     }
 }
