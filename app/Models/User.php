@@ -41,9 +41,9 @@ class User extends Authenticatable implements FilamentUser
     ];
 
     /**
-     * The attributes that should be cast.
+     * Get the attributes that should be cast.
      *
-     * @var array<string, string>
+     * @return array<string, string>
      */
     protected function casts(): array
     {
