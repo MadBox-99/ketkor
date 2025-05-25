@@ -93,15 +93,23 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        DB::beginTransaction();
+        try {
+            $request->user()->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+            if ($request->user()->isDirty('email')) {
+                $request->user()->email_verified_at = null;
+            }
+
+            $request->user()->save();
+            DB::commit();
+
+            return redirect()->back()->with('status', 'Profile updated successfully.');
+        } catch (Throwable $throwable) {
+            DB::rollBack();
+
+            return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
-
-        $request->user()->save();
-
-        return redirect()->back()->with('status', __('profile-updated'));
     }
 
     /**
