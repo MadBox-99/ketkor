@@ -54,10 +54,10 @@ class OrganizationController extends Controller
         try {
             $request->validate(
                 [
-                    'name' => 'required|string',
-                    'city' => 'string',
-                    'address' => 'string',
-                    'zip' => 'string',
+                    'name' => ['required', 'string'],
+                    'city' => ['string'],
+                    'address' => ['string'],
+                    'zip' => ['string'],
                 ]
             );
             Organization::create(
@@ -68,21 +68,12 @@ class OrganizationController extends Controller
                     'zip' => $request->zip,
                 ]
             );
-            Log::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'what' => 'organization.create Organization created successfully |'.json_encode($request->all()),
-                ]
-            );
+
             DB::commit();
 
             return redirect()->route('organizations.index')->with('success', __('Organization created successfully.'));
         } catch (Throwable $throwable) {
             DB::rollback();
-            Log::create([
-                'user_id' => Auth::user()->id,
-                'what' => 'organization store failed'.json_encode($request->all()).' | '.$throwable->getMessage(),
-            ]);
 
             return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
@@ -103,9 +94,9 @@ class OrganizationController extends Controller
             // validation
             $request->validate(
                 [
-                    'selected_user_id' => 'required',
-                    'user_id' => 'required',
-                    'product_id' => 'required',
+                    'selected_user_id' => ['required'],
+                    'user_id' => ['required'],
+                    'product_id' => ['required'],
                 ]
             );
             $product = Product::with(['users'])->whereId($request->product_id)->first();
@@ -172,7 +163,7 @@ class OrganizationController extends Controller
         DB::beginTransaction();
         try {
             $request->validate([
-                'name' => 'required|string',
+                'name' => ['required', 'string'],
             ]);
             $organization->update(
                 [
@@ -237,11 +228,11 @@ class OrganizationController extends Controller
         try {
             $request->validate(
                 [
-                    'name' => 'required|string',
-                    'city' => 'string',
-                    'address' => 'string',
-                    'zip' => 'string',
-                    'tax_number' => 'required|max:24',
+                    'name' => ['required', 'string'],
+                    'city' => ['string'],
+                    'address' => ['string'],
+                    'zip' => ['string'],
+                    'tax_number' => ['required', 'max:24'],
                 ]
             );
             $organization->update(

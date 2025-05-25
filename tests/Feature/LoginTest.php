@@ -10,12 +10,12 @@ uses(RefreshDatabase::class);
 describe('Login (Livewire)', function (): void {
     it('allows user to login with correct credentials', function (): void {
         $user = User::factory()->create([
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('password'),
         ]);
 
         Livewire::test('auth.login')
             ->set('email', $user->email)
-            ->set('password', 'password123')
+            ->set('password', 'password')
             ->call('login')
             ->assertRedirect('/'); // vagy a megfelelő átirányítás
 
@@ -24,7 +24,7 @@ describe('Login (Livewire)', function (): void {
 
     it('does not allow user to login with invalid credentials', function (): void {
         $user = User::factory()->create([
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('password'),
         ]);
 
         Livewire::test('auth.login')

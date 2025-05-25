@@ -4,10 +4,10 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Enums\UserRole;
 use App\Models\Product;
 use App\Models\Tool;
 use App\Models\User;
-use App\Models\Visible;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -21,43 +21,43 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $roles = ['Admin', 'Operator', 'Servicer', 'Organizer'];
+
         $permissions = [
-            'products.list' => 'Admin|Operator',
-            'products.create' => 'Admin|Operator',
-            'products.update' => 'Admin|Operator|Servicer|organizer',
-            'products.delete' => 'Admin|Operator',
-            'organizations.list' => 'Admin|Operator',
-            'organizations.create' => 'Admin|Operator',
-            'organizations.update' => 'Admin|Operator|organizer',
-            'organizations.delete' => 'Admin|Operator',
-            'users.list' => 'Admin|Operator',
-            'users.create' => 'Admin|Operator',
-            'users.update' => 'Admin|Operator',
-            'users.delete' => 'Admin|Operator',
-            'tools.list' => 'Admin|Operator',
-            'tools.create' => 'Admin|Operator',
-            'tools.update' => 'Admin|Operator',
-            'tools.delete' => 'Admin|Operator',
+            // Products
+            'products.list' => [UserRole::Admin->value, UserRole::Operator->value],
+            'products.create' => [UserRole::Admin->value, UserRole::Operator->value],
+            'products.update' => [UserRole::Admin->value, UserRole::Operator->value, UserRole::Servicer->value, UserRole::Organizer->value],
+            'products.delete' => [UserRole::Admin->value, UserRole::Operator->value],
+
+            // Organizations
+            'organizations.list' => [UserRole::Admin->value, UserRole::Operator->value],
+            'organizations.create' => [UserRole::Admin->value, UserRole::Operator->value],
+            'organizations.update' => [UserRole::Admin->value, UserRole::Operator->value, UserRole::Organizer->value],
+            'organizations.delete' => [UserRole::Admin->value, UserRole::Operator->value],
+
+            // Users
+            'users.*' => [UserRole::Admin->value, UserRole::Operator->value],
+
+            // Tools
+            'tools.*' => [UserRole::Admin->value, UserRole::Operator->value],
         ];
 
-        foreach ($roles as $role) {
-            Role::create(['name' => $role]);
+        // Create roles
+        foreach (UserRole::cases() as $role) {
+            Role::firstOrCreate(['name' => $role->value, 'guard_name' => 'web']);
         }
 
-        foreach ($permissions as $name => $roles) {
-            $permission = Permission::create(['name' => $name]);
-            $toRoles = explode('|', $roles);
-            foreach ($toRoles as $toRole) {
-                $permission->assignRole($toRole);
-            }
+        // Create permissions and sync with roles
+        foreach ($permissions as $name => $permissionRoles) {
+            $permission = Permission::firstOrCreate(['name' => $name, 'guard_name' => 'web']);
+            $permission->syncRoles($permissionRoles);
         }
 
         $admin = User::factory()->create([
             'name' => 'Admin',
             'email' => 'zoli.szabok@gamil.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('1234'), // password
+            'password' => Hash::make('password'), // password
             'remember_token' => Str::random(10),
         ]);
         $user1 = User::factory()->create([
@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User 2',
             'email' => 'test@test2.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('1234'), // password
+            'password' => Hash::make('password'), // password
             'remember_token' => Str::random(10),
             'organization_id' => 1,
         ]);
@@ -80,15 +80,15 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User 3',
             'email' => 'test@test3.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('1234'), // password
+            'password' => Hash::make('password'), // password
             'remember_token' => Str::random(10),
             'organization_id' => 1,
         ]);
 
-        $admin->assignRole('Admin');
-        $user1->assignRole('Operator');
-        $user2->assignRole('Organizer');
-        $user3->assignRole('Servicer');
+        $admin->assignRole(UserRole::Admin);
+        $user1->assignRole(UserRole::Operator);
+        $user2->assignRole(UserRole::Organizer);
+        $user3->assignRole(UserRole::Servicer);
         Tool::factory()->create([
             'id' => '1',
             'name' => 'Brava Slim 25 BT',
@@ -96,28 +96,13 @@ class DatabaseSeeder extends Seeder
             'tag' => 'Próba tag',
             'factory_name' => 'Sime',
 
-        ]); /*
-$product = Product::factory()->create([
-'owner_name' => 'Proba Név',
-'city' => 'Biatorbágy',
-'street' => 'Géza fejedelem u. 6.',
-'zip' => '2051',
-'serial_number' => '4518300786',
-'installation_date' => '2023-08-20',
-'warrantee_date' => '2024-08-20',
-'purchase_place' => 'Két Kör Kft.',
-'comments' => 'HMV-t nem használják',
-'tool_id' => '1',
-]);
-$product->users()->attach($user1->id);
-$product->users()->attach($user2->id);
-*/
+        ]);
 
         $this->call([
-            SimeProductSeeder::class,
+            /* SimeProductSeeder::class,
             AccorroniProductsSeeder::class,
             FerroliProductsSeeder::class,
-            LEBTORProductsSeeder::class,
+            LEBTORProductsSeeder::class, */
         ]);
 
         $productTest1 = Product::whereId(1)->first();
@@ -125,21 +110,6 @@ $product->users()->attach($user2->id);
         $user1->products()->attach($productTest1);
         $user1->products()->attach($productTest2);
         $user2->products()->attach($productTest2);
-        /* Visible::create([
-            'user_id' => $user1->id,
-            'product_id' => $productTest1->id,
-            'isVisible' => 1,
-        ]);
-        Visible::create([
-            'user_id' => $user1->id,
-            'product_id' => $productTest2->id,
-            'isVisible' => 1,
-        ]);
-        Visible::create([
-            'user_id' => $user2->id,
-            'product_id' => $productTest2->id,
-            'isVisible' => 1,
-        ]); */
 
     }
 }

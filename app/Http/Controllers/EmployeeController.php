@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Throwable;
 
 class EmployeeController extends Controller
@@ -25,7 +26,7 @@ class EmployeeController extends Controller
                 [
                     'name' => $validated['name'],
                     'email' => $validated['email'],
-                    'password' => $validated['password'],
+                    'password' => Hash::make($validated['password']),
                     'organization_id' => $validated['organization_id'],
                 ]
             );

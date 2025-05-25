@@ -23,11 +23,6 @@ class ProductController extends Controller
      */
     public function index()
     {
-        Log::create([
-            'user_id' => 1,
-            'what' => 'product.index page open/hover',
-        ]);
-
         return view('product.index');
     }
 
@@ -132,8 +127,8 @@ class ProductController extends Controller
         DB::beginTransaction();
         try {
             $request->validate([
-                'tool_id' => 'required',
-                'user_ids' => 'required',
+                'tool_id' => ['required'],
+                'user_ids' => ['required'],
             ]);
             // Validate Request
             $product = Product::whereId($product->id)->first();

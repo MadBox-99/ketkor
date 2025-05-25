@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Throwable;
-use App\Models\Log;
 use App\Models\Tool;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class ToolController extends Controller
 {
@@ -15,10 +14,6 @@ class ToolController extends Controller
      */
     public function index()
     {
-        Log::create([
-            'user_id' => 1,
-            'what' => 'tool.index page open/hover'
-        ]);
         return view('tool.index');
     }
 
@@ -27,10 +22,6 @@ class ToolController extends Controller
      */
     public function create()
     {
-        Log::create([
-            'user_id' => 1,
-            'what' => 'tool.create page open/hover'
-        ]);
         return view('tool.create');
     }
 
@@ -42,10 +33,10 @@ class ToolController extends Controller
         DB::beginTransaction();
         try {
             $request->validate([
-                'name' => 'required|string',
-                'category' => 'string',
-                'tag' => 'string',
-                'factory_name' => 'string',
+                'name' => ['required', 'string'],
+                'category' => ['string'],
+                'tag' => ['string'],
+                'factory_name' => ['string'],
             ]);
             Tool::create(
                 [
@@ -55,19 +46,13 @@ class ToolController extends Controller
                     'factory_name' => $request->factory_name,
                 ]
             );
-            Log::create([
-                'user_id' => 1,
-                'what' => 'tool.create Tool created successfully |' . json_encode($request->all())
-            ]);
             DB::commit();
+
             return redirect()->route('tools.index')->with('success', __('Tool created successfully.'));
         } catch (Throwable $throwable) {
 
             DB::rollback();
-            Log::create([
-                'user_id' => 1,
-                'what' => 'tool store failed' . json_encode($request->all()) . " | " . $throwable->getMessage()
-            ]);
+
             return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
     }
@@ -85,10 +70,6 @@ class ToolController extends Controller
      */
     public function edit(Tool $tool)
     {
-        Log::create([
-            'user_id' => 1,
-            'what' => 'tool.edit page open/hover | id:' . $tool->id
-        ]);
         return view('tool.edit', ['tool' => $tool]);
     }
 
@@ -100,9 +81,9 @@ class ToolController extends Controller
         DB::beginTransaction();
         try {
             $request->validate([
-                'name' => 'required|string',
-                'category' => 'string',
-                'factory_name' => 'string',
+                'name' => ['required', 'string'],
+                'category' => ['string'],
+                'factory_name' => ['string'],
             ]);
             $tool->update(
                 [
@@ -114,9 +95,11 @@ class ToolController extends Controller
             );
 
             DB::commit();
+
             return redirect()->route('tools.index')->with('success', __('Tool updated successfully.'));
         } catch (Throwable $throwable) {
             DB::rollback();
+
             return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
     }
