@@ -29,7 +29,7 @@ final class AppServiceProvider extends ServiceProvider
     {
         Model::automaticallyEagerLoadRelationships();
 
-        /* Gate::policy(Role::class, RolePolicy::class);
-        Gate::policy(Permission::class, PermissionPolicy::class); */
+        Gate::policy(Role::class, RolePolicy::class);
+        Gate::policy(Permission::class, PermissionPolicy::class);
     }
 }
