@@ -5,14 +5,12 @@ namespace App\Livewire;
 use App\Models\Product;
 use App\Models\Tool;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Carbon;
 use Livewire\Attributes\On;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridColumns;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
@@ -87,24 +85,6 @@ final class ProductAdminTable extends PowerGridComponent
     public function relationSearch(): array
     {
         return ['tool' => ['name']];
-    }
-
-    public function addColumns(): PowerGridColumns
-    {
-        return PowerGrid::columns()
-            ->addColumn('id')
-            ->addColumn('owner_name')
-            ->addColumn('installer_name')
-            ->addColumn('city')
-            ->addColumn('street')
-            ->addColumn('zip')
-            ->addColumn('purchase_place')
-            ->addColumn('serial_number')
-            ->addColumn('purchase_date_formatted', fn (Product $model): string => Carbon::parse($model->purchase_date)->format('Y-m-d'))
-            ->addColumn('installation_date_formatted', fn (Product $model): string => Carbon::parse($model->installation_date)->format('Y-m-d'))
-            ->addColumn('warrantee_date_formatted', fn (Product $model): string => Carbon::parse($model->warrantee_date)->format('Y-m-d'))
-            ->addColumn('tool_name', fn (Product $model) => $model->tool->name);
-
     }
 
     public function columns(): array

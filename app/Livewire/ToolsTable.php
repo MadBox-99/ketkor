@@ -2,15 +2,14 @@
 
 namespace App\Livewire;
 
-use Livewire\Attributes\On;
 use App\Models\Tool;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\On;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridColumns;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
@@ -42,16 +41,6 @@ final class ToolsTable extends PowerGridComponent
     public function relationSearch(): array
     {
         return [];
-    }
-
-    public function addColumns(): PowerGridColumns
-    {
-        return PowerGrid::columns()
-            ->addColumn('id')
-            ->addColumn('name')
-            ->addColumn('category')
-            ->addColumn('tag')
-            ->addColumn('factory_name');
     }
 
     public function columns(): array

@@ -95,13 +95,13 @@ class ProfileController extends Controller
     {
         DB::beginTransaction();
         try {
-            $request->user()->fill($request->validated());
+            Auth::user()->fill($request->validated());
 
-            if ($request->user()->isDirty('email')) {
-                $request->user()->email_verified_at = null;
+            if (Auth::user()->isDirty('email')) {
+                Auth::user()->email_verified_at = null;
             }
 
-            $request->user()->save();
+            Auth::user()->save();
             DB::commit();
 
             return redirect()->back()->with('status', 'Profile updated successfully.');

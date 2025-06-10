@@ -2,16 +2,14 @@
 
 namespace App\Livewire;
 
-use Livewire\Attributes\On;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Carbon;
+use Livewire\Attributes\On;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridColumns;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
@@ -44,30 +42,6 @@ final class ProductTable extends PowerGridComponent
     public function relationSearch(): array
     {
         return [];
-    }
-
-    public function addColumns(): PowerGridColumns
-    {
-        return PowerGrid::columns()
-            ->addColumn('id')
-            ->addColumn('owner_name')
-
-            /** Example of custom column using a closure **/
-            ->addColumn('owner_name_lower', fn (Product $model) => strtolower(e($model->owner_name)))
-
-            ->addColumn('installer_name')
-            ->addColumn('city')
-            ->addColumn('street')
-            ->addColumn('zip')
-            ->addColumn('purchase_place')
-            ->addColumn('serial_number')
-            ->addColumn('purchase_date_formatted', fn (Product $model): string => Carbon::parse($model->purchase_date)->format('d/m/Y'))
-            ->addColumn('installation_date_formatted', fn (Product $model): string => Carbon::parse($model->installation_date)->format('d/m/Y'))
-            ->addColumn('warrantee_date_formatted', fn (Product $model): string => Carbon::parse($model->warrantee_date)->format('d/m/Y'))
-            ->addColumn('tool_id')
-            ->addColumn('user_id')
-            ->addColumn('created_at_formatted', fn (Product $model): string => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'))
-            ->addColumn('created_at_formatted', fn (Product $model): string => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
     }
 
     public function columns(): array

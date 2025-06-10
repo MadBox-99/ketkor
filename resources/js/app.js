@@ -1,15 +1,11 @@
-//import './../css/app.css';
-import { Datepicker, Input, initTE } from "tw-elements";
-initTE({ Datepicker, Input });
-import flatpickr from "flatpickr";
-//import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
+import './../../vendor/power-components/livewire-powergrid/dist/tailwind.css'
+import '../css/app.css';
 import.meta.glob([
     '../img/**',
 ]);
 import TomSelect from "tom-select";
 window.TomSelect = TomSelect;
-import './../../vendor/power-components/livewire-powergrid/dist/powergrid';
-import './../../vendor/power-components/livewire-powergrid/dist/tailwind.css'// bootstrap5.css
+
 
 const menuButton = document.getElementById('menu-toggle');
 const mobileMenu = document.getElementById('mobile-menu');
@@ -79,8 +75,3 @@ document.addEventListener('livewire:navigated', () => {
     }
 
 });
-function toggle() {
-
-}
-
-Livewire.start();

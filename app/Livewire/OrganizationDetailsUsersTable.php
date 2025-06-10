@@ -2,17 +2,15 @@
 
 namespace App\Livewire;
 
-use Livewire\Attributes\On;
 use App\Models\Organization;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Carbon;
+use Livewire\Attributes\On;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
 use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridColumns;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
@@ -52,16 +50,6 @@ final class OrganizationDetailsUsersTable extends PowerGridComponent
     public function relationSearch(): array
     {
         return ['product' => ['id', '']];
-    }
-
-    public function addColumns(): PowerGridColumns
-    {
-        return PowerGrid::columns()
-            ->addColumn('id')
-            ->addColumn('serial_number')
-            ->addColumn('city')
-            ->addColumn('tool_name')
-            ->addColumn('warrantee_date_formatted', fn (Product $model): string => Carbon::parse($model->warrantee_date)->format('Y-m-d'));
     }
 
     public function columns(): array
