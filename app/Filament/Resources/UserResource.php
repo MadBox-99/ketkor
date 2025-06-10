@@ -18,6 +18,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -37,10 +38,19 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Select::make('organization_id')
                     ->relationship('organization', 'name'),
-                DateTimePicker::make('email_verified_at'),
+                Select::make('roles')
+                    ->label('Szerepkörök')
+                    ->multiple()
+                    ->preload()
+                    ->relationship('roles', 'name'),
+                DateTimePicker::make('email_verified_at')
+                    ->label('Email megerősítve'),
                 TextInput::make('password')
+                    ->label('Jelszó')
+                    ->revealable()
                     ->password()
-                    ->maxLength(255),
+                    ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
+                    ->dehydrated(fn (?string $state): bool => filled($state)),
             ]);
     }
 
@@ -58,6 +68,12 @@ class UserResource extends Resource
                 TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable(),
+                TextColumn::make('roles.name')
+                    ->label('Szerepkörök')
+                    ->searchable()
+                    ->getStateUsing(function (User $record) {
+                        return $record->roles->pluck('name')->implode(', ');
+                    }),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
