@@ -2,8 +2,6 @@
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\Response;
-
 use App\Models\User;
 
 class UserPolicy
@@ -13,7 +11,9 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->checkPermissionTo('view-any User');
+        // return $user->checkPermissionTo('view-any User');
+
+        return true;
     }
 
     /**
@@ -21,6 +21,8 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
+        return true;
+
         return $user->checkPermissionTo('view User');
     }
 
@@ -29,6 +31,8 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
+        return true;
+
         return $user->checkPermissionTo('create User');
     }
 
@@ -37,6 +41,8 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
+        return true;
+
         return $user->checkPermissionTo('update User');
     }
 
@@ -45,6 +51,8 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
+        return true;
+
         return $user->checkPermissionTo('delete User');
     }
 
@@ -53,6 +61,8 @@ class UserPolicy
      */
     public function deleteAny(User $user): bool
     {
+        return true;
+
         return $user->checkPermissionTo('delete-any User');
     }
 
@@ -61,6 +71,8 @@ class UserPolicy
      */
     public function restore(User $user, User $model): bool
     {
+        return true;
+
         return $user->checkPermissionTo('restore User');
     }
 
@@ -69,6 +81,8 @@ class UserPolicy
      */
     public function restoreAny(User $user): bool
     {
+        return true;
+
         return $user->checkPermissionTo('restore-any User');
     }
 
@@ -77,6 +91,8 @@ class UserPolicy
      */
     public function replicate(User $user, User $model): bool
     {
+        return true;
+
         return $user->checkPermissionTo('replicate User');
     }
 
@@ -85,6 +101,8 @@ class UserPolicy
      */
     public function reorder(User $user): bool
     {
+        return true;
+
         return $user->checkPermissionTo('reorder User');
     }
 
@@ -93,6 +111,8 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model): bool
     {
+        return true;
+
         return $user->checkPermissionTo('force-delete User');
     }
 
@@ -101,6 +121,8 @@ class UserPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
+        return true;
+
         return $user->checkPermissionTo('force-delete-any User');
     }
 }
