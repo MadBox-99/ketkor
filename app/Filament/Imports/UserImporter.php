@@ -2,10 +2,12 @@
 
 namespace App\Filament\Imports;
 
+use App\Models\Organization;
 use App\Models\User;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
+use Hash;
 
 class UserImporter extends Importer
 {
@@ -21,20 +23,23 @@ class UserImporter extends Importer
                 ->rules(['email', 'max:255']),
             ImportColumn::make('organization')
                 ->relationship(),
-            ImportColumn::make('email_verified_at')
-                ->rules(['email', 'datetime']),
 
         ];
     }
 
     public function resolveRecord(): ?User
     {
-        // return User::firstOrNew([
-        //     // Update existing records, matching them by `$this->data['column_name']`
-        //     'email' => $this->data['email'],
-        // ]);
+        $organization = Organization::firstOrCreate(['name' => $this->data['organization'] ?? null]);
 
-        return new User;
+        return User::firstOrNew([
+            'email' => $this->data['email'],
+            'organization_id' => $organization->id,
+            'name' => $this->data['name'] ?? null,
+            'email_verified_at' => now(),
+            'password' => Hash::make('12345678'),
+        ]);
+
+        /*  return new User; */
     }
 
     public static function getCompletedNotificationBody(Import $import): string
