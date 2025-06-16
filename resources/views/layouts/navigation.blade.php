@@ -88,14 +88,13 @@
                                     {{ __('Your Profile') }}
                                 </a>
                                 <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
                                     <a class="block px-4 py-2 text-sm text-gray-700" id="user-menu-item-2"
                                         href="{{ route('logout') }}" role="menuitem" tabindex="-1" wire:navigate
                                         onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                                        @csrf
                                         <!-- Authentication -->
                                         {{ __('Log Out') }}
-
                                     </a>
                                 </form>
                             </div>
