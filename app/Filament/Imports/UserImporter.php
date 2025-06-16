@@ -7,7 +7,7 @@ use App\Models\User;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
-use Hash;
+use Illuminate\Support\Facades\Hash;
 
 class UserImporter extends Importer
 {
