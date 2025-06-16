@@ -28,16 +28,16 @@
                         </tr>
                     </thead>
                     <tbody class="dark:bg-slate-800 bg-white">
-                        @foreach ($logs as $log)
+                        @foreach ($logs ?? [] as $log)
                             <tr>
                                 <x-table-td>
-                                    {{ $log->what }}
+                                    {{ $log?->what }}
                                 </x-table-td>
                                 <x-table-td>
-                                    {{ $log->user->name }}
+                                    {{ $log?->user?->name }}
                                 </x-table-td>
                                 <x-table-td>
-                                    {{ $log->created_at }}
+                                    {{ $log?->created_at }}
                                 </x-table-td>
 
                                 <td class="flex">
