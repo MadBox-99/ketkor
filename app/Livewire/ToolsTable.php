@@ -71,7 +71,7 @@ final class ToolsTable extends PowerGridComponent
             Filter::inputText('name')->operators(['contains']),
             Filter::select('category', 'category')->dataSource(Tool::whereNot('category', '=', '')->get())->optionValue('category')->optionLabel('category'),
             Filter::inputText('tag')->operators(['contains']),
-            Filter::select('factory_name', 'factory_name')->dataSource(Tool::groupBy('factory_name')->whereNotNull('factory_name')->get())->optionValue('factory_name')->optionLabel('factory_name'),
+
         ];
     }
 
