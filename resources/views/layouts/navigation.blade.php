@@ -55,7 +55,7 @@
 
             <div class="hidden md:block">
                 <div class="flex items-center ml-4 md:ml-6">
-                    @auth
+                    {{--  @auth
                         <button
                             class="relative p-1 text-white rounded-full bg-primary-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                             type="button">
@@ -63,7 +63,7 @@
                             <span class="sr-only">{{ __('View notifications') }}</span>
                             <x-svg.search />
                         </button>
-                    @endauth
+                    @endauth --}}
                     <!-- Profile dropdown -->
                     <div class="relative ml-3" id="">
                         @auth
@@ -80,15 +80,15 @@
                             </div>
 
                             <!--
-                                                                                                                                        Dropdown menu, show/hide based on menu state.
+                                                                                                                                            Dropdown menu, show/hide based on menu state.
 
-                                                                                                                                        Entering: "transition ease-out duration-100"
-                                                                                                                                            From: "transform opacity-0 scale-95"
-                                                                                                                                            To: "transform opacity-100 scale-100"
-                                                                                                                                        Leaving: "transition ease-in duration-75"
-                                                                                                                                            From: "transform opacity-100 scale-100"
-                                                                                                                                            To: "transform opacity-0 scale-95"
-                                                                                                                                        -->
+                                                                                                                                            Entering: "transition ease-out duration-100"
+                                                                                                                                                From: "transform opacity-0 scale-95"
+                                                                                                                                                To: "transform opacity-100 scale-100"
+                                                                                                                                            Leaving: "transition ease-in duration-75"
+                                                                                                                                                From: "transform opacity-100 scale-100"
+                                                                                                                                                To: "transform opacity-0 scale-95"
+                                                                                                                                            -->
 
                             <div class="absolute right-0 z-10 hidden w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-black ring-1 ring-opacity-5 focus:outline-none"
                                 id="profile-dropdown" role="menu" aria-orientation="vertical"
