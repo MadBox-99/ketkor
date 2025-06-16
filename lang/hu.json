@@ -238,5 +238,6 @@
     "Your email address is unverified.": "Az e-mail címe még nincs ellenőrizve.",
     "Click here to re-send the verification email.": "Kattintson ide az ellenőrző e-mail újraküldéséhez.",
     "A new verification link has been sent to your email address.": "Egy új ellenőrző linket küldtünk az e-mail címére.",
-    "Saved.": "Mentve."
+    "Saved.": "Mentve.",
+    "These credentials do not match our records.": "Ezek a hitelesítő adatok nem egyeznek a nyilvántartásunkkal."
 }
