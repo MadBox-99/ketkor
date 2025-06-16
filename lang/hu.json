@@ -239,5 +239,6 @@
     "Click here to re-send the verification email.": "Kattintson ide az ellenőrző e-mail újraküldéséhez.",
     "A new verification link has been sent to your email address.": "Egy új ellenőrző linket küldtünk az e-mail címére.",
     "Saved.": "Mentve.",
-    "These credentials do not match our records.": "Ezek a hitelesítő adatok nem egyeznek a nyilvántartásunkkal."
+    "These credentials do not match our records.": "Ezek a hitelesítő adatok nem egyeznek a nyilvántartásunkkal.",
+    "Profile updated successfully.": "A profil sikeresen frissítve."
 }

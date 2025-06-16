@@ -104,7 +104,7 @@ class ProfileController extends Controller
             Auth::user()->save();
             DB::commit();
 
-            return redirect()->back()->with('status', 'Profile updated successfully.');
+            return redirect()->back()->with('status', __('Profile updated successfully.'));
         } catch (Throwable $throwable) {
             DB::rollBack();
 
