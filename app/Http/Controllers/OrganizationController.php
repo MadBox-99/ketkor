@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Log;
 use App\Models\Organization;
 use App\Models\Product;
 use App\Models\User;
@@ -20,12 +19,6 @@ class OrganizationController extends Controller
      */
     public function index(): View
     {
-        Log::create(
-            [
-                'user_id' => Auth::user()->id,
-                'what' => 'organization.index page open/hover',
-            ]
-        );
 
         return view('organization.index');
     }
@@ -35,12 +28,6 @@ class OrganizationController extends Controller
      */
     public function create(): View
     {
-        Log::create(
-            [
-                'user_id' => 1,
-                'what' => 'organization.create page open/hover',
-            ]
-        );
 
         return view('organization.create');
     }
@@ -120,22 +107,11 @@ class OrganizationController extends Controller
                 );
             }
 
-            Log::create(
-                [
-                    'user_id' => Auth::user()->id,
-                    'what' => 'product successfully moved from user:'.$request->user_id.' to user: '.$request->selected_user_id,
-                ]
-            );
-
             DB::commit();
 
             return redirect()->route('organizations.myorganization')->with('success', __('Product successfully moved.'));
         } catch (Throwable $throwable) {
             DB::rollback();
-            Log::create([
-                'user_id' => 1,
-                'what' => 'user failed moved from:'.$request->user_id.' to: '.$request->selected_user_id.' | '.$throwable->getMessage(),
-            ]);
 
             return redirect()->back()->withInput()->with('error', $throwable->getMessage());
         }
