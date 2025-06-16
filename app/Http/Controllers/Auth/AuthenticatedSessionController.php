@@ -30,7 +30,7 @@ final class AuthenticatedSessionController extends Controller
         $request->authenticate();
         $request->session()->regenerate(); // Ensure $request is an instance of Illuminate\Http\Request
 
-        return redirect()->intended(route('home', absolute: false));
+        return redirect()->intended(route('index', absolute: false));
     }
 
     /**
