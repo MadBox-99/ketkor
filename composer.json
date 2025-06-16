@@ -20,7 +20,7 @@
         "nesbot/carbon": "*",
         "openspout/openspout": "^4.19",
         "power-components/livewire-powergrid": "^6.3",
-        "spatie/laravel-permission": "^6.17"
+        "spatie/laravel-permission": "^6.20"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "*",
