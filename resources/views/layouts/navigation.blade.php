@@ -89,13 +89,11 @@
                                 </a>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <a class="block px-4 py-2 text-sm text-gray-700" id="user-menu-item-2"
-                                        href="{{ route('logout') }}" role="menuitem" tabindex="-1" wire:navigate
-                                        onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                        <!-- Authentication -->
+                                    <button type="submit"
+                                        class="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
+                                        role="menuitem" tabindex="-1">
                                         {{ __('Log Out') }}
-                                    </a>
+                                    </button>
                                 </form>
                             </div>
                         @endauth
