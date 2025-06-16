@@ -8,7 +8,7 @@
                 <div class="hidden md:block">
                     <div class="flex items-baseline ml-10 space-x-4">
                         @auth
-                            @role('Admin|Operator')
+                            @hasanyrole('Admin|Operator')
                                 <x-nav-link :href="route('index')" :active="request()->routeIs('index')">
                                     {{ __('index') }}
                                 </x-nav-link>
@@ -24,26 +24,26 @@
                                 <x-nav-link :href="route('tools.index')" :active="request()->is('tools')">
                                     {{ __('Tools') }}
                                 </x-nav-link>
-                            @endrole
-                            @role('Admin')
+                            @endhasanyrole
+                            @hasrole('Admin')
                                 <x-nav-link :href="route('logs.index')" :active="request()->is('logs')">
                                     {{ __('Logs') }}
                                 </x-nav-link>
-                            @endrole
+                            @endhasrole
                             <!--  HIDDEN WHEN ADMIN   -->
-                            @role('Servicer|Organizer')
+                            @hasanyrole('Servicer|Organizer')
                                 <x-nav-link :href="route('products.search')" :active="request()->is('product/search')">
                                     {{ __('Product search') }}
                                 </x-nav-link>
                                 <x-nav-link :href="route('products.myproducts')" :active="request()->is('product/myproducts')">
                                     {{ __('My products') }}
                                 </x-nav-link>
-                            @endrole
-                            @role('Organizer')
+                            @endhasanyrole
+                            @hasrole('Organizer')
                                 <x-nav-link :href="route('organizations.myorganization')" :active="request()->is('organization/myorganization')">
                                     {{ __('My myorganization') }}
                                 </x-nav-link>
-                            @endrole
+                            @endhasrole
                         @else
                             <x-nav-link :href="route('login')" :active="request()->is('login')">
                                 {{ __('Login') }}
@@ -79,17 +79,6 @@
                                 </button>
                             </div>
 
-                            <!--
-                                                                                                                                            Dropdown menu, show/hide based on menu state.
-
-                                                                                                                                            Entering: "transition ease-out duration-100"
-                                                                                                                                                From: "transform opacity-0 scale-95"
-                                                                                                                                                To: "transform opacity-100 scale-100"
-                                                                                                                                            Leaving: "transition ease-in duration-75"
-                                                                                                                                                From: "transform opacity-100 scale-100"
-                                                                                                                                                To: "transform opacity-0 scale-95"
-                                                                                                                                            -->
-
                             <div class="absolute right-0 z-10 hidden w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-black ring-1 ring-opacity-5 focus:outline-none"
                                 id="profile-dropdown" role="menu" aria-orientation="vertical"
                                 aria-labelledby="user-menu-button" tabindex="-1">
@@ -114,6 +103,26 @@
                     </div>
                 </div>
             </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const userMenuButton = document.getElementById('user-menu-button');
+                    const profileDropdown = document.getElementById('profile-dropdown');
+
+                    if (userMenuButton && profileDropdown) {
+                        userMenuButton.addEventListener('click', function() {
+                            profileDropdown.classList.toggle('hidden');
+                        });
+
+                        // Close dropdown when clicking outside
+                        document.addEventListener('click', function(event) {
+                            if (!userMenuButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+                                profileDropdown.classList.add('hidden');
+                            }
+                        });
+                    }
+                });
+            </script>
             <div class="flex -mr-2 md:hidden">
                 <!-- Mobile menu button -->
                 <button
