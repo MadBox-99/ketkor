@@ -44,7 +44,7 @@
                         </div>
                     </form>
                 </div>
-                @foreach ($organization->users as $user)
+                @foreach ($organization->users ?? [] as $user)
                     <div
                         class="mb-4 flex w-full flex-wrap justify-center rounded bg-white px-8 pb-8 pt-6 text-xl shadow-md">
                         {{-- row 1 --}}
@@ -90,7 +90,7 @@
                                     </div>
                                 </div>
                                 {{-- row 2 --}}
-                                @forelse ($user->products as $product)
+                                @forelse ($user->products ?? [] as $product)
                                     <div class="h-20 basis-full rounded py-5 text-center odd:bg-white even:bg-gray-200">
                                         <div class="flex h-20 flex-nowrap items-center sm:h-12">
                                             <div class="xs:basis-1/4 sm:block sm:basis-3/12 md:basis-2/12">
@@ -127,7 +127,7 @@
 
                                                             <div class="mt-6">
                                                                 <x-select-input name="selected_user_id" headText="User">
-                                                                    @foreach ($user->organization->users as $user_2)
+                                                                    @foreach ($user->organization->users ?? [] as $user_2)
                                                                         <x-select-input-option :value="$user_2->id">
                                                                             {{ $user_2->name }}
                                                                         </x-select-input-option>

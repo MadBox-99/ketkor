@@ -88,6 +88,15 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return str_ends_with($this->email, '') && $this->hasVerifiedEmail();
+        // Super Admin mindig hozzáférhet
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        // Ellenőrizzük, hogy van-e megfelelő szerepköre és megerősített email-je
+        return $this->hasVerifiedEmail() && (
+            $this->hasRole(['Admin', 'Organizer']) ||
+            str_ends_with($this->email, '@admin.hu') // Itt adj meg egy megfelelő domain-t
+        );
     }
 }

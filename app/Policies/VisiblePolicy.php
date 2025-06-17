@@ -2,9 +2,8 @@
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\Response;
-use App\Models\Visible;
 use App\Models\User;
+use App\Models\Visible;
 
 class VisiblePolicy
 {
@@ -13,6 +12,10 @@ class VisiblePolicy
      */
     public function viewAny(User $user): bool
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user->checkPermissionTo('view-any Visible');
     }
 

@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use Illuminate\Auth\Access\Response;
 use App\Models\Log;
 use App\Models\User;
 
@@ -13,6 +12,10 @@ class LogPolicy
      */
     public function viewAny(User $user): bool
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user->checkPermissionTo('view-any Log');
     }
 

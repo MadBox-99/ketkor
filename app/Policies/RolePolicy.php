@@ -14,6 +14,10 @@ class RolePolicy
      */
     public function viewAny(User $user): bool
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user->checkPermissionTo('view-any Role');
     }
 
