@@ -55,15 +55,7 @@
 
             <div class="hidden md:block">
                 <div class="flex items-center ml-4 md:ml-6">
-                    {{--  @auth
-                        <button
-                            class="relative p-1 text-white rounded-full bg-primary-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                            type="button">
-                            <span class="absolute -inset-1.5"></span>
-                            <span class="sr-only">{{ __('View notifications') }}</span>
-                            <x-svg.search />
-                        </button>
-                    @endauth --}}
+
                     <!-- Profile dropdown -->
                     <div class="relative ml-3" id="">
                         @auth
@@ -101,25 +93,6 @@
                 </div>
             </div>
 
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const userMenuButton = document.getElementById('user-menu-button');
-                    const profileDropdown = document.getElementById('profile-dropdown');
-
-                    if (userMenuButton && profileDropdown) {
-                        userMenuButton.addEventListener('click', function() {
-                            profileDropdown.classList.toggle('hidden');
-                        });
-
-                        // Close dropdown when clicking outside
-                        document.addEventListener('click', function(event) {
-                            if (!userMenuButton.contains(event.target) && !profileDropdown.contains(event.target)) {
-                                profileDropdown.classList.add('hidden');
-                            }
-                        });
-                    }
-                });
-            </script>
             <div class="flex -mr-2 md:hidden">
                 <!-- Mobile menu button -->
                 <button
@@ -184,7 +157,7 @@
                         class="relative flex-shrink-0 p-1 ml-auto text-gray-400 bg-gray-800 rounded-full hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                         type="button">
                         <span class="absolute -inset-1.5"></span>
-                        <span class="sr-only">View notifications</span>
+                        <span class="sr-only">{{ __('View notifications') }}</span>
                         <x-svg.search />
                     </button>
                 </div>
@@ -193,15 +166,13 @@
                         href="{{ route('profile.edit') }}" wire:navigate>
                         {{ __('Your Profile') }}
                     </a>
-                    <form method="GET" action="{{ route('logout') }}">
-                        <a class="block px-3 py-2 text-base font-medium text-gray-400 rounded-md hover:bg-gray-700 hover:text-white"
-                            id="user-menu-item-2" href="{{ route('logout') }}" role="menuitem" tabindex="-1" wire:navigate
-                            onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                            @csrf
-                            <!-- Authentication -->
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                            class="block w-full px-3 py-2 text-base font-medium text-left text-gray-400 rounded-md hover:bg-gray-700 hover:text-white"
+                            role="menuitem" tabindex="-1">
                             {{ __('Log Out') }}
-                        </a>
+                        </button>
                     </form>
                 </div>
             </div>

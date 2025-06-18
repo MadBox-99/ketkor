@@ -17,6 +17,6 @@ class Logout
         Session::invalidate();
         Session::regenerateToken();
 
-        return redirect('/');
+        return redirect(route('login'))->with('status', __('You have been logged out successfully.'));
     }
 }

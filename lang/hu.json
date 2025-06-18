@@ -240,5 +240,6 @@
     "A new verification link has been sent to your email address.": "Egy új ellenőrző linket küldtünk az e-mail címére.",
     "Saved.": "Mentve.",
     "These credentials do not match our records.": "Ezek a hitelesítő adatok nem egyeznek a nyilvántartásunkkal.",
-    "Profile updated successfully.": "A profil sikeresen frissítve."
+    "Profile updated successfully.": "A profil sikeresen frissítve.",
+    "You have been logged out successfully.": "Sikeresen kijelentkezett."
 }
