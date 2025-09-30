@@ -43,7 +43,7 @@ class Product extends Model
         ];
     }
 
-    protected function serializeDate($date): string
+    public function serializeDate($date): string
     {
         if (is_null($date)) {
             $date = new DateTime;
