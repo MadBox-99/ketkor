@@ -33,9 +33,8 @@ class ProductResource extends Resource
                     ->maxLength(200),
                 TextInput::make('installer_name')
                     ->maxLength(200),
-                TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
+                Select::make('user_id')
+                    ->relationship('users', 'name'),
                 TextInput::make('city')
                     ->maxLength(200),
                 TextInput::make('street')
