@@ -1,22 +1,22 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\ProductLogs;
 
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
-use App\Filament\Resources\ProductLogResource\Pages\ListProductLogs;
-use App\Filament\Resources\ProductLogResource\Pages\CreateProductLog;
-use App\Filament\Resources\ProductLogResource\Pages\EditProductLog;
+use App\Filament\Resources\ProductLogs\Pages\ListProductLogs;
+use App\Filament\Resources\ProductLogs\Pages\CreateProductLog;
+use App\Filament\Resources\ProductLogs\Pages\EditProductLog;
 use App\Filament\Resources\ProductLogResource\Pages;
 use App\Filament\Resources\ProductLogResource\RelationManagers;
 use App\Models\ProductLog;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -27,12 +27,12 @@ class ProductLogResource extends Resource
 {
     protected static ?string $model = ProductLog::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Select::make('product_id')
                     ->relationship('product', 'id')
                     ->required(),
@@ -71,10 +71,10 @@ class ProductLogResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

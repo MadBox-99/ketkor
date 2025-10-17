@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\AccessTokenResource\Pages;
+namespace App\Filament\Resources\AccessTokens\Pages;
 
 use Filament\Actions\CreateAction;
-use App\Filament\Resources\AccessTokenResource;
+use App\Filament\Resources\AccessTokens\AccessTokenResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 

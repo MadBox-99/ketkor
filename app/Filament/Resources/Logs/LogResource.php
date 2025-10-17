@@ -1,22 +1,22 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\Logs;
 
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
-use App\Filament\Resources\LogResource\Pages\ListLogs;
-use App\Filament\Resources\LogResource\Pages\CreateLog;
-use App\Filament\Resources\LogResource\Pages\EditLog;
+use App\Filament\Resources\Logs\Pages\ListLogs;
+use App\Filament\Resources\Logs\Pages\CreateLog;
+use App\Filament\Resources\Logs\Pages\EditLog;
 use App\Filament\Resources\LogResource\Pages;
 use App\Filament\Resources\LogResource\RelationManagers;
 use App\Models\Log;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -27,12 +27,12 @@ class LogResource extends Resource
 {
     protected static ?string $model = Log::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Select::make('user_id')
                     ->relationship('user', 'name')
                     ->required(),
@@ -65,10 +65,10 @@ class LogResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

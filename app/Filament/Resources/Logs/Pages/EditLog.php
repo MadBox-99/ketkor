@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\LogResource\Pages;
+namespace App\Filament\Resources\Logs\Pages;
 
 use Filament\Actions\DeleteAction;
-use App\Filament\Resources\LogResource;
+use App\Filament\Resources\Logs\LogResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
