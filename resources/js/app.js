@@ -1,6 +1,6 @@
 import "./../../vendor/power-components/livewire-powergrid/dist/tailwind.css";
 import "./../../vendor/power-components/livewire-powergrid/dist/powergrid.js";
-import flatpickr from "flatpickr";
+
 import "../css/app.css";
 import.meta.glob(["../img/**"]);
 import TomSelect from "tom-select";
