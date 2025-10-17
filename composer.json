@@ -10,34 +10,32 @@
     "require": {
         "php": "^8.2",
         "althinect/filament-spatie-roles-permissions": "3.x-dev",
-        "filament/filament": "^4.0",
-        "guzzlehttp/guzzle": "^7.2",
-        "laravel/framework": "^12.12.0",
-        "laravel/helpers": "^1.6",
-        "laravel/tinker": "^2.8",
-        "livewire/livewire": "^3.4",
-        "maatwebsite/excel": "^3.1",
-        "nesbot/carbon": "*",
-        "openspout/openspout": "^4.19",
-        "power-components/livewire-powergrid": "^6.3",
-        "spatie/laravel-permission": "^6.20"
+        "filament/filament": "^4.1.9",
+        "laravel/framework": "^12.34",
+        "laravel/reverb": "^1.6",
+        "laravel/sanctum": "^4.2",
+        "laravel/tinker": "^2.10.1",
+        "livewire/livewire": ">=3.6.4",
+        "nunomaduro/essentials": "@dev",
+        "spatie/laravel-activitylog": "^4.10.2",
+        "spatie/laravel-permission": "^6.21",
+        "typesense/typesense-php": "^5.1"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "*",
-        "barryvdh/laravel-ide-helper": "^3.5",
-        "composer/composer": "^2.6",
-        "driftingly/rector-laravel": "^2.0",
-        "fakerphp/faker": "^1.9.1",
-        "filament/upgrade": "^4.0",
-        "laravel/boost": "*",
-        "laravel/pint": "^1.0",
-        "laravel/sail": "^1.18",
-        "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "*",
-        "pestphp/pest": "*",
-        "pestphp/pest-plugin-laravel": "*",
-        "rector/rector": "^2.0",
-        "spatie/laravel-ignition": "^2.0"
+        "driftingly/rector-laravel": "^2.1.0",
+        "fakerphp/faker": "^1.24.1",
+        "filament/upgrade": "^4.1.9",
+        "laravel/boost": "^1.4.0",
+        "laravel/pail": "^1.2.3",
+        "laravel/pint": "^1.25.1",
+        "laravel/sail": "^1.46",
+        "mockery/mockery": "^1.6.12",
+        "nunomaduro/collision": "^8.8.2",
+        "pestphp/pest": ">=4.1.2",
+        "pestphp/pest-plugin-faker": ">=4",
+        "pestphp/pest-plugin-laravel": ">=4",
+        "pestphp/pest-plugin-livewire": ">=4.0.1",
+        "rector/rector": ">=2.2.3"
     },
     "autoload": {
         "psr-4": {
@@ -52,6 +50,10 @@
         }
     },
     "scripts": {
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
@@ -64,16 +66,35 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-            "@php artisan key:generate --ansi"
+            "@php artisan key:generate --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
         ],
-        "rector": [
-            "@php vendor/bin/rector process --ansi"
+        "update:requirements": [
+            "composer bump",
+            "npx npm-check-updates -u"
         ],
-        "pint": [
-            "@php vendor/bin/pint --test"
+        "lint": [
+            "@php vendor/bin/rector",
+            "@php vendor/bin/pint --parallel",
+            "npm run lint"
         ],
-        "pint-fix": [
-            "@php vendor/bin/pint"
+        "test:lint": [
+            "@php vendor/bin/pint --parallel",
+            "@php vendor/bin/rector --dry-run",
+            "npm run test:lint"
+        ],
+        "test:unit": "pest --parallel",
+        "test": [
+            "@test:unit",
+            "@test:lint"
+        ],
+        "fix": [
+            "@php vendor/bin/pint --ansi",
+            "@php vendor/bin/rector process app --ansi",
+            "@php vendor/bin/rector process database --ansi",
+            "@php vendor/bin/rector process routes --ansi",
+            "@php vendor/bin/rector process tests --ansi"
         ]
     },
     "extra": {
@@ -82,6 +103,7 @@
         }
     },
     "config": {
+        "bump-after-update": true,
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
@@ -90,6 +112,6 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }

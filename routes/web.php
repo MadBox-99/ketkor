@@ -9,6 +9,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductLogController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ToolController;
+use App\Livewire\ProductFilamentTable;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/auth.php';
@@ -27,7 +28,9 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::get('/', function () {
         return view('index');
     })->name('index');
-    Route::resource('products', ProductController::class);
+
+    // Route::resource('/products', ProductController::class);
+
     Route::resource('organizations', OrganizationController::class);
     Route::resource('productlogs', ProductLogController::class);
     Route::resource('partials', PartialController::class);
@@ -47,6 +50,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     });
 
     Route::prefix('product')->name('products.')->group(function (): void {
+        Route::get('/', ProductFilamentTable::class)->name('index');
         Route::get('/search', [ProductController::class, 'search'])->name('search');
         Route::get('/myproducts', [ProductController::class, 'myproducts'])->name('myproducts');
         Route::get('/add/{product}', [ProductController::class, 'add'])->name('add');

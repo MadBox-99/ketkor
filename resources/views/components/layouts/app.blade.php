@@ -12,18 +12,17 @@
         <link href="https://fonts.bunny.net" rel="preconnect">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <!-- Scripts -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
         @filamentStyles
-        @livewireStyles
-        @vite(['resources/js/app.js'])
     </head>
 
     <body class="font-sans antialiased">
-        <div class="h-full min-h-screen w-full bg-gray-100">
+        <div class="h-full min-h-screen w-full bg-white dark:bg-gray-900">
             @include('layouts.navigation')
             <!-- Page Heading -->
             @if (isset($header))
-                <header class="bg-white shadow">
-                    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <header class="bg-white shadow dark:bg-gray-800">
+                    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 dark:text-gray-200">
                         {{ $header }}
                     </div>
                 </header>
@@ -37,7 +36,6 @@
         @livewire('notifications')
 
         @filamentScripts
-        @livewireScripts
     </body>
 
 </html>
