@@ -29,6 +29,7 @@
         "driftingly/rector-laravel": "^2.0",
         "fakerphp/faker": "^1.9.1",
         "filament/upgrade": "^4.0",
+        "laravel/boost": "*",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
         "mockery/mockery": "^1.4.4",
