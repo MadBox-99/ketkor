@@ -31,7 +31,7 @@ class ProductController extends Controller
     public function edit(Product $product): View
     {
         $user = Auth::user();
-        dump($product);
+
         $product = Product::find($product->id)->first();
         $userVisibility = Visible::where('user_id', Auth::user()->id)
             ->where('product_id', $product->id)
