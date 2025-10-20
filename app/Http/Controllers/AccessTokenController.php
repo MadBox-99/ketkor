@@ -29,7 +29,7 @@ class AccessTokenController extends Controller
     public function createAccessToken(Product $product)
     {
         config('mail.from.address');
-        $admin = User::whereEmail('zoli.szabok@gmail.com')->first();
+        $admin = User::whereEmail(env('ADMIN_EMAIL'))->first();
         $token = Str::random(40); // Generate a unique token
         $user_id = Auth::user()->id;
         // Store the token in the database
@@ -44,9 +44,9 @@ class AccessTokenController extends Controller
 
         $user = Auth::user();
 
-        Mail::to('zoli.szabok@gmail.com')->cc($admin)->send(new AccessGrantMail($token, $user->name));
+        Mail::to($admin)->send(new AccessGrantMail($token, $user->name));
 
-        return redirect()->route('products.myproducts')->with('success', __('Succesfuly send an email to administrator who will grant an access to private datas, please wait until is access in grant.'));
+        return redirect()->back(200)->with('success', __('Succesfuly send an email to administrator who will grant an access to private datas, please wait until is access in grant.'));
     }
 
     /**

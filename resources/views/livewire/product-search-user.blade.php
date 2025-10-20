@@ -86,23 +86,27 @@
                                     {{ $product->serial_number }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    @if ($product->are_visible[0]->isVisible)
-                                        @if (!$product->partials->isEmpty())
-                                            <span class="text-gray-700 dark:text-gray-300">
-                                                {{ $partials->name }}
-                                            </span>
+                                    @dump($product->are_visible)
+                                    @if ($product->are_visible)
+                                        @if ($product->are_visible[0]->isVisible)
+                                            @if (!$product->partials->isEmpty())
+                                                <span class="text-gray-700 dark:text-gray-300">
+                                                    {{ $product->partials->first()->name }}
+                                                </span>
+                                            @endif
+                                        @else
+                                            <a href="{{ route('accestokens.createAccessToken', ['product' => $product->id]) }}"
+                                                wire:navigate
+                                                class="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                                                <svg class="h-4 w-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                </svg>
+                                                {{ __('Request access') }}
+                                            </a>
                                         @endif
-                                    @else
-                                        <a href="{{ route('accestokens.createAccessToken', ['product' => $product->id]) }}"
-                                            wire:navigate
-                                            class="inline-flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
-                                            <svg class="h-4 w-4" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                            </svg>
-                                            {{ __('Request access') }}
-                                        </a>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-gray-700 dark:text-gray-300">
@@ -176,7 +180,7 @@
                             @if ($product->are_visible[0]->isVisible)
                                 @if (!$product->partials->isEmpty())
                                     <div class="text-sm text-gray-600 dark:text-gray-400">
-                                        {{ $partials->name }}
+                                        {{ $product->partials->first()->name }}
                                     </div>
                                 @endif
                             @endif

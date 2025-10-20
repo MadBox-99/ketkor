@@ -268,5 +268,10 @@
     "No products found": "Nem található termék",
     "You don't have any products yet or no products match your search criteria.": "Még nincs egyetlen terméke sem, vagy nincs a keresési feltételeknek megfelelő termék.",
     "Request access to view details": "Hozzáférés kérése a részletekhez",
-    "Are you sure?": "Biztos benne?"
+    "Are you sure?": "Biztos benne?",
+    "Important dates": "Fontos dátumok",
+    "Purchase and installation dates are critical for consumer protection": "A vásárlási és beüzemelési dátumok fontosak a fogyasztóvédelem szempontjából",
+    "Update owner information": "Tulajdonosi adatok frissítése",
+    "Event created successfully": "Esemény sikeresen létrehozva",
+    "Owner data updated successfully": "Tulajdonosi adatok sikeresen frissítve"
 }
