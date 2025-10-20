@@ -157,7 +157,6 @@ class ProductEdit extends Component implements HasSchemas
     public function eventForm(Schema $schema): Schema
     {
         $commissioning = $this->product->product_logs()->where('what', 'commissioning')->first();
-        $maintenanceCount = $this->product->product_logs()->where('what', 'maintenance')->count();
 
         return $schema
             ->components([
@@ -202,15 +201,12 @@ class ProductEdit extends Component implements HasSchemas
                                         return true;
                                     }
 
-                                    // Disable if already 2 maintenances
-                                    $maintenanceCount = $this->product->product_logs()->where('what', 'maintenance')->count();
-
-                                    return $maintenanceCount >= 2;
+                                    return false;
                                 }
 
                                 return false;
                             })
-                            ->helperText(function () use ($commissioning, $maintenanceCount): ?string {
+                            ->helperText(function () use ($commissioning): ?string {
                                 if (! $commissioning) {
                                     return __('Commissioning must be completed first');
                                 }
@@ -229,10 +225,6 @@ class ProductEdit extends Component implements HasSchemas
 
                                 if (now()->lessThan($elevenMonthsAfter)) {
                                     return __('Maintenance can only be performed 11 months after commissioning or last maintenance');
-                                }
-
-                                if ($maintenanceCount >= 2) {
-                                    return __('Maximum 2 maintenance operations reached');
                                 }
 
                                 return null;
@@ -324,10 +316,6 @@ class ProductEdit extends Component implements HasSchemas
         if ($data['what'] === 'commissioning') {
             $this->product->update([
                 'installation_date' => now(),
-                'warrantee_date' => now()->addYear(),
-            ]);
-        } elseif ($data['what'] === 'maintenance') {
-            $this->product->update([
                 'warrantee_date' => now()->addYear(),
             ]);
         }

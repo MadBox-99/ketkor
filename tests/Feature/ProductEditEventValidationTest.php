@@ -155,7 +155,7 @@ describe('maintenance validation', function () {
         expect(ProductLog::where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(0);
     });
 
-    it('allows maximum 2 maintenance operations', function () {
+    it('allows multiple maintenance operations', function () {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(36)]);
 
         ProductLog::create([
@@ -181,10 +181,10 @@ describe('maintenance validation', function () {
 
         Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
             ->set('eventData.what', 'maintenance')
-            ->set('eventData.comment', 'Third maintenance attempt')
+            ->set('eventData.comment', 'Third maintenance')
             ->call('createEvent');
 
-        expect(ProductLog::where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(2);
+        expect(ProductLog::where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(3);
     });
 
     it('validates second maintenance window from first maintenance', function () {
@@ -210,5 +210,27 @@ describe('maintenance validation', function () {
             ->call('createEvent');
 
         expect(ProductLog::where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(2);
+    });
+
+    it('does not extend warranty date on maintenance', function () {
+        $product = ($this->createProduct)(['purchase_date' => now()->subMonths(24)]);
+
+        ProductLog::create([
+            'product_id' => $product->id,
+            'what' => 'commissioning',
+            'comment' => 'Initial commissioning',
+            'when' => now()->subMonths(23),
+        ]);
+
+        $product->update(['warrantee_date' => now()->addMonths(1)]);
+        $originalWarrantyDate = $product->fresh()->warrantee_date->format('Y-m-d H:i:s');
+
+        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
+            ->set('eventData.what', 'maintenance')
+            ->set('eventData.comment', 'First maintenance')
+            ->call('createEvent');
+
+        $product->refresh();
+        expect($product->warrantee_date->format('Y-m-d H:i:s'))->toBe($originalWarrantyDate);
     });
 });

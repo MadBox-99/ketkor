@@ -127,7 +127,7 @@ class ProductSearchUser extends Component implements HasActions, HasSchemas, Has
                         return __('Serial number').': '.$data['value'];
                     }),
                 Filter::make('tool_name')
-                    ->form([
+                    ->schema([
                         \Filament\Forms\Components\TextInput::make('value')
                             ->label(__('Tool name'))
                             ->placeholder(__('Search by tool...')),
