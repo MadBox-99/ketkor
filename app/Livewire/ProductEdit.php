@@ -14,6 +14,7 @@ use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class ProductEdit extends Component implements HasSchemas
@@ -158,6 +159,9 @@ class ProductEdit extends Component implements HasSchemas
 
     public function eventForm(Schema $schema): Schema
     {
+        $hasCommissioning = $this->product->product_logs()->where('what', 'commissioning')->exists();
+        $maintenanceCount = $this->product->product_logs()->where('what', 'maintenance')->count();
+
         return $schema
             ->components([
                 Section::make(__('Product Evensts'))
@@ -169,7 +173,41 @@ class ProductEdit extends Component implements HasSchemas
                             ->options([
                                 'installation' => __('Installation'),
                                 'maintenance' => __('Maintenance'),
-                            ]),
+                                'commissioning' => __('Commissioning'),
+                            ])
+                            ->disableOptionWhen(function (string $value): bool {
+                                // Disable commissioning if already exists
+                                if ($value === 'commissioning') {
+                                    return $this->product->product_logs()->where('what', 'commissioning')->exists();
+                                }
+
+                                // Disable maintenance if commissioning doesn't exist
+                                if ($value === 'maintenance') {
+                                    $hasCommissioning = $this->product->product_logs()->where('what', 'commissioning')->exists();
+
+                                    if (! $hasCommissioning) {
+                                        return true;
+                                    }
+
+                                    // Disable if already 2 maintenances
+                                    $maintenanceCount = $this->product->product_logs()->where('what', 'maintenance')->count();
+
+                                    return $maintenanceCount >= 2;
+                                }
+
+                                return false;
+                            })
+                            ->helperText(function () use ($hasCommissioning, $maintenanceCount): ?string {
+                                if (! $hasCommissioning) {
+                                    return __('Commissioning must be completed first');
+                                }
+
+                                if ($maintenanceCount >= 2) {
+                                    return __('Maximum 2 maintenance operations reached');
+                                }
+
+                                return null;
+                            }),
 
                         Textarea::make('comment')
                             ->label(__('comment'))
@@ -240,12 +278,30 @@ class ProductEdit extends Component implements HasSchemas
     {
         $data = $this->eventForm->getState();
 
+        // Validate time windows
+        if (! $this->validateEventTiming($data['what'])) {
+            return;
+        }
+
+        // Create the event log
         ProductLog::create([
             'product_id' => $this->product->id,
             'what' => $data['what'],
             'comment' => $data['comment'] ?? null,
             'when' => now(),
         ]);
+
+        // Update product dates based on event type
+        if ($data['what'] === 'commissioning') {
+            $this->product->update([
+                'installation_date' => now(),
+                'warrantee_date' => now()->addYear(),
+            ]);
+        } elseif ($data['what'] === 'maintenance') {
+            $this->product->update([
+                'warrantee_date' => now()->addYear(),
+            ]);
+        }
 
         $this->eventForm->fill();
         $this->product->load('product_logs');
@@ -254,6 +310,87 @@ class ProductEdit extends Component implements HasSchemas
             ->success()
             ->title(__('Event created successfully'))
             ->send();
+    }
+
+    protected function validateEventTiming(string $eventType): bool
+    {
+        if ($eventType === 'commissioning') {
+            return $this->validateCommissioningTiming();
+        } elseif ($eventType === 'maintenance') {
+            return $this->validateMaintenanceTiming();
+        }
+
+        return true;
+    }
+
+    protected function validateCommissioningTiming(): bool
+    {
+        $purchaseDate = $this->product->purchase_date;
+
+        // Check if purchase date exists
+        if (! $purchaseDate) {
+            Notification::make()
+                ->danger()
+                ->title(__('Purchase date is required for commissioning'))
+                ->send();
+
+            return false;
+        }
+
+        // Check if commissioning is within 6 months of purchase
+        $sixMonthsAfterPurchase = $purchaseDate->copy()->addMonths(6);
+
+        if (now()->greaterThan($sixMonthsAfterPurchase)) {
+            Notification::make()
+                ->danger()
+                ->title(__('Commissioning must be done within 6 months of purchase date'))
+                ->send();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function validateMaintenanceTiming(): bool
+    {
+        $commissioning = $this->product->product_logs()
+            ->where('what', 'commissioning')
+            ->first();
+
+        // Get last maintenance or use commissioning date
+        $lastMaintenance = $this->product->product_logs()
+            ->where('what', 'maintenance')
+            ->latest('when')
+            ->first();
+
+        $referenceDate = $lastMaintenance
+            ? \Carbon\Carbon::parse($lastMaintenance->when)
+            : \Carbon\Carbon::parse($commissioning->when);
+
+        // Check if maintenance is within 11-13 months window
+        $elevenMonthsAfter = $referenceDate->copy()->addMonths(11);
+        $thirteenMonthsAfter = $referenceDate->copy()->addMonths(13);
+
+        if (now()->lessThan($elevenMonthsAfter)) {
+            Notification::make()
+                ->danger()
+                ->title(__('Maintenance can only be performed 11-13 months after commissioning or last maintenance'))
+                ->send();
+
+            return false;
+        }
+
+        if (now()->greaterThan($thirteenMonthsAfter)) {
+            Notification::make()
+                ->danger()
+                ->title(__('Maintenance window (11-13 months) has expired'))
+                ->send();
+
+            return false;
+        }
+
+        return true;
     }
 
     public function updateOwner(): void

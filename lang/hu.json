@@ -273,5 +273,17 @@
     "Purchase and installation dates are critical for consumer protection": "A vásárlási és beüzemelési dátumok fontosak a fogyasztóvédelem szempontjából",
     "Update owner information": "Tulajdonosi adatok frissítése",
     "Event created successfully": "Esemény sikeresen létrehozva",
-    "Owner data updated successfully": "Tulajdonosi adatok sikeresen frissítve"
+    "Owner data updated successfully": "Tulajdonosi adatok sikeresen frissítve",
+    "Commissioning": "Beüzemelés",
+    "Purchase date is required for commissioning": "Vásárlási dátum szükséges a beüzemeléshez",
+    "Commissioning must be done within 6 months of purchase date": "Beüzemelést a vásárlási dátumtól számított 6 hónapon belül kell elvégezni",
+    "Commissioning can only be performed once": "Beüzemelés csak egyszer végezhető el",
+    "Purchase date is required for maintenance": "Vásárlási dátum szükséges a karbantartáshoz",
+    "Commissioning must be completed before maintenance": "Beüzemelést el kell végezni a karbantartás előtt",
+    "Warranty period (3 years) has expired": "Garancia időszak (3 év) lejárt",
+    "Maximum 2 maintenance operations allowed": "Maximum 2 karbantartás engedélyezett",
+    "Maintenance can only be performed 11-13 months after commissioning or last maintenance": "Karbantartás csak 11-13 hónappal a beüzemelés vagy az utolsó karbantartás után végezhető",
+    "Maintenance window (11-13 months) has expired": "Karbantartási időablak (11-13 hónap) lejárt",
+    "Commissioning must be completed first": "Először a beüzemelést kell elvégezni",
+    "Maximum 2 maintenance operations reached": "Maximum 2 karbantartás már megtörtént"
 }
