@@ -43,21 +43,21 @@ class Product extends Model
         ];
     }
 
-    /*  public function serializeDate($date): string
-     {
-         if (is_null($date)) {
-             $date = new DateTime;
-         } elseif (! $date instanceof DateTimeInterface) {
-             $date = new DateTime($date);
-         }
-
-         return $date->format('Y-m-d');
-     } */
-
-    public function serializeDate(DateTimeInterface $date)
+    public function serializeDate($date): string
     {
+        if (is_null($date)) {
+            $date = new DateTime;
+        } elseif (! $date instanceof DateTimeInterface) {
+            $date = new DateTime($date);
+        }
+
         return $date->format('Y-m-d');
     }
+
+    /* public function serializeDate(DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d');
+    } */
 
     public function tool(): BelongsTo
     {
