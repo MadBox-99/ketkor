@@ -54,7 +54,7 @@ class Product extends Model
          return $date->format('Y-m-d');
      } */
 
-    protected function serializeDate(DateTimeInterface $date)
+    public function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d');
     }
