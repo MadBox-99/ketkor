@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRole;
 use App\Models\AccessToken;
 use App\Models\Partial;
 use App\Models\Product;
@@ -37,7 +38,7 @@ class ProductController extends Controller
             ->where('isVisible', true)
             ->first();
         $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
-        if ($user->getRoleNames()->first() == 'Admin' || $user->getRoleNames()->first() == 'Operator') {
+        if ($user->hasAnyRole([UserRole::Admin, UserRole::Operator])) {
             $userVisibility = true;
         }
 

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Enums\ProductCategory;
 use App\Enums\UserRole;
 use App\Models\Product;
 use App\Models\Tool;
@@ -107,18 +108,12 @@ class DatabaseSeeder extends Seeder
         Tool::factory()->create([
             'id' => '1',
             'name' => 'Brava Slim 25 BT',
-            'category' => 'kazán',
+            'category' => ProductCategory::SIME,
             'tag' => 'Próba tag',
             'factory_name' => 'Sime',
 
         ]);
 
-        $this->call([
-            /* SimeProductSeeder::class,
-            AccorroniProductsSeeder::class,
-            FerroliProductsSeeder::class,
-            LEBTORProductsSeeder::class, */
-        ]);
         Product::factory(10)->create();
         $productTest1 = Product::whereId(1)->first();
         $productTest2 = Product::whereId(2)->first();

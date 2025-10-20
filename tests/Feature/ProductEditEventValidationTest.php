@@ -30,7 +30,7 @@ describe('commissioning validation', function () {
     it('allows commissioning within 6 months of purchase', function () {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(3)]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
             ->set('eventData.what', 'commissioning')
             ->set('eventData.comment', 'First commissioning')
             ->call('createEvent');
@@ -47,7 +47,7 @@ describe('commissioning validation', function () {
     it('prevents commissioning after 6 months of purchase', function () {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(7)]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
             ->set('eventData.what', 'commissioning')
             ->set('eventData.comment', 'Late commissioning')
             ->call('createEvent');
@@ -58,7 +58,7 @@ describe('commissioning validation', function () {
     it('prevents commissioning if purchase date is missing', function () {
         $product = ($this->createProduct)(['purchase_date' => null]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
             ->set('eventData.what', 'commissioning')
             ->set('eventData.comment', 'Commissioning without purchase date')
             ->call('createEvent');
@@ -76,7 +76,7 @@ describe('commissioning validation', function () {
             'when' => now()->subMonth(),
         ]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
             ->set('eventData.what', 'commissioning')
             ->set('eventData.comment', 'Second commissioning attempt')
             ->call('createEvent');
@@ -96,7 +96,7 @@ describe('maintenance validation', function () {
             'when' => now()->subMonths(11),
         ]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
             ->set('eventData.what', 'maintenance')
             ->set('eventData.comment', 'First maintenance')
             ->call('createEvent');
@@ -118,7 +118,7 @@ describe('maintenance validation', function () {
             'when' => now()->subMonths(10),
         ]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
             ->set('eventData.what', 'maintenance')
             ->set('eventData.comment', 'Too early maintenance')
             ->call('createEvent');
@@ -136,7 +136,7 @@ describe('maintenance validation', function () {
             'when' => now()->subMonths(14),
         ]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
             ->set('eventData.what', 'maintenance')
             ->set('eventData.comment', 'Too late maintenance')
             ->call('createEvent');
@@ -147,7 +147,7 @@ describe('maintenance validation', function () {
     it('prevents maintenance without commissioning', function () {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(12)]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
             ->set('eventData.what', 'maintenance')
             ->set('eventData.comment', 'Maintenance without commissioning')
             ->call('createEvent');
@@ -179,7 +179,7 @@ describe('maintenance validation', function () {
             'when' => now()->subMonths(12),
         ]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
             ->set('eventData.what', 'maintenance')
             ->set('eventData.comment', 'Third maintenance attempt')
             ->call('createEvent');
@@ -204,7 +204,7 @@ describe('maintenance validation', function () {
             'when' => now()->subMonths(12),
         ]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
             ->set('eventData.what', 'maintenance')
             ->set('eventData.comment', 'Second maintenance')
             ->call('createEvent');

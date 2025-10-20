@@ -17,5 +17,5 @@
     <x-alert />
 
     <!-- Livewire Component -->
-    <livewire:product-edit :product="$product" />
+    <livewire:product-edit :product="$product" :userVisibility="$userVisibility" />
 </x-layouts.app>

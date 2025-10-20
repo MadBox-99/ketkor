@@ -7,7 +7,6 @@ use App\Models\AccessToken;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Visible;
-use Filament\Notifications\Livewire\Notifications;
 use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,7 +45,7 @@ class AccessTokenController extends Controller
         $user = Auth::user();
 
         Mail::to($admin)->cc($user->email)->send(new AccessGrantMail($token, $user->name));
-        Notifications::make()
+        Notification::make()
             ->title(__('Succesfuly send an email to administrator who will grant an access to private datas, please wait until is access in grant.'))
             ->success()
             ->send();

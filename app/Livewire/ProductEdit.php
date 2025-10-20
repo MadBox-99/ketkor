@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\UserRole;
 use App\Models\Product;
 use App\Models\ProductLog;
 use Filament\Forms\Components\DatePicker;
@@ -40,14 +41,10 @@ class ProductEdit extends Component implements HasSchemas
         ];
     }
 
-    public function mount(Product $product): void
+    public function mount(Product $product, bool $userVisibility): void
     {
         $this->product = $product;
-
-        // Check user visibility
-        $user = Auth::user();
-        $visible = $product->are_visible->first();
-        $this->userVisibility = $visible && $visible->isVisible;
+        $this->userVisibility = $userVisibility;
 
         // Fill product form
         $this->productForm->fill([
@@ -144,7 +141,7 @@ class ProductEdit extends Component implements HasSchemas
                             ->hidden(! $isAdminOrOperator),
 
                         Select::make('tool_id')
-                            ->label(__('Tool'))
+                            ->label(__('Product'))
                             ->relationship('tool', 'name')
                             ->required()
                             ->disabled(! $this->userVisibility)
@@ -159,7 +156,7 @@ class ProductEdit extends Component implements HasSchemas
 
     public function eventForm(Schema $schema): Schema
     {
-        $hasCommissioning = $this->product->product_logs()->where('what', 'commissioning')->exists();
+        $commissioning = $this->product->product_logs()->where('what', 'commissioning')->first();
         $maintenanceCount = $this->product->product_logs()->where('what', 'maintenance')->count();
 
         return $schema
@@ -168,7 +165,7 @@ class ProductEdit extends Component implements HasSchemas
                     ->description(__('Create product event.'))
                     ->components([
                         Select::make('what')
-                            ->label(__('Operation type'))
+                            ->label(__('Type of work'))
                             ->required()
                             ->options([
                                 'installation' => __('Installation'),
@@ -183,9 +180,25 @@ class ProductEdit extends Component implements HasSchemas
 
                                 // Disable maintenance if commissioning doesn't exist
                                 if ($value === 'maintenance') {
-                                    $hasCommissioning = $this->product->product_logs()->where('what', 'commissioning')->exists();
+                                    $commissioning = $this->product->product_logs()->where('what', 'commissioning')->first();
 
-                                    if (! $hasCommissioning) {
+                                    if (! $commissioning) {
+                                        return true;
+                                    }
+
+                                    // Disable if not yet 11 months after commissioning or last maintenance
+                                    $lastMaintenance = $this->product->product_logs()
+                                        ->where('what', 'maintenance')
+                                        ->latest('when')
+                                        ->first();
+
+                                    $referenceDate = $lastMaintenance
+                                        ? \Carbon\Carbon::parse($lastMaintenance->when)
+                                        : \Carbon\Carbon::parse($commissioning->when);
+
+                                    $elevenMonthsAfter = $referenceDate->copy()->addMonths(11);
+
+                                    if (now()->lessThan($elevenMonthsAfter)) {
                                         return true;
                                     }
 
@@ -197,9 +210,25 @@ class ProductEdit extends Component implements HasSchemas
 
                                 return false;
                             })
-                            ->helperText(function () use ($hasCommissioning, $maintenanceCount): ?string {
-                                if (! $hasCommissioning) {
+                            ->helperText(function () use ($commissioning, $maintenanceCount): ?string {
+                                if (! $commissioning) {
                                     return __('Commissioning must be completed first');
+                                }
+
+                                // Check if maintenance is available based on timing
+                                $lastMaintenance = $this->product->product_logs()
+                                    ->where('what', 'maintenance')
+                                    ->latest('when')
+                                    ->first();
+
+                                $referenceDate = $lastMaintenance
+                                    ? \Carbon\Carbon::parse($lastMaintenance->when)
+                                    : \Carbon\Carbon::parse($commissioning->when);
+
+                                $elevenMonthsAfter = $referenceDate->copy()->addMonths(11);
+
+                                if (now()->lessThan($elevenMonthsAfter)) {
+                                    return __('Maintenance can only be performed 11 months after commissioning or last maintenance');
                                 }
 
                                 if ($maintenanceCount >= 2) {
@@ -264,7 +293,7 @@ class ProductEdit extends Component implements HasSchemas
         ]);
 
         // Sync users if admin/operator
-        if (Auth::user()->hasAnyRole(['Admin', 'Operator']) && isset($data['user_ids'])) {
+        if (Auth::user()->hasAnyRole([UserRole::Admin, UserRole::Operator]) && isset($data['user_ids'])) {
             $this->product->users()->sync($data['user_ids']);
         }
 

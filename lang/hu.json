@@ -285,5 +285,7 @@
     "Maintenance can only be performed 11-13 months after commissioning or last maintenance": "Karbantartás csak 11-13 hónappal a beüzemelés vagy az utolsó karbantartás után végezhető",
     "Maintenance window (11-13 months) has expired": "Karbantartási időablak (11-13 hónap) lejárt",
     "Commissioning must be completed first": "Először a beüzemelést kell elvégezni",
-    "Maximum 2 maintenance operations reached": "Maximum 2 karbantartás már megtörtént"
+    "Maximum 2 maintenance operations reached": "Maximum 2 karbantartás már megtörtént",
+    "Product": "Termék",
+    "Type of work": "Munkavégzés jellege"
 }
