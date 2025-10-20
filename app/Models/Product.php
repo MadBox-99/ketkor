@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use DateTimeInterface;
 use DateTime;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -43,14 +43,19 @@ class Product extends Model
         ];
     }
 
-    public function serializeDate($date): string
-    {
-        if (is_null($date)) {
-            $date = new DateTime;
-        } elseif (! $date instanceof DateTimeInterface) {
-            $date = new DateTime($date);
-        }
+    /*  public function serializeDate($date): string
+     {
+         if (is_null($date)) {
+             $date = new DateTime;
+         } elseif (! $date instanceof DateTimeInterface) {
+             $date = new DateTime($date);
+         }
 
+         return $date->format('Y-m-d');
+     } */
+
+    protected function serializeDate(DateTimeInterface $date)
+    {
         return $date->format('Y-m-d');
     }
 
