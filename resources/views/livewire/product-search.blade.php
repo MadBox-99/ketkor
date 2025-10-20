@@ -122,7 +122,7 @@
                                             {{ __('Purchase date') }}
                                         </dt>
                                         <dd class="text-lg font-bold text-amber-900 dark:text-amber-300">
-                                            {{ $product->purchase_date }}
+                                            {{ $product->purchase_date->format('Y-m-d') }}
                                         </dd>
                                     </div>
                                 @endif
@@ -140,7 +140,7 @@
                                             {{ __('Installation date') }}
                                         </dt>
                                         <dd class="text-lg font-bold text-amber-900 dark:text-amber-300">
-                                            {{ $product->installation_date }}
+                                            {{ $product->installation_date->format('Y-m-d') }}
                                         </dd>
                                     </div>
                                 @endif
