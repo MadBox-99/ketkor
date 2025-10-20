@@ -144,7 +144,7 @@ describe('maintenance validation', function () {
         expect(ProductLog::where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(0);
     });
 
-    it('prevents maintenance without commissioning', function () {
+    it('allows maintenance without commissioning', function () {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(12)]);
 
         Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
@@ -152,7 +152,7 @@ describe('maintenance validation', function () {
             ->set('eventData.comment', 'Maintenance without commissioning')
             ->call('createEvent');
 
-        expect(ProductLog::where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(0);
+        expect(ProductLog::where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(1);
     });
 
     it('allows multiple maintenance operations', function () {

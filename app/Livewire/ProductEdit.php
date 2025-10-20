@@ -177,28 +177,30 @@ class ProductEdit extends Component implements HasSchemas
                                     return $this->product->product_logs()->where('what', 'commissioning')->exists();
                                 }
 
-                                // Disable maintenance if commissioning doesn't exist
+                                // Check maintenance timing if there are any previous events
                                 if ($value === 'maintenance') {
-                                    $commissioning = $this->product->product_logs()->where('what', 'commissioning')->first();
-
-                                    if (! $commissioning) {
-                                        return true;
-                                    }
-
-                                    // Disable if not yet 11 months after commissioning or last maintenance
                                     $lastMaintenance = $this->product->product_logs()
                                         ->where('what', 'maintenance')
                                         ->latest('when')
                                         ->first();
 
-                                    $referenceDate = $lastMaintenance
-                                        ? \Carbon\Carbon::parse($lastMaintenance->when)
-                                        : \Carbon\Carbon::parse($commissioning->when);
+                                    // If there's a previous maintenance, check 11 months window
+                                    if ($lastMaintenance) {
+                                        $elevenMonthsAfter = \Carbon\Carbon::parse($lastMaintenance->when)->addMonths(11);
 
-                                    $elevenMonthsAfter = $referenceDate->copy()->addMonths(11);
+                                        if (now()->lessThan($elevenMonthsAfter)) {
+                                            return true;
+                                        }
+                                    }
 
-                                    if (now()->lessThan($elevenMonthsAfter)) {
-                                        return true;
+                                    // Check if there's commissioning to use as reference
+                                    $commissioning = $this->product->product_logs()->where('what', 'commissioning')->first();
+                                    if ($commissioning && ! $lastMaintenance) {
+                                        $elevenMonthsAfter = \Carbon\Carbon::parse($commissioning->when)->addMonths(11);
+
+                                        if (now()->lessThan($elevenMonthsAfter)) {
+                                            return true;
+                                        }
                                     }
 
                                     return false;
@@ -207,24 +209,28 @@ class ProductEdit extends Component implements HasSchemas
                                 return false;
                             })
                             ->helperText(function () use ($commissioning): ?string {
-                                if (! $commissioning) {
-                                    return __('Commissioning must be completed first');
-                                }
-
                                 // Check if maintenance is available based on timing
                                 $lastMaintenance = $this->product->product_logs()
                                     ->where('what', 'maintenance')
                                     ->latest('when')
                                     ->first();
 
-                                $referenceDate = $lastMaintenance
-                                    ? \Carbon\Carbon::parse($lastMaintenance->when)
-                                    : \Carbon\Carbon::parse($commissioning->when);
+                                // If there's a previous maintenance, show when next one is available
+                                if ($lastMaintenance) {
+                                    $elevenMonthsAfter = \Carbon\Carbon::parse($lastMaintenance->when)->addMonths(11);
 
-                                $elevenMonthsAfter = $referenceDate->copy()->addMonths(11);
+                                    if (now()->lessThan($elevenMonthsAfter)) {
+                                        return __('Maintenance can only be performed 11 months after last maintenance');
+                                    }
+                                }
 
-                                if (now()->lessThan($elevenMonthsAfter)) {
-                                    return __('Maintenance can only be performed 11 months after commissioning or last maintenance');
+                                // If there's commissioning but no maintenance yet
+                                if ($commissioning && ! $lastMaintenance) {
+                                    $elevenMonthsAfter = \Carbon\Carbon::parse($commissioning->when)->addMonths(11);
+
+                                    if (now()->lessThan($elevenMonthsAfter)) {
+                                        return __('Maintenance can only be performed 11 months after commissioning');
+                                    }
                                 }
 
                                 return null;
@@ -371,42 +377,71 @@ class ProductEdit extends Component implements HasSchemas
 
     protected function validateMaintenanceTiming(): bool
     {
-        $commissioning = $this->product->product_logs()
-            ->where('what', 'commissioning')
-            ->first();
-
-        // Get last maintenance or use commissioning date
+        // Get last maintenance
         $lastMaintenance = $this->product->product_logs()
             ->where('what', 'maintenance')
             ->latest('when')
             ->first();
 
-        $referenceDate = $lastMaintenance
-            ? \Carbon\Carbon::parse($lastMaintenance->when)
-            : \Carbon\Carbon::parse($commissioning->when);
+        // If there's a previous maintenance, validate timing from it
+        if ($lastMaintenance) {
+            $referenceDate = \Carbon\Carbon::parse($lastMaintenance->when);
+            $elevenMonthsAfter = $referenceDate->copy()->addMonths(11);
+            $thirteenMonthsAfter = $referenceDate->copy()->addMonths(13);
 
-        // Check if maintenance is within 11-13 months window
-        $elevenMonthsAfter = $referenceDate->copy()->addMonths(11);
-        $thirteenMonthsAfter = $referenceDate->copy()->addMonths(13);
+            if (now()->lessThan($elevenMonthsAfter)) {
+                Notification::make()
+                    ->danger()
+                    ->title(__('Maintenance can only be performed 11-13 months after last maintenance'))
+                    ->send();
 
-        if (now()->lessThan($elevenMonthsAfter)) {
-            Notification::make()
-                ->danger()
-                ->title(__('Maintenance can only be performed 11-13 months after commissioning or last maintenance'))
-                ->send();
+                return false;
+            }
 
-            return false;
+            if (now()->greaterThan($thirteenMonthsAfter)) {
+                Notification::make()
+                    ->danger()
+                    ->title(__('Maintenance window (11-13 months) has expired'))
+                    ->send();
+
+                return false;
+            }
+
+            return true;
         }
 
-        if (now()->greaterThan($thirteenMonthsAfter)) {
-            Notification::make()
-                ->danger()
-                ->title(__('Maintenance window (11-13 months) has expired'))
-                ->send();
+        // If there's commissioning but no maintenance yet, validate from commissioning
+        $commissioning = $this->product->product_logs()
+            ->where('what', 'commissioning')
+            ->first();
 
-            return false;
+        if ($commissioning) {
+            $referenceDate = \Carbon\Carbon::parse($commissioning->when);
+            $elevenMonthsAfter = $referenceDate->copy()->addMonths(11);
+            $thirteenMonthsAfter = $referenceDate->copy()->addMonths(13);
+
+            if (now()->lessThan($elevenMonthsAfter)) {
+                Notification::make()
+                    ->danger()
+                    ->title(__('Maintenance can only be performed 11-13 months after commissioning'))
+                    ->send();
+
+                return false;
+            }
+
+            if (now()->greaterThan($thirteenMonthsAfter)) {
+                Notification::make()
+                    ->danger()
+                    ->title(__('Maintenance window (11-13 months) has expired'))
+                    ->send();
+
+                return false;
+            }
+
+            return true;
         }
 
+        // No commissioning or maintenance - allow maintenance anytime
         return true;
     }
 
