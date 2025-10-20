@@ -119,7 +119,7 @@ class DatabaseSeeder extends Seeder
             FerroliProductsSeeder::class,
             LEBTORProductsSeeder::class, */
         ]);
-
+        Product::factory(10)->create();
         $productTest1 = Product::whereId(1)->first();
         $productTest2 = Product::whereId(2)->first();
         $user1->products()->attach($productTest1);
