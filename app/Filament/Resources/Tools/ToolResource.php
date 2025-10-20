@@ -2,17 +2,18 @@
 
 namespace App\Filament\Resources\Tools;
 
-use Filament\Schemas\Schema;
-use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use App\Enums\ProductCategory;
 use App\Filament\Resources\Tools\Pages\CreateTool;
 use App\Filament\Resources\Tools\Pages\EditTool;
 use App\Filament\Resources\Tools\Pages\ListTools;
 use App\Models\Tool;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -20,7 +21,7 @@ class ToolResource extends Resource
 {
     protected static ?string $model = Tool::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Schema $schema): Schema
     {
@@ -30,7 +31,8 @@ class ToolResource extends Resource
                     ->required()
                     ->maxLength(200),
                 Select::make('category')
-                    ->relationship('category', 'name')
+                    ->enum(ProductCategory::class)
+                    ->options(ProductCategory::class)
                     ->required(),
                 TextInput::make('tag')
                     ->maxLength(200),

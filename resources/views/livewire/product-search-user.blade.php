@@ -87,8 +87,11 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     @if ($product->are_visible[0]->isVisible)
-                                        <span
-                                            class="text-gray-700 dark:text-gray-300">{{ $product->partials[0]->name }}</span>
+                                        @if (!$product->partials->isEmpty())
+                                            <span class="text-gray-700 dark:text-gray-300">
+                                                {{ $partials->name }}
+                                            </span>
+                                        @endif
                                     @else
                                         <a href="{{ route('accestokens.createAccessToken', ['product' => $product->id]) }}"
                                             wire:navigate
@@ -171,9 +174,11 @@
                                 {{ $product->serial_number }}
                             </div>
                             @if ($product->are_visible[0]->isVisible)
-                                <div class="text-sm text-gray-600 dark:text-gray-400">
-                                    {{ $product->partials[0]->name }}
-                                </div>
+                                @if (!$product->partials->isEmpty())
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">
+                                        {{ $partials->name }}
+                                    </div>
+                                @endif
                             @endif
                         </div>
                         <div class="flex gap-2">

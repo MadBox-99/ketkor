@@ -2,10 +2,13 @@
 
 namespace App\Filament\Imports;
 
+use App\Enums\ProductCategory;
 use App\Models\Product;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Select;
 
 class ProductImporter extends Importer
 {
@@ -18,10 +21,6 @@ class ProductImporter extends Importer
                 ->rules(['max:200']),
             ImportColumn::make('installer_name')
                 ->rules(['max:200']),
-            ImportColumn::make('user_id')
-                ->requiredMapping()
-                ->numeric()
-                ->rules(['required', 'integer']),
             ImportColumn::make('city')
                 ->rules(['max:200']),
             ImportColumn::make('street')
@@ -42,16 +41,21 @@ class ProductImporter extends Importer
             ImportColumn::make('purchase_date')
                 ->rules(['date']),
             ImportColumn::make('tool')
-                ->requiredMapping()
-                ->relationship()
-                ->rules(['required']),
+                ->relationship('tool', 'name'),
         ];
     }
 
     public function resolveRecord(): ?Product
     {
 
-        return new Product($this->data);
+        $this->data['tool'] = $this->options['selectedBrand'];
+        if ($this->options['updateExisting'] ?? false) {
+            return Product::firstOrNew([
+                'serial_number' => $this->data['serial_number'],
+            ]);
+        }
+
+        return new Product;
     }
 
     public static function getCompletedNotificationBody(Import $import): string
@@ -63,5 +67,18 @@ class ProductImporter extends Importer
         }
 
         return $body;
+    }
+
+    public static function getOptionsFormComponents(): array
+    {
+        return [
+            Select::make('selectedBrand')
+                ->options(ProductCategory::class)
+                ->default(ProductCategory::FERROLI)
+                ->required()
+                ->label('Select Product Brand'),
+            Checkbox::make('updateExisting')
+                ->label('Update existing records'),
+        ];
     }
 }

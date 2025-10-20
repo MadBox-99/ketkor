@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('owner_name', 200)->nullable()->default('');
             $table->string('installer_name', 200)->nullable()->default('');
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(User::class)->nullable();
             $table->string('city', 200)->nullable()->default('');
             $table->string('street', 200)->nullable()->default('');
             $table->string('zip', 4)->nullable()->default('');
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->date('installation_date')->nullable();
             $table->date('warrantee_date')->nullable();
             $table->date('purchase_date')->nullable();
-            $table->foreignIdFor(Tool::class);
+            $table->foreignIdFor(Tool::class)->nullable();
             $table->timestamps();
         });
     }

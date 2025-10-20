@@ -3,9 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\Product;
-use Livewire\Component;
-use Livewire\Attributes\Rule;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Rule;
+use Livewire\Component;
 
 class ProductSearch extends Component
 {
@@ -20,16 +20,20 @@ class ProductSearch extends Component
     {
         $user = Auth::user();
         $this->validate();
-        $product = Product::where('serial_number', $this->serial_number)->first();
+        $product = Product::with(['tool', 'product_logs'])
+            ->where('serial_number', $this->serial_number)
+            ->first();
         $this->owns = $user->products()->where('serial_number', $this->serial_number)->exists();
         $this->product = $product;
+
         return view('livewire.product-search');
     }
 
     public function render()
     {
         $product = $this->product;
-        //$owns = true;
+
+        // $owns = true;
         return view('livewire.product-search', ['product' => $product]);
 
     }

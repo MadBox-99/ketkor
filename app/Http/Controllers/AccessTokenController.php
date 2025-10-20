@@ -7,6 +7,7 @@ use App\Models\AccessToken;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Visible;
+use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -61,19 +62,31 @@ class AccessTokenController extends Controller
      */
     public function activateAccessToken($token)
     {
-        $accessToken = AccessToken::with('user')->where('token', $token)->first();
-        if (! $accessToken->used) {
+        $accessToken = AccessToken::where('token', $token)->first();
+        if (! $accessToken) {
+            Notification::make()
+                ->title('Access token not found')
+                ->danger()
+                ->send();
+
+            return redirect()->route('filament.admin.resources.access-tokens.index');
+        }
+        if (! $accessToken?->used) {
             $accessToken->update(['used' => 1]);
             $visibility = Visible::firstOrNew([
                 'product_id' => $accessToken->product_id,
                 'user_id' => $accessToken->user_id,
             ]);
             $visibility->update(['isVisible' => 1]);
+            Notification::make()
+                ->title('access grated to '.$accessToken->user->name)
+                ->success()
+                ->send();
 
-            return redirect()->route('products.index')->with('success', 'access grated to '.$accessToken->user->name);
+            return redirect()->route('filament.admin.resources.access-tokens.index');
         }
 
-        return redirect()->route('products.index')->with('error', 'access token is expired or used');
+        return redirect()->route('filament.admin.resources.access-tokens.index');
     }
 
     /**

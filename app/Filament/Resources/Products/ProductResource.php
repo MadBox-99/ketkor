@@ -2,20 +2,22 @@
 
 namespace App\Filament\Resources\Products;
 
-use Filament\Schemas\Schema;
-use Filament\Actions\ImportAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use App\Filament\Exports\ProductExporter;
 use App\Filament\Imports\ProductImporter;
 use App\Filament\Resources\Products\Pages\CreateProduct;
 use App\Filament\Resources\Products\Pages\EditProduct;
 use App\Filament\Resources\Products\Pages\ListProducts;
 use App\Models\Product;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
+use Filament\Actions\ImportAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -23,7 +25,7 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Schema $schema): Schema
     {
@@ -103,7 +105,12 @@ class ProductResource extends Resource
             ])
             ->headerActions([
                 ImportAction::make()
-                    ->importer(ProductImporter::class),
+                    ->importer(ProductImporter::class)
+                    ->options([
+                        'updateExisting' => true,
+                    ]),
+                ExportAction::make()
+                    ->exporter(ProductExporter::class),
             ])
             ->filters([
                 //

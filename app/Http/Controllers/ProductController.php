@@ -12,69 +12,10 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Throwable;
 
 class ProductController extends Controller
 {
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $users = User::orderBy('name')->get();
-        $tools = Tool::orderBy('name')->get();
-
-        return view('product.create', ['tools' => $tools, 'users' => $users]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request, Product $product)
-    {
-        DB::beginTransaction();
-        try {
-            $validator = Validator::make($request->all(), [
-                'serial_number' => ['required', 'string', 'max:200', 'unique:products,serial_number,except,id'],
-                'purchase_date' => ['sometimes', 'nullable'],
-                'installation_date' => ['sometimes', 'nullable'],
-                'tool_id' => ['required'],
-                'owner_name' => ['required'],
-            ]);
-            $validator->validate();
-            $product = Product::create(
-                [
-                    'serial_number' => $request->serial_number,
-                    'user_id' => $request->user_id,
-                    'installation_date' => $request->installation_date,
-                    'warrantee_date' => $request->warrantee_date,
-                    'purchase_date' => $request->purchase_date,
-                    'owner_name' => $request->owner_name,
-                    'city' => $request->city,
-                    'street' => $request->street,
-                    'zip' => $request->zip,
-                    'tool_id' => $request->tool_id,
-                ]
-            );
-
-            Partial::create([
-                'name' => $request->owner_name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'product_id' => $product->id,
-            ]);
-
-            DB::commit();
-
-            return redirect()->route('products.index')->with('success', __('Product created successfully.'));
-        } catch (Throwable $throwable) {
-            DB::rollback();
-
-            return redirect()->back()->withInput()->with('error', $throwable->getMessage());
-        }
-    }
-
     /**
      * Display the specified resource.
      */
@@ -89,9 +30,12 @@ class ProductController extends Controller
     public function edit(Product $product): View
     {
         $user = Auth::user();
-
-        $product = Product::whereId($product->id)->with(['users'])->first();
-        $userVisibility = Visible::where('user_id', $user->id)->where('product_id', $product->id)->where('isVisible', true)->first();
+        dump($product);
+        $product = Product::find($product->id)->first();
+        $userVisibility = Visible::where('user_id', Auth::user()->id)
+            ->where('product_id', $product->id)
+            ->where('isVisible', true)
+            ->first();
         $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
         if ($user->getRoleNames()->first() == 'Admin' || $user->getRoleNames()->first() == 'Operator') {
             $userVisibility = true;

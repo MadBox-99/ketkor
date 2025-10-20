@@ -5,6 +5,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PartialController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductLogController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ToolController;
 use Illuminate\Support\Facades\Route;
@@ -29,7 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::resource('organizations', OrganizationController::class);
     Route::resource('partials', PartialController::class);
     Route::resource('tools', ToolController::class);
-
+    Route::resource('productlogs', ProductLogController::class);
     Route::prefix('organization')->name('organizations.')->group(function (): void {
         Route::get('/{user}/{organization}/{product}', [OrganizationController::class, 'removeUserProduct'])->name('detach');
         Route::middleware(['role:Organizer|Admin|Super Admin'])->group(function (): void {
@@ -45,6 +46,12 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::prefix('product')->name('products.')->group(function (): void {
         Route::get('/search', [ProductController::class, 'search'])->name('search');
         Route::get('/myproducts', [ProductController::class, 'myproducts'])->name('myproducts');
+        Route::get('/add/{product}', [ProductController::class, 'add'])->name('add');
+        Route::delete('/remove/{product}', [ProductController::class, 'remove'])->name('remove');
+        Route::get('/partialUpdate/{product}', [ProductController::class, 'partialUpdate']);
+        Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('edit');
+        Route::get('/', [ProductController::class, 'index'])->name('index');
+        Route::put('/update/{product}', [ProductController::class, 'update'])->name('update');
 
     });
     Route::prefix('accestoken')->name('accestokens.')->group(function (): void {

@@ -8,7 +8,7 @@
     </x-slot>
     <x-alert />
     <div class="my-8 w-full overflow-hidden shadow-sm">
-        @livewire('product-search')
+        <livewire:product-search />
     </div>
 
 </x-layouts.app>
