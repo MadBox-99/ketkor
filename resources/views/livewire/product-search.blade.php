@@ -112,7 +112,8 @@
                                 @if ($product->purchase_date)
                                     <div
                                         class="rounded-lg border-2 border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
-                                        <dt class="mb-1 flex items-center gap-2 text-sm font-bold text-amber-700 dark:text-amber-400">
+                                        <dt
+                                            class="mb-1 flex items-center gap-2 text-sm font-bold text-amber-700 dark:text-amber-400">
                                             <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
@@ -121,7 +122,7 @@
                                             {{ __('Purchase date') }}
                                         </dt>
                                         <dd class="text-lg font-bold text-amber-900 dark:text-amber-300">
-                                            {{ $product->purchase_date->format('Y-m-d') }}
+                                            {{ $product->purchase_date }}
                                         </dd>
                                     </div>
                                 @endif
@@ -129,7 +130,8 @@
                                 @if ($product->installation_date)
                                     <div
                                         class="rounded-lg border-2 border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
-                                        <dt class="mb-1 flex items-center gap-2 text-sm font-bold text-amber-700 dark:text-amber-400">
+                                        <dt
+                                            class="mb-1 flex items-center gap-2 text-sm font-bold text-amber-700 dark:text-amber-400">
                                             <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
                                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
@@ -138,7 +140,7 @@
                                             {{ __('Installation date') }}
                                         </dt>
                                         <dd class="text-lg font-bold text-amber-900 dark:text-amber-300">
-                                            {{ $product->installation_date->format('Y-m-d') }}
+                                            {{ $product->installation_date }}
                                         </dd>
                                     </div>
                                 @endif
@@ -205,8 +207,8 @@
                 @if ($product->product_logs->isNotEmpty() || $product->purchase_date || $product->installation_date)
                     <div class="border-t border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800">
                         <h3 class="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-white">
-                            <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
+                            <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -263,7 +265,8 @@
                                         @if ($event['important'])
                                             <div
                                                 class="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500 ring-4 ring-white dark:ring-gray-800">
-                                                <svg class="h-4 w-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg class="h-4 w-4 text-white" fill="currentColor"
+                                                    viewBox="0 0 20 20">
                                                     @if ($event['icon'] === 'shopping-cart')
                                                         <path
                                                             d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
@@ -277,10 +280,9 @@
                                         @else
                                             <div
                                                 class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-300 ring-4 ring-white dark:bg-gray-600 dark:ring-gray-800">
-                                                <svg class="h-4 w-4 text-gray-600 dark:text-gray-300" fill="currentColor"
-                                                    viewBox="0 0 20 20">
-                                                    <path
-                                                        d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                                                <svg class="h-4 w-4 text-gray-600 dark:text-gray-300"
+                                                    fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
                                                     <path fill-rule="evenodd"
                                                         d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
                                                         clip-rule="evenodd" />
@@ -290,10 +292,12 @@
                                     </div>
 
                                     <!-- Event content -->
-                                    <div class="flex-1 rounded-lg pb-8 p-4 {{ $event['important'] ? 'border-2 border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20' : 'bg-gray-50 dark:bg-gray-700/50' }}">
+                                    <div
+                                        class="flex-1 rounded-lg pb-8 p-4 {{ $event['important'] ? 'border-2 border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20' : 'bg-gray-50 dark:bg-gray-700/50' }}">
                                         <div class="flex items-start justify-between">
                                             <div class="flex-1">
-                                                <p class="font-semibold {{ $event['important'] ? 'text-amber-900 dark:text-amber-300' : 'text-gray-900 dark:text-white' }}">
+                                                <p
+                                                    class="font-semibold {{ $event['important'] ? 'text-amber-900 dark:text-amber-300' : 'text-gray-900 dark:text-white' }}">
                                                     {{ $event['label'] }}
                                                 </p>
                                                 @if (isset($event['comment']) && $event['comment'])
@@ -302,8 +306,9 @@
                                                     </p>
                                                 @endif
                                             </div>
-                                            <time class="flex-shrink-0 text-sm font-medium {{ $event['important'] ? 'text-amber-700 dark:text-amber-400' : 'text-gray-500 dark:text-gray-400' }}">
-                                                {{ $event['date']->format('Y-m-d') }}
+                                            <time
+                                                class="flex-shrink-0 text-sm font-medium {{ $event['important'] ? 'text-amber-700 dark:text-amber-400' : 'text-gray-500 dark:text-gray-400' }}">
+                                                {{ $event['date'] }}
                                             </time>
                                         </div>
                                     </div>
