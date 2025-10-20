@@ -14,7 +14,7 @@
 
         <!-- Scripts -->
         @filamentStyles
-        @vite(['resources/js/app.js'])
+        @vite(['resources/js/app.js', 'resources/css/app.css'])
     </head>
 
     <body class="font-sans text-gray-900 antialiased">

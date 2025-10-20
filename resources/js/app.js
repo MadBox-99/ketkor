@@ -101,34 +101,8 @@ function initializeNavigation() {
         });
     }
 
-    const profileButton = document.getElementById("user-menu-button");
-    const profileDropdown = document.getElementById("profile-dropdown");
-
-    if (profileButton && profileDropdown) {
-        // Remove existing listeners to prevent duplicates
-        profileButton.replaceWith(profileButton.cloneNode(true));
-        const newProfileButton = document.getElementById("user-menu-button");
-
-        newProfileButton.addEventListener("click", () => {
-            profileDropdown.classList.toggle("hidden");
-            const isProfileExpanded = profileDropdown.classList.contains(
-                "hidden"
-            )
-                ? "false"
-                : "true";
-            newProfileButton.setAttribute("aria-expanded", isProfileExpanded);
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener("click", function (event) {
-            if (
-                !newProfileButton.contains(event.target) &&
-                !profileDropdown.contains(event.target)
-            ) {
-                profileDropdown.classList.add("hidden");
-            }
-        });
-    }
+    // Profile dropdown now uses Alpine.js (x-data, x-show) in the navigation component
+    // No manual JavaScript needed here
 }
 
 // Initialize immediately if DOM is already loaded

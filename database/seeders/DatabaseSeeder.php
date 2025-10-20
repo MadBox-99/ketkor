@@ -24,22 +24,28 @@ class DatabaseSeeder extends Seeder
 
         $permissions = [
             // Products
-            'products.list' => [UserRole::Admin->value, UserRole::Operator->value],
-            'products.create' => [UserRole::Admin->value, UserRole::Operator->value],
-            'products.update' => [UserRole::Admin->value, UserRole::Operator->value, UserRole::Servicer->value, UserRole::Organizer->value],
-            'products.delete' => [UserRole::Admin->value, UserRole::Operator->value],
+            'products.list' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
+            'products.create' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
+            'products.update' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value, UserRole::Servicer->value, UserRole::Organizer->value],
+            'products.delete' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
 
             // Organizations
-            'organizations.list' => [UserRole::Admin->value, UserRole::Operator->value],
-            'organizations.create' => [UserRole::Admin->value, UserRole::Operator->value],
-            'organizations.update' => [UserRole::Admin->value, UserRole::Operator->value, UserRole::Organizer->value],
-            'organizations.delete' => [UserRole::Admin->value, UserRole::Operator->value],
+            'organizations.list' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
+            'organizations.create' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
+            'organizations.update' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value, UserRole::Organizer->value],
+            'organizations.delete' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
 
             // Users
-            'users.*' => [UserRole::Admin->value, UserRole::Operator->value],
+            'users.*' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
 
             // Tools
-            'tools.*' => [UserRole::Admin->value, UserRole::Operator->value],
+            'tools.*' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
+
+            // Organizations wildcard
+            'organizations.*' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
+
+            // Products wildcard
+            'products.*' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
         ];
 
         // Create roles
@@ -52,13 +58,20 @@ class DatabaseSeeder extends Seeder
             $permission = Permission::firstOrCreate(['name' => $name, 'guard_name' => 'web']);
             $permission->syncRoles($permissionRoles);
         }
-
+        $organization = \App\Models\Organization::factory()->create([
+            'id' => 1,
+            'name' => 'Default Organization',
+            'address' => '123 Main St',
+            'zip' => '12345',
+            'tax_number' => '123456789',
+        ]);
         $admin = User::factory()->create([
             'name' => 'Admin',
             'email' => 'zoli.szabok@gamil.com',
             'email_verified_at' => now(),
             'password' => Hash::make('password'), // password
             'remember_token' => Str::random(10),
+            'organization_id' => $organization->id,
         ]);
         $user1 = User::factory()->create([
             'name' => 'Test User',
@@ -66,15 +79,16 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => Hash::make('password'), // password
             'remember_token' => Str::random(10),
-            'organization_id' => 1,
+            'organization_id' => $organization->id,
         ]);
+
         $user2 = User::factory()->create([
             'name' => 'Test User 2',
             'email' => 'test@test2.com',
             'email_verified_at' => now(),
             'password' => Hash::make('password'), // password
             'remember_token' => Str::random(10),
-            'organization_id' => 1,
+            'organization_id' => $organization->id,
         ]);
         $user3 = User::factory()->create([
             'name' => 'Test User 3',
@@ -82,11 +96,12 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => Hash::make('password'), // password
             'remember_token' => Str::random(10),
-            'organization_id' => 1,
+            'organization_id' => $organization->id,
         ]);
 
-        $admin->assignRole(UserRole::Admin);
-        $user1->assignRole(UserRole::Operator);
+        // Assign roles - Admin and SuperAdmin get both roles for full access
+        $admin->assignRole([UserRole::Admin, UserRole::SuperAdmin]);
+        $user1->assignRole([UserRole::Admin, UserRole::Operator, UserRole::SuperAdmin]);
         $user2->assignRole(UserRole::Organizer);
         $user3->assignRole(UserRole::Servicer);
         Tool::factory()->create([

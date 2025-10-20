@@ -27,6 +27,10 @@ final class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        Gate::before(function ($user, $ability) {
+            return ($user->hasRole('Super Admin') || $user->hasRole('Admin')) ? true : null;
+        });
         Model::automaticallyEagerLoadRelationships();
 
         Gate::policy(Role::class, RolePolicy::class);

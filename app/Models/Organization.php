@@ -2,19 +2,21 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Organization extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'id',
         'name',
         'city',
         'address',
         'zip',
+        'tax_number',
     ];
 
     public function users(): HasMany
@@ -26,5 +28,4 @@ class Organization extends Model
     {
         return $this->hasManyThrough(Product::class, User::class);
     }
-
 }
