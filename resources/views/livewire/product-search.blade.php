@@ -226,7 +226,7 @@
 
                                 if ($product->purchase_date) {
                                     $allEvents->push([
-                                        'date' => $product->purchase_date,
+                                        'date' => $product->purchase_date->format('Y-m-d'),
                                         'type' => 'purchase',
                                         'label' => __('Purchase date'),
                                         'icon' => 'shopping-cart',
@@ -236,7 +236,7 @@
 
                                 if ($product->installation_date) {
                                     $allEvents->push([
-                                        'date' => $product->installation_date,
+                                        'date' => $product->installation_date->format('Y-m-d'),
                                         'type' => 'installation',
                                         'label' => __('Installation date'),
                                         'icon' => 'wrench',
@@ -245,8 +245,9 @@
                                 }
 
                                 foreach ($product->product_logs as $log) {
+                                    $date = $log->when ?? $log->created_at;
                                     $allEvents->push([
-                                        'date' => $log->when ?? $log->created_at,
+                                        'date' => $date instanceof \Carbon\Carbon ? $date->format('Y-m-d') : $date,
                                         'type' => 'log',
                                         'label' => $log->what,
                                         'comment' => $log->comment,
