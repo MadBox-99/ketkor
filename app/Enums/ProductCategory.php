@@ -11,6 +11,7 @@ enum ProductCategory: string implements HasLabel
     case FERROLI = 'ferroli';
     case SPRSUN = 'sprsun';
     case SUNRAIN = 'sunrain';
+    case KAZAN = 'kazán';
 
     public function getLabel(): string|Htmlable|null
     {
@@ -19,6 +20,7 @@ enum ProductCategory: string implements HasLabel
             self::FERROLI => 'Ferroli',
             self::SPRSUN => 'SPRsun',
             self::SUNRAIN => 'Sunrain',
+            self::KAZAN => 'Kazán',
         };
     }
 }
