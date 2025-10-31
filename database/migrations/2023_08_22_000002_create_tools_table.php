@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\ProductCategory;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,7 +15,7 @@ return new class extends Migration
         Schema::create('tools', function (Blueprint $table): void {
             $table->id();
             $table->string('name', 200)->nullable(false)->default('');
-            $table->string('category', 200)->nullable()->default('');
+            $table->string('category', 200)->nullable()->default(ProductCategory::KAZAN->value);
             $table->string('tag', 200)->nullable()->default('');
             $table->string('factory_name', 200)->nullable()->default('');
             $table->timestamps();

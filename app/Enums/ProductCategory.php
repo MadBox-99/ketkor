@@ -21,6 +21,7 @@ enum ProductCategory: string implements HasLabel
             self::SPRSUN => 'SPRsun',
             self::SUNRAIN => 'Sunrain',
             self::KAZAN => 'Kazán',
+            default => null,
         };
     }
 }

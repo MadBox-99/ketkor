@@ -33,7 +33,7 @@ class ToolResource extends Resource
                 Select::make('category')
                     ->enum(ProductCategory::class)
                     ->options(ProductCategory::class)
-                    ->required(),
+                    ->nullable(),
                 TextInput::make('tag')
                     ->maxLength(200),
                 TextInput::make('factory_name')
