@@ -37,6 +37,7 @@ class ProductResource extends Resource
                     ->maxLength(200),
                 Select::make('user_id')
                     ->multiple()
+                    ->preload()
                     ->relationship('users', 'name'),
                 TextInput::make('city')
                     ->maxLength(200),
@@ -55,6 +56,7 @@ class ProductResource extends Resource
                 DatePicker::make('warrantee_date'),
                 DatePicker::make('purchase_date'),
                 Select::make('tool_id')
+                    ->preload()
                     ->relationship('tool', 'name')
                     ->required(),
             ]);
