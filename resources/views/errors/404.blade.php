@@ -1,5 +1,5 @@
-@extends('errors::minimal')
+@extends('errors::layout')
 
-@section('title', __('Not Found'))
+@section('title', 'Az oldal nem található')
 @section('code', '404')
-@section('message', __('Not Found'))
+@section('message', 'Sajnáljuk, de a keresett oldal nem létezik vagy áthelyezték.')

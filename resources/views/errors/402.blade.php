@@ -1,5 +1,5 @@
-@extends('errors::minimal')
+@extends('errors::layout')
 
-@section('title', __('Payment Required'))
+@section('title', 'Fizetés szükséges')
 @section('code', '402')
-@section('message', __('Payment Required'))
+@section('message', 'Az oldal megtekintéséhez fizetés szükséges.')

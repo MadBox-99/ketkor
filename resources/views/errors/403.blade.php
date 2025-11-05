@@ -1,5 +1,5 @@
-@extends('errors::minimal')
+@extends('errors::layout')
 
-@section('title', __('Forbidden'))
+@section('title', 'Hozzáférés megtagadva')
 @section('code', '403')
-@section('message', __($exception->getMessage() ?: 'Forbidden'))
+@section('message', __($exception->getMessage() ?: 'Nincs jogosultsága ennek az oldalnak a megtekintéséhez.'))
