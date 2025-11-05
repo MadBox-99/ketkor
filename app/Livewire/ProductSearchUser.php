@@ -63,7 +63,7 @@ class ProductSearchUser extends Component implements HasActions, HasSchemas, Has
                     ->label(__('Type'))
                     ->searchable()
                     ->sortable()
-                    ->getStateUsing(function (Product $record): string {
+                    ->getStateUsing(function (Product $record) {
                         if ($record->are_visible->isEmpty() || ! $record->are_visible[0]->isVisible) {
                             return '-';
                         }
