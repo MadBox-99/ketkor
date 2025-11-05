@@ -78,7 +78,7 @@ class ProductEdit extends Component implements HasSchemas
     {
         $user = Auth::user();
         $isOrganizerOrServicer = $user->hasAnyRole(['Organizer', 'Servicer']);
-        $isAdminOrOperator = $user->hasAnyRole(['Admin', 'Operator']);
+        $isAdminOrOperator = $user->hasAnyRole(['Admin', 'Operator', 'Super-Admin']);
 
         return $schema
             ->components([
