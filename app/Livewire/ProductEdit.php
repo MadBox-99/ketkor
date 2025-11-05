@@ -88,22 +88,22 @@ class ProductEdit extends Component implements HasSchemas
                         TextInput::make('serial_number')
                             ->label(__('Serial number'))
                             ->required()
-                            ->disabled($isOrganizerOrServicer)
+                            ->disabled()
                             ->maxLength(200),
 
                         TextInput::make('city')
                             ->label(__('City'))
-                            ->disabled($isOrganizerOrServicer ? $this->userVisibility : ! $this->userVisibility)
+                            ->disabled()
                             ->maxLength(200),
 
                         TextInput::make('street')
                             ->label(__('Street'))
-                            ->disabled($isOrganizerOrServicer ? $this->userVisibility : ! $this->userVisibility)
+                            ->disabled()
                             ->maxLength(200),
 
                         TextInput::make('zip')
                             ->label(__('Zip'))
-                            ->disabled($isOrganizerOrServicer ? $this->userVisibility : ! $this->userVisibility)
+                            ->disabled()
                             ->maxLength(4),
 
                         TextInput::make('owner_name')
