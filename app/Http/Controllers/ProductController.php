@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
+use function Illuminate\Log\log;
+
 class ProductController extends Controller
 {
     /**
@@ -31,7 +33,7 @@ class ProductController extends Controller
     public function edit(Product $product): View
     {
         $user = Auth::user();
-
+        log('Editing product', ['product_id' => $product->id, 'user_id' => $user->id]);
         $product = Product::find($product->id)->first();
         $userVisibility = Visible::where('user_id', Auth::user()->id)
             ->where('product_id', $product->id)
