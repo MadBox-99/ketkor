@@ -45,7 +45,7 @@ class ProductEdit extends Component implements HasSchemas
 
     public function mount(Product $product, bool $userVisibility): void
     {
-        log($product);
+
         $this->product = $product;
         $this->userVisibility = $userVisibility;
 
