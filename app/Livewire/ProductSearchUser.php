@@ -144,7 +144,7 @@ class ProductSearchUser extends Component implements HasActions, HasSchemas, Has
                         return __('Tool name').': '.$data['value'];
                     }),
                 Filter::make('warranty_date')
-                    ->form([
+                    ->schema([
                         \Filament\Forms\Components\DatePicker::make('from')
                             ->label(__('Warranty from')),
                         \Filament\Forms\Components\DatePicker::make('to')
@@ -173,6 +173,11 @@ class ProductSearchUser extends Component implements HasActions, HasSchemas, Has
             ])
             ->deferFilters(false)
             ->recordActions([
+                Action::make('permission')
+                    ->label(__('Require access'))
+                    ->icon(Heroicon::OutlinedEye)
+                    ->visible(fn (Product $record): bool => $record->are_visible->isEmpty() || ! $record->are_visible[0]->isVisible)
+                    ->url(fn (Product $record): string => route('accestokens.createAccessToken', ['product' => $record->id])),
                 Action::make('view')
                     ->label(__('View details'))
                     ->icon(Heroicon::OutlinedEye)
