@@ -287,5 +287,6 @@
     "Commissioning must be completed first": "Először a beüzemelést kell elvégezni",
     "Maximum 2 maintenance operations reached": "Maximum 2 karbantartás már megtörtént",
     "Product": "Termék",
-    "Type of work": "Munkavégzés jellege"
+    "Type of work": "Munkavégzés jellege",
+    "Remove": "Eltávolítás"
 }

@@ -173,11 +173,11 @@ class ProductSearchUser extends Component implements HasActions, HasSchemas, Has
             ])
             ->deferFilters(false)
             ->recordActions([
-                Action::make('permission')
+                /* Action::make('permission')
                     ->label(__('Require access'))
                     ->icon(Heroicon::OutlinedEye)
                     ->hidden(fn (Product $record): bool => ! $record->are_visible->isEmpty() && $record->are_visible[0]->isVisible)
-                    ->url(fn (Product $record): string => route('accestokens.createAccessToken', ['product' => $record->id])),
+                    ->url(fn (Product $record): string => route('accestokens.createAccessToken', ['product' => $record->id])), */
                 Action::make('view')
                     ->label(__('View details'))
                     ->icon(Heroicon::OutlinedEye)
