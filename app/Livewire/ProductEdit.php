@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
+use function Illuminate\Log\log;
+
 class ProductEdit extends Component implements HasSchemas
 {
     use InteractsWithSchemas;
@@ -43,6 +45,7 @@ class ProductEdit extends Component implements HasSchemas
 
     public function mount(Product $product, bool $userVisibility): void
     {
+        log($product);
         $this->product = $product;
         $this->userVisibility = $userVisibility;
 
