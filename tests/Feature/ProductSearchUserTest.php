@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\ProductCategory;
 use App\Livewire\ProductSearchUser;
 use App\Models\Product;
 use App\Models\Tool;
@@ -22,7 +23,7 @@ it('displays user products in the table', function () {
     $user = User::factory()->create();
     $tool = Tool::factory()->create([
         'name' => 'Test Tool',
-        'category' => 'Test Category',
+        'category' => ProductCategory::KAZAN,
     ]);
 
     $product = Product::factory()->create([
