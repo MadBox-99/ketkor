@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-use function Illuminate\Log\log;
-
 class ProductController extends Controller
 {
     /**
@@ -35,9 +33,8 @@ class ProductController extends Controller
         $user = Auth::user();
 
         $product = Product::find($product->id);
-        $userVisibility = Visible::where('user_id', Auth::user()->id)
-            ->where('product_id', $product->id)
-            ->where('isVisible', true)
+        $userVisibility = Visible::whereUserId(Auth::user()->id)
+            ->whereProductId($product->id)
             ->first();
         $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
         if ($user->hasAnyRole([UserRole::Admin, UserRole::Operator])) {
@@ -47,7 +44,6 @@ class ProductController extends Controller
         $partials = Partial::where('product_id', $product->id)->latest()->limit(6)->get();
         $users = User::orderBy('name')->get();
         $tools = Tool::orderBy('name')->get();
-        log('Editing product', ['product_id' => $product->id, 'user_id' => $user->id]);
 
         return view('product.edit', ['users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials, 'userVisibility' => $userVisibility]);
     }
