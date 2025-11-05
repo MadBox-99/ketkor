@@ -483,7 +483,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
     public function permissionAction(): Action
     {
         return Action::make('permission')
-            ->visible(! $this->userVisibility)
+            ->hidden($this->userVisibility)
             ->color('warning')
             ->action(function (): void {
                 config('mail.from.address');
