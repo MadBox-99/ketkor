@@ -34,7 +34,7 @@ class ProductController extends Controller
     {
         $user = Auth::user();
 
-        $product = Product::find($product->id)->first();
+        $product = Product::find($product->id);
         $userVisibility = Visible::where('user_id', Auth::user()->id)
             ->where('product_id', $product->id)
             ->where('isVisible', true)
