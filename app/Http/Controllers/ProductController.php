@@ -37,7 +37,7 @@ class ProductController extends Controller
             ->whereProductId($product->id)
             ->first();
         $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
-        if ($user->hasAnyRole([UserRole::Admin, UserRole::Operator])) {
+        if ($user->hasAnyRole([UserRole::Admin, UserRole::SuperAdmin, UserRole::Operator])) {
             $userVisibility = true;
         }
 
