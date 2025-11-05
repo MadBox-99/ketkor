@@ -93,17 +93,17 @@ class ProductEdit extends Component implements HasSchemas
 
                         TextInput::make('city')
                             ->label(__('City'))
-                            ->disabled($isOrganizerOrServicer ? ! $this->userVisibility : ! $this->userVisibility)
+                            ->disabled($isOrganizerOrServicer ? $this->userVisibility : ! $this->userVisibility)
                             ->maxLength(200),
 
                         TextInput::make('street')
                             ->label(__('Street'))
-                            ->disabled($isOrganizerOrServicer ? ! $this->userVisibility : ! $this->userVisibility)
+                            ->disabled($isOrganizerOrServicer ? $this->userVisibility : ! $this->userVisibility)
                             ->maxLength(200),
 
                         TextInput::make('zip')
                             ->label(__('Zip'))
-                            ->disabled($isOrganizerOrServicer ? ! $this->userVisibility : ! $this->userVisibility)
+                            ->disabled($isOrganizerOrServicer ? $this->userVisibility : ! $this->userVisibility)
                             ->maxLength(4),
 
                         TextInput::make('owner_name')
