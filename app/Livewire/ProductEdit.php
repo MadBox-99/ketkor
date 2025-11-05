@@ -52,11 +52,6 @@ class ProductEdit extends Component implements HasActions, HasSchemas
         ];
     }
 
-    protected function headerActions(): array
-    {
-        return [];
-    }
-
     public function mount(Product $product, bool $userVisibility): void
     {
 
