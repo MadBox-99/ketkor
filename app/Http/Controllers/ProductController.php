@@ -33,7 +33,7 @@ class ProductController extends Controller
     public function edit(Product $product): View
     {
         $user = Auth::user();
-        log('Editing product', ['product_id' => $product->id, 'user_id' => $user->id]);
+
         $product = Product::find($product->id)->first();
         $userVisibility = Visible::where('user_id', Auth::user()->id)
             ->where('product_id', $product->id)
@@ -47,6 +47,7 @@ class ProductController extends Controller
         $partials = Partial::where('product_id', $product->id)->latest()->limit(6)->get();
         $users = User::orderBy('name')->get();
         $tools = Tool::orderBy('name')->get();
+        log('Editing product', ['product_id' => $product->id, 'user_id' => $user->id]);
 
         return view('product.edit', ['users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials, 'userVisibility' => $userVisibility]);
     }
