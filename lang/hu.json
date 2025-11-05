@@ -288,5 +288,6 @@
     "Maximum 2 maintenance operations reached": "Maximum 2 karbantartás már megtörtént",
     "Product": "Termék",
     "Type of work": "Munkavégzés jellege",
-    "Remove": "Eltávolítás"
+    "Remove": "Eltávolítás",
+    "Permission requested successfully": "Hozzáférés kérése sikeresen megtörtént."
 }

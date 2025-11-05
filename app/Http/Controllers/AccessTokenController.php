@@ -36,7 +36,6 @@ class AccessTokenController extends Controller
         $accessToken = AccessToken::firstOrCreate([
             'user_id' => $user_id,
             'product_id' => $product->id,
-            'used' => 0,
             // Mark the token as not used
         ]);
 

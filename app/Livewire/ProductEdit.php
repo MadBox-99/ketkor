@@ -3,8 +3,14 @@
 namespace App\Livewire;
 
 use App\Enums\UserRole;
+use App\Mail\AccessGrantMail;
+use App\Models\AccessToken;
 use App\Models\Product;
 use App\Models\ProductLog;
+use App\Models\User;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -16,12 +22,15 @@ use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 use function Illuminate\Log\log;
 
-class ProductEdit extends Component implements HasSchemas
+class ProductEdit extends Component implements HasActions, HasSchemas
 {
+    use InteractsWithActions;
     use InteractsWithSchemas;
 
     public ?Product $product = null;
@@ -41,6 +50,11 @@ class ProductEdit extends Component implements HasSchemas
             'eventForm',
             'ownerForm',
         ];
+    }
+
+    protected function headerActions(): array
+    {
+        return [];
     }
 
     public function mount(Product $product, bool $userVisibility): void
@@ -464,6 +478,34 @@ class ProductEdit extends Component implements HasSchemas
             ->success()
             ->title(__('Owner data updated successfully'))
             ->send();
+    }
+
+    public function permissionAction(): Action
+    {
+        return Action::make('permission')
+            ->color('warning')
+            ->action(function (): void {
+                config('mail.from.address');
+                $admin = User::whereEmail(env('ADMIN_EMAIL'))->first();
+                $token = Str::random(40); // Generate a unique token
+                $user_id = Auth::user()->id;
+                // Store the token in the database
+                $accessToken = AccessToken::firstOrCreate([
+                    'user_id' => $user_id,
+                    'product_id' => $this->product->id,
+                ]);
+
+                $accessToken->update(['token' => $token, 'used' => false]);
+
+                $user = Auth::user();
+
+                Mail::to($admin)->cc($user->email)->send(new AccessGrantMail($token, $user->name));
+                Notification::make()
+                    ->title(__('Succesfuly send an email to administrator who will grant an access to private datas, please wait until is access in grant.'))
+                    ->success()
+                    ->send();
+
+            });
     }
 
     public function render()
