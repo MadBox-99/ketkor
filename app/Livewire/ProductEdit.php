@@ -478,7 +478,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
     public function permissionAction(): Action
     {
         return Action::make('permission')
-
+            ->label(__('Request Permission'))
             ->color('warning')
             ->action(function (): void {
                 config('mail.from.address');

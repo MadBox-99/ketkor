@@ -289,5 +289,6 @@
     "Product": "Termék",
     "Type of work": "Munkavégzés jellege",
     "Remove": "Eltávolítás",
-    "Permission requested successfully": "Hozzáférés kérése sikeresen megtörtént."
+    "Permission requested successfully": "Hozzáférés kérése sikeresen megtörtént.",
+    "Request Permission": "Hozzáférés kérése"
 }
