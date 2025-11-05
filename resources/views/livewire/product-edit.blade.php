@@ -1,5 +1,6 @@
 <div class="min-h-screen bg-gray-50 py-8 dark:bg-gray-900">
 
+    {{ $this->permissionAction }}
     <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
         <!-- Product Information Form -->
         <div class="overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
