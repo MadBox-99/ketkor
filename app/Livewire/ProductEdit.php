@@ -266,7 +266,12 @@ class ProductEdit extends Component implements HasActions, HasSchemas
 
                         SignaturePad::make('signature')
                             ->label(__('Servicer signature'))
-                            ->columnSpanFull(),
+                            ->confirmable(false)
+                            ->filename('signature')
+                            ->columnSpanFull()
+                            ->extraAttributes([
+                                'class' => 'signature-pad-wrapper',
+                            ]),
                     ])
                     ->columns(2),
             ])
