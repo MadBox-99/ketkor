@@ -266,17 +266,6 @@ class ProductEdit extends Component implements HasActions, HasSchemas
 
                         SignaturePad::make('signature')
                             ->label(__('Servicer signature'))
-                            ->dotSize(2.0)
-                            ->lineMinWidth(0.5)
-                            ->lineMaxWidth(2.5)
-                            ->throttle(16)
-                            ->minDistance(5)
-                            ->velocityFilterWeight(0.7)
-                            ->backgroundColor('rgba(255, 255, 255, 1)')
-                            ->penColor('rgba(0, 0, 0, 1)')
-                            ->extraAttributes([
-                                'wire:ignore' => true,
-                            ])
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
