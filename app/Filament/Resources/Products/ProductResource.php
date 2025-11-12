@@ -7,19 +7,12 @@ use App\Filament\Imports\ProductImporter;
 use App\Filament\Resources\Products\Pages\CreateProduct;
 use App\Filament\Resources\Products\Pages\EditProduct;
 use App\Filament\Resources\Products\Pages\ListProducts;
+use App\Filament\Resources\Products\Schemas\ProductFormSchema;
+use App\Filament\Resources\Products\Tables\ProductTable;
 use App\Models\Product;
 use BackedEnum;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ExportAction;
-use Filament\Actions\ImportAction;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class ProductResource extends Resource
@@ -30,103 +23,16 @@ class ProductResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('owner_name')
-                    ->maxLength(200),
-                TextInput::make('installer_name')
-                    ->maxLength(200),
-                Select::make('user_id')
-                    ->multiple()
-                    ->preload()
-                    ->relationship('users', 'name'),
-                TextInput::make('city')
-                    ->maxLength(200),
-                TextInput::make('street')
-                    ->maxLength(200),
-                TextInput::make('zip')
-                    ->maxLength(4),
-                TextInput::make('purchase_place')
-                    ->maxLength(200),
-                TextInput::make('serial_number')
-                    ->required()
-                    ->maxLength(200),
-                TextInput::make('comments')
-                    ->maxLength(500),
-                DatePicker::make('installation_date'),
-                DatePicker::make('warrantee_date'),
-                DatePicker::make('purchase_date'),
-                Select::make('tool_id')
-                    ->preload()
-                    ->relationship('tool', 'name')
-                    ->required(),
-            ]);
+        return ProductFormSchema::make($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('owner_name')
-                    ->searchable(),
-                TextColumn::make('installer_name')
-                    ->searchable(),
-                TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('city')
-                    ->searchable(),
-                TextColumn::make('street')
-                    ->searchable(),
-                TextColumn::make('zip')
-                    ->searchable(),
-                TextColumn::make('purchase_place')
-                    ->searchable(),
-                TextColumn::make('serial_number')
-                    ->searchable(),
-                TextColumn::make('comments')
-                    ->searchable(),
-                TextColumn::make('installation_date')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('warrantee_date')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('purchase_date')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('tool.name')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->headerActions([
-                ImportAction::make()
-                    ->importer(ProductImporter::class)
-                    ->options([
-                        'updateExisting' => true,
-                    ]),
-                ExportAction::make()
-                    ->exporter(ProductExporter::class),
-            ])
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+        return ProductTable::make(
+            $table,
+            ProductImporter::class,
+            ProductExporter::class
+        );
     }
 
     public static function getRelations(): array

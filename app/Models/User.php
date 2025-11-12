@@ -96,7 +96,6 @@ class User extends Authenticatable implements FilamentUser
         // Ellenőrizzük, hogy van-e megfelelő szerepköre és megerősített email-je
         return $this->hasVerifiedEmail() && (
             $this->hasRole(['Admin', 'Operator'])
-            // Itt adj meg egy megfelelő domain-t
         );
     }
 }

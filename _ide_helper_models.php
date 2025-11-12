@@ -13,15 +13,13 @@
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property string|null $token
  * @property int $used
  * @property int $user_id
  * @property int $product_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \App\Models\Product|null $product
  * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AccessToken newModelQuery()
@@ -40,14 +38,12 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property int $user_id
  * @property string $what
  * @property string|null $when
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \App\Models\User|null $user
  * @method static \Database\Factories\LogFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Log newModelQuery()
@@ -65,16 +61,14 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property string|null $name
  * @property string|null $city
  * @property string|null $tax_number
  * @property string|null $address
  * @property string|null $zip
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
@@ -97,15 +91,13 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property string|null $email
  * @property string|null $phone
  * @property string|null $name
  * @property int $product_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \App\Models\Product|null $product
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Partial newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Partial newQuery()
@@ -123,24 +115,22 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property string|null $owner_name
  * @property string|null $installer_name
- * @property int $user_id
+ * @property int|null $user_id
  * @property string|null $city
  * @property string|null $street
  * @property string|null $zip
  * @property string|null $purchase_place
  * @property string $serial_number
  * @property string|null $comments
- * @property \Illuminate\Support\Carbon|null $installation_date
- * @property \Illuminate\Support\Carbon|null $warrantee_date
- * @property \Illuminate\Support\Carbon|null $purchase_date
- * @property int $tool_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Carbon\CarbonImmutable|null $installation_date
+ * @property \Carbon\CarbonImmutable|null $warrantee_date
+ * @property \Carbon\CarbonImmutable|null $purchase_date
+ * @property int|null $tool_id
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Visible> $are_visible
  * @property-read int|null $are_visible_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Organization> $organizations
@@ -178,15 +168,13 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property int $product_id
  * @property string|null $what
  * @property string|null $comment
  * @property string $when
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \App\Models\Product|null $product
  * @method static \Database\Factories\ProductLogFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductLog newModelQuery()
@@ -205,15 +193,13 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property string $name
- * @property string|null $category
+ * @property \App\Enums\ProductCategory|null $category
  * @property string|null $tag
  * @property string|null $factory_name
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
  * @method static \Database\Factories\ToolFactory factory($count = null, $state = [])
@@ -233,17 +219,15 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property string $name
  * @property string|null $email
  * @property int|null $organization_id
- * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property \Carbon\CarbonImmutable|null $email_verified_at
  * @property string|null $password
  * @property string|null $remember_token
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AccessToken> $AccessTokens
  * @property-read int|null $access_tokens_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Visible> $are_visible
@@ -282,16 +266,15 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
- *
  * @property int $id
  * @property int $isVisible
  * @property int $product_id
  * @property int $user_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \App\Models\Product|null $product
  * @property-read \App\Models\User|null $user
+ * @method static \Database\Factories\VisibleFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visible newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visible newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Visible query()

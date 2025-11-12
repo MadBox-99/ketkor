@@ -5,17 +5,12 @@ namespace App\Filament\Resources\Logs;
 use App\Filament\Resources\Logs\Pages\CreateLog;
 use App\Filament\Resources\Logs\Pages\EditLog;
 use App\Filament\Resources\Logs\Pages\ListLogs;
+use App\Filament\Resources\Logs\Schemas\LogFormSchema;
+use App\Filament\Resources\Logs\Tables\LogTable;
 use App\Models\Log;
 use BackedEnum;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class LogResource extends Resource
@@ -26,48 +21,12 @@ class LogResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required(),
-                Textarea::make('what')
-                    ->required()
-                    ->columnSpanFull(),
-                DatePicker::make('when'),
-            ]);
+        return LogFormSchema::make($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('user.name')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('when')
-                    ->date()
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+        return LogTable::make($table);
     }
 
     public static function getRelations(): array

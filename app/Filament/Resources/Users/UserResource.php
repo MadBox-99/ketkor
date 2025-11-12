@@ -6,20 +6,13 @@ use App\Filament\Imports\UserImporter;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
+use App\Filament\Resources\Users\Schemas\UserFormSchema;
+use App\Filament\Resources\Users\Tables\UserTable;
 use App\Models\User;
 use BackedEnum;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ImportAction;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -29,76 +22,12 @@ class UserResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                TextInput::make('email')
-                    ->email()
-                    ->maxLength(255),
-                Select::make('organization_id')
-                    ->relationship('organization', 'name'),
-                Select::make('roles')
-                    ->label('Szerepkörök')
-                    ->multiple()
-                    ->preload()
-                    ->relationship('roles', 'name'),
-                DateTimePicker::make('email_verified_at')
-                    ->label('Email megerősítve'),
-                TextInput::make('password')
-                    ->label('Jelszó')
-                    ->revealable()
-                    ->password()
-                    ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
-                    ->dehydrated(fn (?string $state): bool => filled($state)),
-            ]);
+        return UserFormSchema::make($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('name')
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('email')
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('organization.name')
-                    ->sortable()
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
-                TextColumn::make('roles.name')
-                    ->label('Szerepkörök')
-                    ->searchable()
-                    ->getStateUsing(fn (User $record) => $record->roles->pluck('name')->implode(', ')),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])->headerActions([
-                ImportAction::make()
-                    ->importer(UserImporter::class),
-            ])
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+        return UserTable::make($table, UserImporter::class);
     }
 
     public static function getRelations(): array

@@ -174,7 +174,6 @@ class ProductSearchUser extends Component implements HasActions, HasSchemas, Has
                         return $indicators;
                     }),
             ])
-            ->deferFilters(false)
             ->recordActions([
                 /* Action::make('permission')
                     ->label(__('Require access'))

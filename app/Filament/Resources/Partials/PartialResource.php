@@ -5,16 +5,12 @@ namespace App\Filament\Resources\Partials;
 use App\Filament\Resources\Partials\Pages\CreatePartial;
 use App\Filament\Resources\Partials\Pages\EditPartial;
 use App\Filament\Resources\Partials\Pages\ListPartials;
+use App\Filament\Resources\Partials\Schemas\PartialFormSchema;
+use App\Filament\Resources\Partials\Tables\PartialTable;
 use App\Models\Partial;
 use BackedEnum;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class PartialResource extends Resource
@@ -25,55 +21,12 @@ class PartialResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('email')
-                    ->email()
-                    ->maxLength(255),
-                TextInput::make('phone')
-                    ->tel()
-                    ->maxLength(255),
-                TextInput::make('name')
-                    ->maxLength(255),
-                Select::make('product_id')
-                    ->relationship('product', 'id')
-                    ->required(),
-            ]);
+        return PartialFormSchema::make($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('email')
-                    ->searchable(),
-                TextColumn::make('phone')
-                    ->searchable(),
-                TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('product.id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+        return PartialTable::make($table);
     }
 
     public static function getRelations(): array

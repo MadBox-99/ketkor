@@ -5,7 +5,7 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel 12.34.0.
+ * Generated for Laravel 12.37.0.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -5513,6 +5513,7 @@ namespace Illuminate\Support\Facades {
          * @param string $key
          * @param (\Closure():(string|null))|string|null $default
          * @return string
+         * @throws \InvalidArgumentException
          * @static
          */
         public static function string($key, $default = null)
@@ -5527,6 +5528,7 @@ namespace Illuminate\Support\Facades {
          * @param string $key
          * @param (\Closure():(int|null))|int|null $default
          * @return int
+         * @throws \InvalidArgumentException
          * @static
          */
         public static function integer($key, $default = null)
@@ -5541,6 +5543,7 @@ namespace Illuminate\Support\Facades {
          * @param string $key
          * @param (\Closure():(float|null))|float|null $default
          * @return float
+         * @throws \InvalidArgumentException
          * @static
          */
         public static function float($key, $default = null)
@@ -5555,6 +5558,7 @@ namespace Illuminate\Support\Facades {
          * @param string $key
          * @param (\Closure():(bool|null))|bool|null $default
          * @return bool
+         * @throws \InvalidArgumentException
          * @static
          */
         public static function boolean($key, $default = null)
@@ -5569,6 +5573,7 @@ namespace Illuminate\Support\Facades {
          * @param string $key
          * @param (\Closure():(array<array-key, mixed>|null))|array<array-key, mixed>|null $default
          * @return array<array-key, mixed>
+         * @throws \InvalidArgumentException
          * @static
          */
         public static function array($key, $default = null)
@@ -6723,6 +6728,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param array $keys
          * @return \Illuminate\Encryption\Encrypter
+         * @throws \RuntimeException
          * @static
          */
         public static function previousKeys($keys)
@@ -7689,7 +7695,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Register a database query listener with the connection.
          *
-         * @param \Closure $callback
+         * @param \Closure(\Illuminate\Database\Events\QueryExecuted) $callback
          * @return void
          * @static
          */
@@ -7720,6 +7726,7 @@ namespace Illuminate\Support\Facades {
          * @param string|float|int|bool|null $value
          * @param bool $binary
          * @return string
+         * @throws \RuntimeException
          * @static
          */
         public static function escape($value, $binary = false)
@@ -9310,10 +9317,10 @@ namespace Illuminate\Support\Facades {
          * @return \Symfony\Component\Finder\SplFileInfo[]
          * @static
          */
-        public static function files($directory, $hidden = false)
+        public static function files($directory, $hidden = false, $depth = 0)
         {
             /** @var \Illuminate\Filesystem\Filesystem $instance */
-            return $instance->files($directory, $hidden);
+            return $instance->files($directory, $hidden, $depth);
         }
 
         /**
@@ -9337,10 +9344,22 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */
-        public static function directories($directory)
+        public static function directories($directory, $depth = 0)
         {
             /** @var \Illuminate\Filesystem\Filesystem $instance */
-            return $instance->directories($directory);
+            return $instance->directories($directory, $depth);
+        }
+
+        /**
+         * Get all the directories within a given directory (recursive).
+         *
+         * @return array
+         * @static
+         */
+        public static function allDirectories($directory)
+        {
+            /** @var \Illuminate\Filesystem\Filesystem $instance */
+            return $instance->allDirectories($directory);
         }
 
         /**
@@ -10163,7 +10182,7 @@ namespace Illuminate\Support\Facades {
      * @method static \Illuminate\Http\Client\Response patch(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
      * @method static \Illuminate\Http\Client\Response put(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
      * @method static \Illuminate\Http\Client\Response delete(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
-     * @method static array pool(callable $callback)
+     * @method static array pool(callable $callback, int|null $concurrency = null)
      * @method static \Illuminate\Http\Client\Batch batch(callable $callback)
      * @method static \Illuminate\Http\Client\Response send(string $method, string $url, array $options = [])
      * @method static \GuzzleHttp\Client buildClient()
@@ -19474,6 +19493,31 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
+         * Get the previous route name from the session.
+         *
+         * @return string|null
+         * @static
+         */
+        public static function previousRoute()
+        {
+            /** @var \Illuminate\Session\Store $instance */
+            return $instance->previousRoute();
+        }
+
+        /**
+         * Set the "previous" route name in the session.
+         *
+         * @param string|null $route
+         * @return void
+         * @static
+         */
+        public static function setPreviousRoute($route)
+        {
+            /** @var \Illuminate\Session\Store $instance */
+            $instance->setPreviousRoute($route);
+        }
+
+        /**
          * Specify that the user has confirmed their password.
          *
          * @return void
@@ -23081,598 +23125,6 @@ namespace AnourValar\EloquentSerialize\Facades {
             }
     }
 
-namespace Barryvdh\Debugbar\Facades {
-    /**
-     * @method static void alert(mixed $message)
-     * @method static void critical(mixed $message)
-     * @method static void debug(mixed $message)
-     * @method static void emergency(mixed $message)
-     * @method static void error(mixed $message)
-     * @method static void info(mixed $message)
-     * @method static void log(mixed $message)
-     * @method static void notice(mixed $message)
-     * @method static void warning(mixed $message)
-     * @see \Barryvdh\Debugbar\LaravelDebugbar
-     */
-    class Debugbar extends \DebugBar\DebugBar {
-        /**
-         * Returns the HTTP driver
-         * 
-         * If no http driver where defined, a PhpHttpDriver is automatically created
-         *
-         * @return \DebugBar\HttpDriverInterface
-         * @static
-         */
-        public static function getHttpDriver()
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->getHttpDriver();
-        }
-
-        /**
-         * Enable the Debugbar and boot, if not already booted.
-         *
-         * @static
-         */
-        public static function enable()
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->enable();
-        }
-
-        /**
-         * Boot the debugbar (add collectors, renderer and listener)
-         *
-         * @static
-         */
-        public static function boot()
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->boot();
-        }
-
-        /**
-         * @static
-         */
-        public static function shouldCollect($name, $default = false)
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->shouldCollect($name, $default);
-        }
-
-        /**
-         * Adds a data collector
-         *
-         * @param \DebugBar\DataCollector\DataCollectorInterface $collector
-         * @throws DebugBarException
-         * @return \Barryvdh\Debugbar\LaravelDebugbar
-         * @static
-         */
-        public static function addCollector($collector)
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->addCollector($collector);
-        }
-
-        /**
-         * Handle silenced errors
-         *
-         * @param $level
-         * @param $message
-         * @param string $file
-         * @param int $line
-         * @param array $context
-         * @throws \ErrorException
-         * @static
-         */
-        public static function handleError($level, $message, $file = '', $line = 0, $context = [])
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->handleError($level, $message, $file, $line, $context);
-        }
-
-        /**
-         * Starts a measure
-         *
-         * @param string $name Internal name, used to stop the measure
-         * @param string $label Public name
-         * @param string|null $collector
-         * @param string|null $group
-         * @static
-         */
-        public static function startMeasure($name, $label = null, $collector = null, $group = null)
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->startMeasure($name, $label, $collector, $group);
-        }
-
-        /**
-         * Stops a measure
-         *
-         * @param string $name
-         * @static
-         */
-        public static function stopMeasure($name)
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->stopMeasure($name);
-        }
-
-        /**
-         * Adds an exception to be profiled in the debug bar
-         *
-         * @param \Exception $e
-         * @deprecated in favor of addThrowable
-         * @static
-         */
-        public static function addException($e)
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->addException($e);
-        }
-
-        /**
-         * Adds an exception to be profiled in the debug bar
-         *
-         * @param \Throwable $e
-         * @static
-         */
-        public static function addThrowable($e)
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->addThrowable($e);
-        }
-
-        /**
-         * Returns a JavascriptRenderer for this instance
-         *
-         * @param string $baseUrl
-         * @param string $basePath
-         * @return \Barryvdh\Debugbar\JavascriptRenderer
-         * @static
-         */
-        public static function getJavascriptRenderer($baseUrl = null, $basePath = null)
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->getJavascriptRenderer($baseUrl, $basePath);
-        }
-
-        /**
-         * Modify the response and inject the debugbar (or data in headers)
-         *
-         * @param \Symfony\Component\HttpFoundation\Request $request
-         * @param \Symfony\Component\HttpFoundation\Response $response
-         * @return \Symfony\Component\HttpFoundation\Response
-         * @static
-         */
-        public static function modifyResponse($request, $response)
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->modifyResponse($request, $response);
-        }
-
-        /**
-         * Check if the Debugbar is enabled
-         *
-         * @return boolean
-         * @static
-         */
-        public static function isEnabled()
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->isEnabled();
-        }
-
-        /**
-         * Collects the data from the collectors
-         *
-         * @return array
-         * @static
-         */
-        public static function collect()
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->collect();
-        }
-
-        /**
-         * Injects the web debug toolbar into the given Response.
-         *
-         * @param \Symfony\Component\HttpFoundation\Response $response A Response instance
-         * Based on https://github.com/symfony/WebProfilerBundle/blob/master/EventListener/WebDebugToolbarListener.php
-         * @static
-         */
-        public static function injectDebugbar($response)
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->injectDebugbar($response);
-        }
-
-        /**
-         * Checks if there is stacked data in the session
-         *
-         * @return boolean
-         * @static
-         */
-        public static function hasStackedData()
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->hasStackedData();
-        }
-
-        /**
-         * Returns the data stacked in the session
-         *
-         * @param boolean $delete Whether to delete the data in the session
-         * @return array
-         * @static
-         */
-        public static function getStackedData($delete = true)
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->getStackedData($delete);
-        }
-
-        /**
-         * Disable the Debugbar
-         *
-         * @static
-         */
-        public static function disable()
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->disable();
-        }
-
-        /**
-         * Adds a measure
-         *
-         * @param string $label
-         * @param float $start
-         * @param float $end
-         * @param array|null $params
-         * @param string|null $collector
-         * @param string|null $group
-         * @static
-         */
-        public static function addMeasure($label, $start, $end, $params = [], $collector = null, $group = null)
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->addMeasure($label, $start, $end, $params, $collector, $group);
-        }
-
-        /**
-         * Utility function to measure the execution of a Closure
-         *
-         * @param string $label
-         * @param \Closure $closure
-         * @param string|null $collector
-         * @param string|null $group
-         * @return mixed
-         * @static
-         */
-        public static function measure($label, $closure, $collector = null, $group = null)
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->measure($label, $closure, $collector, $group);
-        }
-
-        /**
-         * Collect data in a CLI request
-         *
-         * @return array
-         * @static
-         */
-        public static function collectConsole()
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->collectConsole();
-        }
-
-        /**
-         * Adds a message to the MessagesCollector
-         * 
-         * A message can be anything from an object to a string
-         *
-         * @param mixed $message
-         * @param string $label
-         * @static
-         */
-        public static function addMessage($message, $label = 'info')
-        {
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->addMessage($message, $label);
-        }
-
-        /**
-         * Checks if a data collector has been added
-         *
-         * @param string $name
-         * @return boolean
-         * @static
-         */
-        public static function hasCollector($name)
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->hasCollector($name);
-        }
-
-        /**
-         * Returns a data collector
-         *
-         * @param string $name
-         * @return \DebugBar\DataCollector\DataCollectorInterface
-         * @throws DebugBarException
-         * @static
-         */
-        public static function getCollector($name)
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->getCollector($name);
-        }
-
-        /**
-         * Returns an array of all data collectors
-         *
-         * @return array[DataCollectorInterface]
-         * @static
-         */
-        public static function getCollectors()
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->getCollectors();
-        }
-
-        /**
-         * Sets the request id generator
-         *
-         * @param \DebugBar\RequestIdGeneratorInterface $generator
-         * @return \Barryvdh\Debugbar\LaravelDebugbar
-         * @static
-         */
-        public static function setRequestIdGenerator($generator)
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->setRequestIdGenerator($generator);
-        }
-
-        /**
-         * @return \DebugBar\RequestIdGeneratorInterface
-         * @static
-         */
-        public static function getRequestIdGenerator()
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->getRequestIdGenerator();
-        }
-
-        /**
-         * Returns the id of the current request
-         *
-         * @return string
-         * @static
-         */
-        public static function getCurrentRequestId()
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->getCurrentRequestId();
-        }
-
-        /**
-         * Sets the storage backend to use to store the collected data
-         *
-         * @param \DebugBar\StorageInterface $storage
-         * @return \Barryvdh\Debugbar\LaravelDebugbar
-         * @static
-         */
-        public static function setStorage($storage = null)
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->setStorage($storage);
-        }
-
-        /**
-         * @return \DebugBar\StorageInterface
-         * @static
-         */
-        public static function getStorage()
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->getStorage();
-        }
-
-        /**
-         * Checks if the data will be persisted
-         *
-         * @return boolean
-         * @static
-         */
-        public static function isDataPersisted()
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->isDataPersisted();
-        }
-
-        /**
-         * Sets the HTTP driver
-         *
-         * @param \DebugBar\HttpDriverInterface $driver
-         * @return \Barryvdh\Debugbar\LaravelDebugbar
-         * @static
-         */
-        public static function setHttpDriver($driver)
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->setHttpDriver($driver);
-        }
-
-        /**
-         * Returns collected data
-         * 
-         * Will collect the data if none have been collected yet
-         *
-         * @return array
-         * @static
-         */
-        public static function getData()
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->getData();
-        }
-
-        /**
-         * Returns an array of HTTP headers containing the data
-         *
-         * @param string $headerName
-         * @param integer $maxHeaderLength
-         * @return array
-         * @static
-         */
-        public static function getDataAsHeaders($headerName = 'phpdebugbar', $maxHeaderLength = 4096, $maxTotalHeaderLength = 250000)
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->getDataAsHeaders($headerName, $maxHeaderLength, $maxTotalHeaderLength);
-        }
-
-        /**
-         * Sends the data through the HTTP headers
-         *
-         * @param bool $useOpenHandler
-         * @param string $headerName
-         * @param integer $maxHeaderLength
-         * @return \Barryvdh\Debugbar\LaravelDebugbar
-         * @static
-         */
-        public static function sendDataInHeaders($useOpenHandler = null, $headerName = 'phpdebugbar', $maxHeaderLength = 4096)
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->sendDataInHeaders($useOpenHandler, $headerName, $maxHeaderLength);
-        }
-
-        /**
-         * Stacks the data in the session for later rendering
-         *
-         * @static
-         */
-        public static function stackData()
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->stackData();
-        }
-
-        /**
-         * Sets the key to use in the $_SESSION array
-         *
-         * @param string $ns
-         * @return \Barryvdh\Debugbar\LaravelDebugbar
-         * @static
-         */
-        public static function setStackDataSessionNamespace($ns)
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->setStackDataSessionNamespace($ns);
-        }
-
-        /**
-         * Returns the key used in the $_SESSION array
-         *
-         * @return string
-         * @static
-         */
-        public static function getStackDataSessionNamespace()
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->getStackDataSessionNamespace();
-        }
-
-        /**
-         * Sets whether to only use the session to store stacked data even
-         * if a storage is enabled
-         *
-         * @param boolean $enabled
-         * @return \Barryvdh\Debugbar\LaravelDebugbar
-         * @static
-         */
-        public static function setStackAlwaysUseSessionStorage($enabled = true)
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->setStackAlwaysUseSessionStorage($enabled);
-        }
-
-        /**
-         * Checks if the session is always used to store stacked data
-         * even if a storage is enabled
-         *
-         * @return boolean
-         * @static
-         */
-        public static function isStackAlwaysUseSessionStorage()
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->isStackAlwaysUseSessionStorage();
-        }
-
-        /**
-         * @static
-         */
-        public static function offsetSet($key, $value)
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->offsetSet($key, $value);
-        }
-
-        /**
-         * @static
-         */
-        public static function offsetGet($key)
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->offsetGet($key);
-        }
-
-        /**
-         * @static
-         */
-        public static function offsetExists($key)
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->offsetExists($key);
-        }
-
-        /**
-         * @static
-         */
-        public static function offsetUnset($key)
-        {
-            //Method inherited from \DebugBar\DebugBar 
-            /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-            return $instance->offsetUnset($key);
-        }
-
-            }
-    }
-
 namespace Livewire {
     /**
      * @see \Livewire\LivewireManager
@@ -24059,715 +23511,7 @@ namespace Livewire {
             }
     }
 
-namespace Maatwebsite\Excel\Facades {
-    /**
-     */
-    class Excel {
-        /**
-         * @param object $export
-         * @param string|null $fileName
-         * @param string $writerType
-         * @param array $headers
-         * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
-         * @throws \PhpOffice\PhpSpreadsheet\Exception
-         * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
-         * @static
-         */
-        public static function download($export, $fileName, $writerType = null, $headers = [])
-        {
-            /** @var \Maatwebsite\Excel\Excel $instance */
-            return $instance->download($export, $fileName, $writerType, $headers);
-        }
-
-        /**
-         * @param string|null $disk Fallback for usage with named properties
-         * @param object $export
-         * @param string $filePath
-         * @param string|null $diskName
-         * @param string $writerType
-         * @param mixed $diskOptions
-         * @return bool
-         * @throws \PhpOffice\PhpSpreadsheet\Exception
-         * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
-         * @static
-         */
-        public static function store($export, $filePath, $diskName = null, $writerType = null, $diskOptions = [], $disk = null)
-        {
-            /** @var \Maatwebsite\Excel\Excel $instance */
-            return $instance->store($export, $filePath, $diskName, $writerType, $diskOptions, $disk);
-        }
-
-        /**
-         * @param object $export
-         * @param string $filePath
-         * @param string|null $disk
-         * @param string $writerType
-         * @param mixed $diskOptions
-         * @return \Illuminate\Foundation\Bus\PendingDispatch
-         * @static
-         */
-        public static function queue($export, $filePath, $disk = null, $writerType = null, $diskOptions = [])
-        {
-            /** @var \Maatwebsite\Excel\Excel $instance */
-            return $instance->queue($export, $filePath, $disk, $writerType, $diskOptions);
-        }
-
-        /**
-         * @param object $export
-         * @param string $writerType
-         * @return string
-         * @static
-         */
-        public static function raw($export, $writerType)
-        {
-            /** @var \Maatwebsite\Excel\Excel $instance */
-            return $instance->raw($export, $writerType);
-        }
-
-        /**
-         * @param object $import
-         * @param string|\Symfony\Component\HttpFoundation\File\UploadedFile $filePath
-         * @param string|null $disk
-         * @param string|null $readerType
-         * @return \Maatwebsite\Excel\Reader|\Illuminate\Foundation\Bus\PendingDispatch
-         * @static
-         */
-        public static function import($import, $filePath, $disk = null, $readerType = null)
-        {
-            /** @var \Maatwebsite\Excel\Excel $instance */
-            return $instance->import($import, $filePath, $disk, $readerType);
-        }
-
-        /**
-         * @param object $import
-         * @param string|\Symfony\Component\HttpFoundation\File\UploadedFile $filePath
-         * @param string|null $disk
-         * @param string|null $readerType
-         * @return array
-         * @static
-         */
-        public static function toArray($import, $filePath, $disk = null, $readerType = null)
-        {
-            /** @var \Maatwebsite\Excel\Excel $instance */
-            return $instance->toArray($import, $filePath, $disk, $readerType);
-        }
-
-        /**
-         * @param object $import
-         * @param string|\Symfony\Component\HttpFoundation\File\UploadedFile $filePath
-         * @param string|null $disk
-         * @param string|null $readerType
-         * @return \Illuminate\Support\Collection
-         * @static
-         */
-        public static function toCollection($import, $filePath, $disk = null, $readerType = null)
-        {
-            /** @var \Maatwebsite\Excel\Excel $instance */
-            return $instance->toCollection($import, $filePath, $disk, $readerType);
-        }
-
-        /**
-         * @param \Illuminate\Contracts\Queue\ShouldQueue $import
-         * @param string|\Symfony\Component\HttpFoundation\File\UploadedFile $filePath
-         * @param string|null $disk
-         * @param string $readerType
-         * @return \Illuminate\Foundation\Bus\PendingDispatch
-         * @static
-         */
-        public static function queueImport($import, $filePath, $disk = null, $readerType = null)
-        {
-            /** @var \Maatwebsite\Excel\Excel $instance */
-            return $instance->queueImport($import, $filePath, $disk, $readerType);
-        }
-
-        /**
-         * Register a custom macro.
-         *
-         * @param string $name
-         * @param object|callable $macro
-         * @param-closure-this static  $macro
-         * @return void
-         * @static
-         */
-        public static function macro($name, $macro)
-        {
-            \Maatwebsite\Excel\Excel::macro($name, $macro);
-        }
-
-        /**
-         * Mix another object into the class.
-         *
-         * @param object $mixin
-         * @param bool $replace
-         * @return void
-         * @throws \ReflectionException
-         * @static
-         */
-        public static function mixin($mixin, $replace = true)
-        {
-            \Maatwebsite\Excel\Excel::mixin($mixin, $replace);
-        }
-
-        /**
-         * Checks if macro is registered.
-         *
-         * @param string $name
-         * @return bool
-         * @static
-         */
-        public static function hasMacro($name)
-        {
-            return \Maatwebsite\Excel\Excel::hasMacro($name);
-        }
-
-        /**
-         * Flush the existing macros.
-         *
-         * @return void
-         * @static
-         */
-        public static function flushMacros()
-        {
-            \Maatwebsite\Excel\Excel::flushMacros();
-        }
-
-        /**
-         * @param string $concern
-         * @param callable $handler
-         * @param string $event
-         * @static
-         */
-        public static function extend($concern, $handler, $event = 'Maatwebsite\\Excel\\Events\\BeforeWriting')
-        {
-            return \Maatwebsite\Excel\Excel::extend($concern, $handler, $event);
-        }
-
-        /**
-         * When asserting downloaded, stored, queued or imported, use regular expression
-         * to look for a matching file path.
-         *
-         * @return void
-         * @static
-         */
-        public static function matchByRegex()
-        {
-            /** @var \Maatwebsite\Excel\Fakes\ExcelFake $instance */
-            $instance->matchByRegex();
-        }
-
-        /**
-         * When asserting downloaded, stored, queued or imported, use regular string
-         * comparison for matching file path.
-         *
-         * @return void
-         * @static
-         */
-        public static function doNotMatchByRegex()
-        {
-            /** @var \Maatwebsite\Excel\Fakes\ExcelFake $instance */
-            $instance->doNotMatchByRegex();
-        }
-
-        /**
-         * @param string $fileName
-         * @param callable|null $callback
-         * @static
-         */
-        public static function assertDownloaded($fileName, $callback = null)
-        {
-            /** @var \Maatwebsite\Excel\Fakes\ExcelFake $instance */
-            return $instance->assertDownloaded($fileName, $callback);
-        }
-
-        /**
-         * @param string $filePath
-         * @param string|callable|null $disk
-         * @param callable|null $callback
-         * @static
-         */
-        public static function assertStored($filePath, $disk = null, $callback = null)
-        {
-            /** @var \Maatwebsite\Excel\Fakes\ExcelFake $instance */
-            return $instance->assertStored($filePath, $disk, $callback);
-        }
-
-        /**
-         * @param string $filePath
-         * @param string|callable|null $disk
-         * @param callable|null $callback
-         * @static
-         */
-        public static function assertQueued($filePath, $disk = null, $callback = null)
-        {
-            /** @var \Maatwebsite\Excel\Fakes\ExcelFake $instance */
-            return $instance->assertQueued($filePath, $disk, $callback);
-        }
-
-        /**
-         * @static
-         */
-        public static function assertQueuedWithChain($chain)
-        {
-            /** @var \Maatwebsite\Excel\Fakes\ExcelFake $instance */
-            return $instance->assertQueuedWithChain($chain);
-        }
-
-        /**
-         * @param string $classname
-         * @param callable|null $callback
-         * @static
-         */
-        public static function assertExportedInRaw($classname, $callback = null)
-        {
-            /** @var \Maatwebsite\Excel\Fakes\ExcelFake $instance */
-            return $instance->assertExportedInRaw($classname, $callback);
-        }
-
-        /**
-         * @param string $filePath
-         * @param string|callable|null $disk
-         * @param callable|null $callback
-         * @static
-         */
-        public static function assertImported($filePath, $disk = null, $callback = null)
-        {
-            /** @var \Maatwebsite\Excel\Fakes\ExcelFake $instance */
-            return $instance->assertImported($filePath, $disk, $callback);
-        }
-
-            }
-    }
-
-namespace Spatie\LaravelIgnition\Facades {
-    /**
-     * @see \Spatie\FlareClient\Flare
-     */
-    class Flare {
-        /**
-         * @static
-         */
-        public static function make($apiKey = null, $contextDetector = null)
-        {
-            return \Spatie\FlareClient\Flare::make($apiKey, $contextDetector);
-        }
-
-        /**
-         * @static
-         */
-        public static function setApiToken($apiToken)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->setApiToken($apiToken);
-        }
-
-        /**
-         * @static
-         */
-        public static function apiTokenSet()
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->apiTokenSet();
-        }
-
-        /**
-         * @static
-         */
-        public static function setBaseUrl($baseUrl)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->setBaseUrl($baseUrl);
-        }
-
-        /**
-         * @static
-         */
-        public static function setStage($stage)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->setStage($stage);
-        }
-
-        /**
-         * @static
-         */
-        public static function sendReportsImmediately()
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->sendReportsImmediately();
-        }
-
-        /**
-         * @static
-         */
-        public static function determineVersionUsing($determineVersionCallable)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->determineVersionUsing($determineVersionCallable);
-        }
-
-        /**
-         * @static
-         */
-        public static function reportErrorLevels($reportErrorLevels)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->reportErrorLevels($reportErrorLevels);
-        }
-
-        /**
-         * @static
-         */
-        public static function filterExceptionsUsing($filterExceptionsCallable)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->filterExceptionsUsing($filterExceptionsCallable);
-        }
-
-        /**
-         * @static
-         */
-        public static function filterReportsUsing($filterReportsCallable)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->filterReportsUsing($filterReportsCallable);
-        }
-
-        /**
-         * @param array<class-string<ArgumentReducer>|ArgumentReducer>|\Spatie\Backtrace\Arguments\ArgumentReducers|null $argumentReducers
-         * @static
-         */
-        public static function argumentReducers($argumentReducers)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->argumentReducers($argumentReducers);
-        }
-
-        /**
-         * @static
-         */
-        public static function withStackFrameArguments($withStackFrameArguments = true, $forcePHPIniSetting = false)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->withStackFrameArguments($withStackFrameArguments, $forcePHPIniSetting);
-        }
-
-        /**
-         * @param class-string $exceptionClass
-         * @static
-         */
-        public static function overrideGrouping($exceptionClass, $type = 'exception_message_and_class')
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->overrideGrouping($exceptionClass, $type);
-        }
-
-        /**
-         * @static
-         */
-        public static function version()
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->version();
-        }
-
-        /**
-         * @return array<int, FlareMiddleware|class-string<FlareMiddleware>>
-         * @static
-         */
-        public static function getMiddleware()
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->getMiddleware();
-        }
-
-        /**
-         * @static
-         */
-        public static function setContextProviderDetector($contextDetector)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->setContextProviderDetector($contextDetector);
-        }
-
-        /**
-         * @static
-         */
-        public static function setContainer($container)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->setContainer($container);
-        }
-
-        /**
-         * @static
-         */
-        public static function registerFlareHandlers()
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->registerFlareHandlers();
-        }
-
-        /**
-         * @static
-         */
-        public static function registerExceptionHandler()
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->registerExceptionHandler();
-        }
-
-        /**
-         * @static
-         */
-        public static function registerErrorHandler($errorLevels = null)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->registerErrorHandler($errorLevels);
-        }
-
-        /**
-         * @param \Spatie\FlareClient\FlareMiddleware\FlareMiddleware|array<FlareMiddleware>|class-string<FlareMiddleware>|callable $middleware
-         * @return \Spatie\FlareClient\Flare
-         * @static
-         */
-        public static function registerMiddleware($middleware)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->registerMiddleware($middleware);
-        }
-
-        /**
-         * @return array<int,FlareMiddleware|class-string<FlareMiddleware>>
-         * @static
-         */
-        public static function getMiddlewares()
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->getMiddlewares();
-        }
-
-        /**
-         * @param string $name
-         * @param string $messageLevel
-         * @param array<int, mixed> $metaData
-         * @return \Spatie\FlareClient\Flare
-         * @static
-         */
-        public static function glow($name, $messageLevel = 'info', $metaData = [])
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->glow($name, $messageLevel, $metaData);
-        }
-
-        /**
-         * @static
-         */
-        public static function handleException($throwable)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->handleException($throwable);
-        }
-
-        /**
-         * @return mixed
-         * @static
-         */
-        public static function handleError($code, $message, $file = '', $line = 0)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->handleError($code, $message, $file, $line);
-        }
-
-        /**
-         * @static
-         */
-        public static function applicationPath($applicationPath)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->applicationPath($applicationPath);
-        }
-
-        /**
-         * @static
-         */
-        public static function report($throwable, $callback = null, $report = null, $handled = null)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->report($throwable, $callback, $report, $handled);
-        }
-
-        /**
-         * @static
-         */
-        public static function reportHandled($throwable)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->reportHandled($throwable);
-        }
-
-        /**
-         * @static
-         */
-        public static function reportMessage($message, $logLevel, $callback = null)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->reportMessage($message, $logLevel, $callback);
-        }
-
-        /**
-         * @static
-         */
-        public static function sendTestReport($throwable)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->sendTestReport($throwable);
-        }
-
-        /**
-         * @static
-         */
-        public static function reset()
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->reset();
-        }
-
-        /**
-         * @static
-         */
-        public static function anonymizeIp()
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->anonymizeIp();
-        }
-
-        /**
-         * @param array<int, string> $fieldNames
-         * @return \Spatie\FlareClient\Flare
-         * @static
-         */
-        public static function censorRequestBodyFields($fieldNames)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->censorRequestBodyFields($fieldNames);
-        }
-
-        /**
-         * @static
-         */
-        public static function createReport($throwable)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->createReport($throwable);
-        }
-
-        /**
-         * @static
-         */
-        public static function createReportFromMessage($message, $logLevel)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->createReportFromMessage($message, $logLevel);
-        }
-
-        /**
-         * @static
-         */
-        public static function stage($stage)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->stage($stage);
-        }
-
-        /**
-         * @static
-         */
-        public static function messageLevel($messageLevel)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->messageLevel($messageLevel);
-        }
-
-        /**
-         * @param string $groupName
-         * @param mixed $default
-         * @return array<int, mixed>
-         * @static
-         */
-        public static function getGroup($groupName = 'context', $default = [])
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->getGroup($groupName, $default);
-        }
-
-        /**
-         * @static
-         */
-        public static function context($key, $value)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->context($key, $value);
-        }
-
-        /**
-         * @param string $groupName
-         * @param array<string, mixed> $properties
-         * @return \Spatie\FlareClient\Flare
-         * @static
-         */
-        public static function group($groupName, $properties)
-        {
-            /** @var \Spatie\FlareClient\Flare $instance */
-            return $instance->group($groupName, $properties);
-        }
-
-            }
-    }
-
 namespace Illuminate\Support {
-    /**
-     * @template TKey of array-key
-     * @template-covariant TValue
-     * @implements \ArrayAccess<TKey, TValue>
-     * @implements \Illuminate\Support\Enumerable<TKey, TValue>
-     */
-    class Collection {
-        /**
-         * @see \Barryvdh\Debugbar\ServiceProvider::register()
-         * @static
-         */
-        public static function debug()
-        {
-            return \Illuminate\Support\Collection::debug();
-        }
-
-        /**
-         * @see \Maatwebsite\Excel\Mixins\DownloadCollectionMixin::downloadExcel()
-         * @param string $fileName
-         * @param string|null $writerType
-         * @param mixed $withHeadings
-         * @param array $responseHeaders
-         * @static
-         */
-        public static function downloadExcel($fileName, $writerType = null, $withHeadings = false, $responseHeaders = [])
-        {
-            return \Illuminate\Support\Collection::downloadExcel($fileName, $writerType, $withHeadings, $responseHeaders);
-        }
-
-        /**
-         * @see \Maatwebsite\Excel\Mixins\StoreCollectionMixin::storeExcel()
-         * @param string $filePath
-         * @param string|null $disk
-         * @param string|null $writerType
-         * @param mixed $withHeadings
-         * @static
-         */
-        public static function storeExcel($filePath, $disk = null, $writerType = null, $withHeadings = false)
-        {
-            return \Illuminate\Support\Collection::storeExcel($filePath, $disk, $writerType, $withHeadings);
-        }
-
-            }
     /**
      */
     class Str {
@@ -24782,17 +23526,6 @@ namespace Illuminate\Support {
             return \Illuminate\Support\Str::sanitizeHtml($html);
         }
 
-        /**
-         * @see \Filament\Support\SupportServiceProvider::packageBooted()
-         * @param string $value
-         * @return string
-         * @static
-         */
-        public static function ucwords($value)
-        {
-            return \Illuminate\Support\Str::ucwords($value);
-        }
-
             }
     /**
      */
@@ -24805,16 +23538,6 @@ namespace Illuminate\Support {
         public static function sanitizeHtml()
         {
             return \Illuminate\Support\Stringable::sanitizeHtml();
-        }
-
-        /**
-         * @see \Filament\Support\SupportServiceProvider::packageBooted()
-         * @return \Illuminate\Support\Stringable
-         * @static
-         */
-        public static function ucwords()
-        {
-            return \Illuminate\Support\Stringable::ucwords();
         }
 
             }
@@ -25156,300 +23879,6 @@ namespace Illuminate\Database\Eloquent\Relations {
             }
     }
 
-namespace PowerComponents\LivewirePowerGrid {
-    /**
-     * Macros
-     *
-     */
-    class Column {
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::columns()
-         * @param string $label
-         * @param bool $header
-         * @param bool $footer
-         * @static
-         */
-        public static function withSum($label, $header, $footer)
-        {
-            return \PowerComponents\LivewirePowerGrid\Column::withSum($label, $header, $footer);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::columns()
-         * @param string $label
-         * @param bool $header
-         * @param bool $footer
-         * @static
-         */
-        public static function withCount($label, $header, $footer)
-        {
-            return \PowerComponents\LivewirePowerGrid\Column::withCount($label, $header, $footer);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::columns()
-         * @param string $label
-         * @param bool $header
-         * @param bool $footer
-         * @static
-         */
-        public static function withAvg($label, $header, $footer)
-        {
-            return \PowerComponents\LivewirePowerGrid\Column::withAvg($label, $header, $footer);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::columns()
-         * @param string $label
-         * @param bool $header
-         * @param bool $footer
-         * @static
-         */
-        public static function withMin($label, $header, $footer)
-        {
-            return \PowerComponents\LivewirePowerGrid\Column::withMin($label, $header, $footer);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::columns()
-         * @param string $label
-         * @param bool $header
-         * @param bool $footer
-         * @static
-         */
-        public static function withMax($label, $header, $footer)
-        {
-            return \PowerComponents\LivewirePowerGrid\Column::withMax($label, $header, $footer);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::columns()
-         * @param string $sql
-         * @return \PowerComponents\LivewirePowerGrid\Column
-         * @static
-         */
-        public static function searchableRaw($sql = '')
-        {
-            return \PowerComponents\LivewirePowerGrid\Column::searchableRaw($sql);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::columns()
-         * @param string $tableName
-         * @static
-         */
-        public static function searchableJson($tableName)
-        {
-            return \PowerComponents\LivewirePowerGrid\Column::searchableJson($tableName);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::columns()
-         * @param bool $when
-         * @param string|null $tableName
-         * @static
-         */
-        public static function naturalSort($when = false, $tableName = null)
-        {
-            return \PowerComponents\LivewirePowerGrid\Column::naturalSort($when, $tableName);
-        }
-
-            }
-    /**
-     * @method static method(string $method)
-     * @method static target(string $target) _blank, _self, _top, _parent, null
-     */
-    class Button {
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @param string $classes
-         * @static
-         */
-        public static function class($classes)
-        {
-            return \PowerComponents\LivewirePowerGrid\Button::class($classes);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @param string $method
-         * @param array $params
-         * @static
-         */
-        public static function call($method, $params)
-        {
-            return \PowerComponents\LivewirePowerGrid\Button::call($method, $params);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @param string $event
-         * @param array $params
-         * @static
-         */
-        public static function dispatch($event, $params)
-        {
-            return \PowerComponents\LivewirePowerGrid\Button::dispatch($event, $params);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @param string $component
-         * @param string $event
-         * @param array $params
-         * @static
-         */
-        public static function dispatchTo($component, $event, $params)
-        {
-            return \PowerComponents\LivewirePowerGrid\Button::dispatchTo($component, $event, $params);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @param string $event
-         * @param array $params
-         * @static
-         */
-        public static function dispatchSelf($event, $params)
-        {
-            return \PowerComponents\LivewirePowerGrid\Button::dispatchSelf($event, $params);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @param string $method
-         * @param array $params
-         * @static
-         */
-        public static function parent($method, $params)
-        {
-            return \PowerComponents\LivewirePowerGrid\Button::parent($method, $params);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @param string $component
-         * @param array $params
-         * @static
-         */
-        public static function openModal($component, $params)
-        {
-            return \PowerComponents\LivewirePowerGrid\Button::openModal($component, $params);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @param bool $disable
-         * @static
-         */
-        public static function disable($disable = true)
-        {
-            return \PowerComponents\LivewirePowerGrid\Button::disable($disable);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @param string $value
-         * @static
-         */
-        public static function tooltip($value)
-        {
-            return \PowerComponents\LivewirePowerGrid\Button::tooltip($value);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @param string $route
-         * @param array $params
-         * @param string $target
-         * @static
-         */
-        public static function route($route, $params, $target = '_self')
-        {
-            return \PowerComponents\LivewirePowerGrid\Button::route($route, $params, $target);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @param string|null $id
-         * @static
-         */
-        public static function id($id = null)
-        {
-            return \PowerComponents\LivewirePowerGrid\Button::id($id);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @param \Closure|bool $closure
-         * @static
-         */
-        public static function can($closure)
-        {
-            return \PowerComponents\LivewirePowerGrid\Button::can($closure);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @param string|null $message
-         * @static
-         */
-        public static function confirm($message = null)
-        {
-            return \PowerComponents\LivewirePowerGrid\Button::confirm($message);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @param string|null $message
-         * @param string $confirmValue
-         * @static
-         */
-        public static function confirmPrompt($message = null, $confirmValue = 'Confirm')
-        {
-            return \PowerComponents\LivewirePowerGrid\Button::confirmPrompt($message, $confirmValue);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @param string|int $rowId
-         * @static
-         */
-        public static function toggleDetail($rowId)
-        {
-            return \PowerComponents\LivewirePowerGrid\Button::toggleDetail($rowId);
-        }
-
-            }
-    }
-
-namespace PowerComponents\LivewirePowerGrid\Components\Rules {
-    /**
-     */
-    class RuleActions extends \PowerComponents\LivewirePowerGrid\Components\Rules\BaseRule {
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @param string $event
-         * @param array $params
-         * @static
-         */
-        public static function dispatch($event, $params)
-        {
-            return \PowerComponents\LivewirePowerGrid\Components\Rules\RuleActions::dispatch($event, $params);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Providers\Macros::actions()
-         * @static
-         */
-        public static function disable()
-        {
-            return \PowerComponents\LivewirePowerGrid\Components\Rules\RuleActions::disable();
-        }
-
-            }
-    }
-
 namespace Illuminate\Routing {
     /**
      */
@@ -25634,16 +24063,15 @@ namespace Livewire\Features\SupportTesting {
         }
 
         /**
-         * @see \PowerComponents\LivewirePowerGrid\Testing\TestActions::assertActionHasIcon()
-         * @param string $action
-         * @param string $icon
-         * @param string|null $iconClass
+         * @see \Filament\Actions\Testing\TestsActions::assertActionHasIcon()
+         * @param \Filament\Actions\Testing\TestAction|array|string $actions
+         * @param \BackedEnum|string $icon
          * @return static
          * @static
          */
-        public static function assertActionHasIcon($action, $icon, $iconClass = null)
+        public static function assertActionHasIcon($actions, $icon)
         {
-            return \Livewire\Features\SupportTesting\Testable::assertActionHasIcon($action, $icon, $iconClass);
+            return \Livewire\Features\SupportTesting\Testable::assertActionHasIcon($actions, $icon);
         }
 
         /**
@@ -28111,31 +26539,6 @@ namespace Livewire\Features\SupportTesting {
         public static function assertTableColumnSummarizerExists($columnName, $summarizerId)
         {
             return \Livewire\Features\SupportTesting\Testable::assertTableColumnSummarizerExists($columnName, $summarizerId);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Testing\TestActions::assertHasAction()
-         * @param string $action
-         * @return static
-         * @static
-         */
-        public static function assertHasAction($action)
-        {
-            return \Livewire\Features\SupportTesting\Testable::assertHasAction($action);
-        }
-
-        /**
-         * @see \PowerComponents\LivewirePowerGrid\Testing\TestActions::assertActionContainsAttribute()
-         * @param string $action
-         * @param string $attribute
-         * @param string $expected
-         * @param array $expectedParams
-         * @return static
-         * @static
-         */
-        public static function assertActionContainsAttribute($action, $attribute, $expected, $expectedParams = [])
-        {
-            return \Livewire\Features\SupportTesting\Testable::assertActionContainsAttribute($action, $attribute, $expected, $expectedParams);
         }
 
             }
@@ -30705,56 +29108,6 @@ namespace  {
         public static function getRelationWithoutConstraintsProxy($relation)
         {
             return \Illuminate\Database\Eloquent\Builder::getRelationWithoutConstraintsProxy($relation);
-        }
-
-        /**
-         * @see \Maatwebsite\Excel\Mixins\DownloadQueryMacro::__invoke()
-         * @param string $fileName
-         * @param string|null $writerType
-         * @param mixed $withHeadings
-         * @static
-         */
-        public static function downloadExcel($fileName, $writerType = null, $withHeadings = false)
-        {
-            return \Illuminate\Database\Eloquent\Builder::downloadExcel($fileName, $writerType, $withHeadings);
-        }
-
-        /**
-         * @see \Maatwebsite\Excel\Mixins\StoreQueryMacro::__invoke()
-         * @param string $filePath
-         * @param string|null $disk
-         * @param string|null $writerType
-         * @param mixed $withHeadings
-         * @static
-         */
-        public static function storeExcel($filePath, $disk = null, $writerType = null, $withHeadings = false)
-        {
-            return \Illuminate\Database\Eloquent\Builder::storeExcel($filePath, $disk, $writerType, $withHeadings);
-        }
-
-        /**
-         * @see \Maatwebsite\Excel\Mixins\ImportMacro::__invoke()
-         * @param string $filename
-         * @param string|null $disk
-         * @param string|null $readerType
-         * @static
-         */
-        public static function import($filename, $disk = null, $readerType = null)
-        {
-            return \Illuminate\Database\Eloquent\Builder::import($filename, $disk, $readerType);
-        }
-
-        /**
-         * @see \Maatwebsite\Excel\Mixins\ImportAsMacro::__invoke()
-         * @param string $filename
-         * @param callable $mapping
-         * @param string|null $disk
-         * @param string|null $readerType
-         * @static
-         */
-        public static function importAs($filename, $mapping, $disk = null, $readerType = null)
-        {
-            return \Illuminate\Database\Eloquent\Builder::importAs($filename, $mapping, $disk, $readerType);
         }
 
         /**
@@ -33621,13 +31974,15 @@ namespace  {
     class Vite extends \Illuminate\Support\Facades\Vite {}
     class FilamentSpatieRolesPermissions extends \Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsFacade {}
     class EloquentSerialize extends \AnourValar\EloquentSerialize\Facades\EloquentSerializeFacade {}
-    class Debugbar extends \Barryvdh\Debugbar\Facades\Debugbar {}
     class Livewire extends \Livewire\Livewire {}
-    class Excel extends \Maatwebsite\Excel\Facades\Excel {}
-    class Flare extends \Spatie\LaravelIgnition\Facades\Flare {}
 }
 
 
+namespace Facades\Livewire\Features\SupportFileUploads {
+    /**
+     * @mixin \Livewire\Features\SupportFileUploads\GenerateSignedUploadUrl     */
+    class GenerateSignedUploadUrl extends \Livewire\Features\SupportFileUploads\GenerateSignedUploadUrl {}
+}
 
 
 

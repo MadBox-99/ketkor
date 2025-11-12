@@ -85,6 +85,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
 
     public function productForm(Schema $schema): Schema
     {
+        /** @var User $user */
         $user = Auth::user();
         $isOrganizerOrServicer = $user->hasAnyRole(['Organizer', 'Servicer']);
         $isAdminOrOperator = $user->hasAnyRole(['Admin', 'Operator', 'Super-Admin']);
