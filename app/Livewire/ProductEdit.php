@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\Enums\UserRole;
+use App\Filament\Forms\Components\SignaturePad;
 use App\Mail\AccessGrantMail;
 use App\Mail\WorksheetMail;
 use App\Models\AccessToken;
@@ -32,7 +33,6 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Livewire\Component;
-use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 
 class ProductEdit extends Component implements HasActions, HasSchemas
 {
@@ -266,12 +266,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
 
                         SignaturePad::make('signature')
                             ->label(__('Servicer signature'))
-                            ->confirmable(false)
-                            ->filename('signature')
-                            ->columnSpanFull()
-                            ->extraAttributes([
-                                'class' => 'signature-pad-wrapper',
-                            ]),
+                            ->columnSpanFull(),
                     ])
                     ->columns(2),
             ])
@@ -526,7 +521,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
             });
     }
 
-    public function generateWorksheetAction(ProductLog $productLog): Action
+    public function generateWorksheetAction(): Action
     {
         return Action::make('generateWorksheet')
             ->label(__('Generate Worksheet'))
@@ -535,7 +530,30 @@ class ProductEdit extends Component implements HasActions, HasSchemas
             ->requiresConfirmation()
             ->modalHeading(__('Generate and Send Worksheet'))
             ->modalDescription(__('This will generate a PDF worksheet and send it to the owner\'s email address.'))
-            ->action(function () use ($productLog): void {
+            ->action(function (Action $action): void {
+                // Get productLog from arguments
+                $productLogId = $action->getArguments()['productLogId'] ?? null;
+                if (! $productLogId) {
+                    Notification::make()
+                        ->danger()
+                        ->title(__('Error'))
+                        ->body(__('Product log not found.'))
+                        ->send();
+
+                    return;
+                }
+
+                $productLog = ProductLog::find($productLogId);
+                if (! $productLog) {
+                    Notification::make()
+                        ->danger()
+                        ->title(__('Error'))
+                        ->body(__('Product log not found.'))
+                        ->send();
+
+                    return;
+                }
+
                 // Load necessary relationships
                 $this->product->load(['tool', 'partials']);
                 $owner = $this->product->partials->first();

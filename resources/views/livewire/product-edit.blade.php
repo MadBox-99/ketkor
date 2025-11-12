@@ -35,55 +35,8 @@
 
         <!-- Product Events Form -->
         <div class="overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
-            <form wire:submit="createEvent"
-                x-data="{
-                    initialized: false,
-                    initSignaturePad() {
-                        setTimeout(() => {
-                            const canvas = document.querySelector('canvas[data-signature-pad-canvas]');
-                            if (canvas) {
-                                console.log('Canvas found:', canvas);
-                                console.log('Canvas dimensions:', canvas.width, canvas.height);
-                                console.log('Canvas parent:', canvas.parentElement);
-                            } else {
-                                console.log('Canvas NOT found');
-                            }
-                        }, 1000);
-                    }
-                }"
-x-init="
-                    $nextTick(() => {
-                        initialized = true;
-                        console.log('Form initialized');
-                        console.log('Alpine:', typeof Alpine !== 'undefined' ? 'Loaded' : 'Not loaded');
-                        console.log('Livewire:', typeof Livewire !== 'undefined' ? 'Loaded' : 'Not loaded');
-
-                        // Debug: Check all elements
-                        console.log('=== DEBUG: Looking for signature elements ===');
-                        const allInputs = document.querySelectorAll('input');
-                        console.log('Total inputs:', allInputs.length);
-
-                        const allCanvases = document.querySelectorAll('canvas');
-                        console.log('Total canvases:', allCanvases.length);
-
-                        const signatureElements = document.querySelectorAll('[data-signature], [id*=signature], [name*=signature]');
-                        console.log('Signature-related elements:', signatureElements.length);
-                        signatureElements.forEach(el => console.log('Element:', el.tagName, el.id, el.name, el.dataset));
-
-                        const filamentElements = document.querySelectorAll('[wire\\:id]');
-                        console.log('Filament/Livewire elements:', filamentElements.length);
-
-                        initSignaturePad();
-                    });
-
-                    Livewire.hook('morph.updated', () => {
-                        console.log('Livewire morphed');
-                        initSignaturePad();
-                    });
-                ">
-                <div wire:ignore.self>
-                    {{ $this->eventForm }}
-                </div>
+            <form wire:submit="createEvent">
+                {{ $this->eventForm }}
 
                 <div class="border-t border-gray-200 px-6 py-4 dark:border-gray-700">
                     <button type="submit"
@@ -158,7 +111,7 @@ x-init="
                                         {{ $product->serializeDate($log->when) }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ ($this->generateWorksheetAction($log))(['size' => 'sm']) }}
+                                        {{ ($this->generateWorksheetAction->arguments(['productLogId' => $log->id]))(['size' => 'sm']) }}
                                     </td>
                                 </tr>
                             @endforeach

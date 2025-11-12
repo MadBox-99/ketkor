@@ -3,7 +3,8 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "build:signature-pad": "node resources/js/filament/forms/components/build.js"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.10",
@@ -13,12 +14,14 @@
         "alpinejs": "^3.4.2",
         "autoprefixer": "^10.4.20",
         "concurrently": "^9.0.1",
+        "esbuild": "^0.27.0",
         "laravel-vite-plugin": "^1.2.0",
         "postcss": "^8.4.49",
         "tailwindcss": "^4.1.14",
         "vite": "^6.0.11"
     },
     "dependencies": {
-        "axios": "^1.12.2"
+        "axios": "^1.12.2",
+        "signature_pad": "^5.1.1"
     }
 }

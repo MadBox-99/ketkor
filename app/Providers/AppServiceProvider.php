@@ -6,6 +6,8 @@ namespace App\Providers;
 
 use App\Policies\PermissionPolicy;
 use App\Policies\RolePolicy;
+use Filament\Support\Assets\Js;
+use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -34,5 +36,10 @@ final class AppServiceProvider extends ServiceProvider
 
         Gate::policy(Role::class, RolePolicy::class);
         Gate::policy(Permission::class, PermissionPolicy::class);
+
+        // Register Filament assets
+        FilamentAsset::register([
+            Js::make('signature-pad-field', __DIR__ . '/../../resources/js/filament/forms/components/signature-pad.bundle.js'),
+        ]);
     }
 }
