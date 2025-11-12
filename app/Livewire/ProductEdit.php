@@ -263,14 +263,16 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                         Checkbox::make('is_online')
                             ->label(__('Online work (device was online during work)'))
                             ->default(true),
+
                         SignaturePad::make('signature')
-                            ->label(__('Sign here'))
+                            ->label(__('Servicer signature'))
                             ->dotSize(2.0)
                             ->lineMinWidth(0.5)
                             ->lineMaxWidth(2.5)
                             ->throttle(16)
                             ->minDistance(5)
-                            ->velocityFilterWeight(0.7),
+                            ->velocityFilterWeight(0.7)
+                            ->columnSpanFull(),
                     ])
                     ->columns(2),
             ])
