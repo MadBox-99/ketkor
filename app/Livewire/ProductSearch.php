@@ -3,6 +3,8 @@
 namespace App\Livewire;
 
 use App\Models\Product;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
@@ -16,7 +18,7 @@ class ProductSearch extends Component
 
     public bool $owns = false;
 
-    public function find()
+    public function find(): Factory|View
     {
         $user = Auth::user();
         $this->validate();
@@ -29,7 +31,7 @@ class ProductSearch extends Component
         return view('livewire.product-search');
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         $product = $this->product;
 

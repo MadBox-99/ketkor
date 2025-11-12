@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
 use App\Enums\ProductCategory;
 use App\Enums\UserRole;
+use App\Models\Organization;
 use App\Models\Product;
 use App\Models\Tool;
 use App\Models\User;
@@ -51,15 +51,15 @@ class DatabaseSeeder extends Seeder
 
         // Create roles
         foreach (UserRole::cases() as $role) {
-            Role::firstOrCreate(['name' => $role->value, 'guard_name' => 'web']);
+            Role::query()->firstOrCreate(['name' => $role->value, 'guard_name' => 'web']);
         }
 
         // Create permissions and sync with roles
         foreach ($permissions as $name => $permissionRoles) {
-            $permission = Permission::firstOrCreate(['name' => $name, 'guard_name' => 'web']);
+            $permission = Permission::query()->firstOrCreate(['name' => $name, 'guard_name' => 'web']);
             $permission->syncRoles($permissionRoles);
         }
-        $organization = \App\Models\Organization::factory()->create([
+        $organization = Organization::factory()->create([
             'id' => 1,
             'name' => 'Default Organization',
             'address' => '123 Main St',

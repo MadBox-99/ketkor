@@ -2,9 +2,8 @@
 
 namespace App\Filament\Resources\Tools\Pages;
 
-use Filament\Actions\DeleteAction;
 use App\Filament\Resources\Tools\ToolResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditTool extends EditRecord

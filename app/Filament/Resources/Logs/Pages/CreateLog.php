@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Logs\Pages;
 
 use App\Filament\Resources\Logs\LogResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateLog extends CreateRecord

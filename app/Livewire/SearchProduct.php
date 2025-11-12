@@ -3,6 +3,8 @@
 namespace App\Livewire;
 
 use App\Models\Product;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -14,7 +16,7 @@ class SearchProduct extends Component
     #[Url]
     public $owner_name = '';
 
-    public function render()
+    public function render(): Factory|View
     {
         if ($this->owner_name != '') {
             $products = Product::with([

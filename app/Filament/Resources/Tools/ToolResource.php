@@ -7,6 +7,7 @@ use App\Filament\Resources\Tools\Pages\CreateTool;
 use App\Filament\Resources\Tools\Pages\EditTool;
 use App\Filament\Resources\Tools\Pages\ListTools;
 use App\Models\Tool;
+use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -21,7 +22,7 @@ class ToolResource extends Resource
 {
     protected static ?string $model = Tool::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Schema $schema): Schema
     {

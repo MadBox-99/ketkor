@@ -18,7 +18,6 @@ class AccessToken extends Model
         'used',
     ];
 
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -28,6 +27,4 @@ class AccessToken extends Model
     {
         return $this->belongsTo(Product::class);
     }
-
-
 }

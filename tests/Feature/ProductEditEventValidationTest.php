@@ -10,7 +10,7 @@ use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->user = User::factory()->create();
     $this->tool = Tool::factory()->create();
     actingAs($this->user);
@@ -26,8 +26,8 @@ beforeEach(function () {
     };
 });
 
-describe('commissioning validation', function () {
-    it('allows commissioning within 6 months of purchase', function () {
+describe('commissioning validation', function (): void {
+    it('allows commissioning within 6 months of purchase', function (): void {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(3)]);
 
         Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
@@ -35,7 +35,7 @@ describe('commissioning validation', function () {
             ->set('eventData.comment', 'First commissioning')
             ->call('createEvent');
 
-        expect(ProductLog::where('product_id', $product->id)->where('what', 'commissioning')->exists())->toBeTrue();
+        expect(ProductLog::query()->where('product_id', $product->id)->where('what', 'commissioning')->exists())->toBeTrue();
 
         // Check that installation_date and warrantee_date were set
         $product->refresh();
@@ -44,7 +44,7 @@ describe('commissioning validation', function () {
         expect($product->warrantee_date->greaterThan(now()))->toBeTrue();
     });
 
-    it('prevents commissioning after 6 months of purchase', function () {
+    it('prevents commissioning after 6 months of purchase', function (): void {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(7)]);
 
         Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
@@ -52,10 +52,10 @@ describe('commissioning validation', function () {
             ->set('eventData.comment', 'Late commissioning')
             ->call('createEvent');
 
-        expect(ProductLog::where('product_id', $product->id)->where('what', 'commissioning')->exists())->toBeFalse();
+        expect(ProductLog::query()->where('product_id', $product->id)->where('what', 'commissioning')->exists())->toBeFalse();
     });
 
-    it('prevents commissioning if purchase date is missing', function () {
+    it('prevents commissioning if purchase date is missing', function (): void {
         $product = ($this->createProduct)(['purchase_date' => null]);
 
         Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
@@ -63,13 +63,13 @@ describe('commissioning validation', function () {
             ->set('eventData.comment', 'Commissioning without purchase date')
             ->call('createEvent');
 
-        expect(ProductLog::where('product_id', $product->id)->where('what', 'commissioning')->exists())->toBeFalse();
+        expect(ProductLog::query()->where('product_id', $product->id)->where('what', 'commissioning')->exists())->toBeFalse();
     });
 
-    it('prevents duplicate commissioning', function () {
+    it('prevents duplicate commissioning', function (): void {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(2)]);
 
-        ProductLog::create([
+        ProductLog::query()->create([
             'product_id' => $product->id,
             'what' => 'commissioning',
             'comment' => 'First commissioning',
@@ -81,15 +81,15 @@ describe('commissioning validation', function () {
             ->set('eventData.comment', 'Second commissioning attempt')
             ->call('createEvent');
 
-        expect(ProductLog::where('product_id', $product->id)->where('what', 'commissioning')->count())->toBe(1);
+        expect(ProductLog::query()->where('product_id', $product->id)->where('what', 'commissioning')->count())->toBe(1);
     });
 });
 
-describe('maintenance validation', function () {
-    it('allows maintenance 11-13 months after commissioning', function () {
+describe('maintenance validation', function (): void {
+    it('allows maintenance 11-13 months after commissioning', function (): void {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(13)]);
 
-        ProductLog::create([
+        ProductLog::query()->create([
             'product_id' => $product->id,
             'what' => 'commissioning',
             'comment' => 'Initial commissioning',
@@ -101,17 +101,17 @@ describe('maintenance validation', function () {
             ->set('eventData.comment', 'First maintenance')
             ->call('createEvent');
 
-        expect(ProductLog::where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(1);
+        expect(ProductLog::query()->where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(1);
 
         // Check that warrantee_date was extended
         $product->refresh();
         expect($product->warrantee_date->greaterThan(now()))->toBeTrue();
     });
 
-    it('prevents maintenance before 11 months after commissioning', function () {
+    it('prevents maintenance before 11 months after commissioning', function (): void {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(11)]);
 
-        ProductLog::create([
+        ProductLog::query()->create([
             'product_id' => $product->id,
             'what' => 'commissioning',
             'comment' => 'Initial commissioning',
@@ -123,13 +123,13 @@ describe('maintenance validation', function () {
             ->set('eventData.comment', 'Too early maintenance')
             ->call('createEvent');
 
-        expect(ProductLog::where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(0);
+        expect(ProductLog::query()->where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(0);
     });
 
-    it('prevents maintenance after 13 months window', function () {
+    it('prevents maintenance after 13 months window', function (): void {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(16)]);
 
-        ProductLog::create([
+        ProductLog::query()->create([
             'product_id' => $product->id,
             'what' => 'commissioning',
             'comment' => 'Initial commissioning',
@@ -141,10 +141,10 @@ describe('maintenance validation', function () {
             ->set('eventData.comment', 'Too late maintenance')
             ->call('createEvent');
 
-        expect(ProductLog::where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(0);
+        expect(ProductLog::query()->where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(0);
     });
 
-    it('allows maintenance without commissioning', function () {
+    it('allows maintenance without commissioning', function (): void {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(12)]);
 
         Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
@@ -152,27 +152,27 @@ describe('maintenance validation', function () {
             ->set('eventData.comment', 'Maintenance without commissioning')
             ->call('createEvent');
 
-        expect(ProductLog::where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(1);
+        expect(ProductLog::query()->where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(1);
     });
 
-    it('allows multiple maintenance operations', function () {
+    it('allows multiple maintenance operations', function (): void {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(36)]);
 
-        ProductLog::create([
+        ProductLog::query()->create([
             'product_id' => $product->id,
             'what' => 'commissioning',
             'comment' => 'Initial commissioning',
             'when' => now()->subMonths(35),
         ]);
 
-        ProductLog::create([
+        ProductLog::query()->create([
             'product_id' => $product->id,
             'what' => 'maintenance',
             'comment' => 'First maintenance',
             'when' => now()->subMonths(24),
         ]);
 
-        ProductLog::create([
+        ProductLog::query()->create([
             'product_id' => $product->id,
             'what' => 'maintenance',
             'comment' => 'Second maintenance',
@@ -184,20 +184,20 @@ describe('maintenance validation', function () {
             ->set('eventData.comment', 'Third maintenance')
             ->call('createEvent');
 
-        expect(ProductLog::where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(3);
+        expect(ProductLog::query()->where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(3);
     });
 
-    it('validates second maintenance window from first maintenance', function () {
+    it('validates second maintenance window from first maintenance', function (): void {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(26)]);
 
-        ProductLog::create([
+        ProductLog::query()->create([
             'product_id' => $product->id,
             'what' => 'commissioning',
             'comment' => 'Initial commissioning',
             'when' => now()->subMonths(25),
         ]);
 
-        ProductLog::create([
+        ProductLog::query()->create([
             'product_id' => $product->id,
             'what' => 'maintenance',
             'comment' => 'First maintenance',
@@ -209,13 +209,13 @@ describe('maintenance validation', function () {
             ->set('eventData.comment', 'Second maintenance')
             ->call('createEvent');
 
-        expect(ProductLog::where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(2);
+        expect(ProductLog::query()->where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(2);
     });
 
-    it('does not extend warranty date on maintenance', function () {
+    it('does not extend warranty date on maintenance', function (): void {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(24)]);
 
-        ProductLog::create([
+        ProductLog::query()->create([
             'product_id' => $product->id,
             'what' => 'commissioning',
             'comment' => 'Initial commissioning',

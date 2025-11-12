@@ -2,28 +2,26 @@
 
 namespace App\Filament\Resources\Partials;
 
-use Filament\Schemas\Schema;
-use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Tables\Columns\TextColumn;
-use App\Filament\Resources\Partials\Pages\ListPartials;
 use App\Filament\Resources\Partials\Pages\CreatePartial;
 use App\Filament\Resources\Partials\Pages\EditPartial;
-use App\Filament\Resources\PartialResource\Pages;
+use App\Filament\Resources\Partials\Pages\ListPartials;
 use App\Models\Partial;
-use Filament\Forms;
+use BackedEnum;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class PartialResource extends Resource
 {
     protected static ?string $model = Partial::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Schema $schema): Schema
     {

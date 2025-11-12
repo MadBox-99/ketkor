@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Log;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -11,9 +13,9 @@ class LogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Factory|View
     {
-        $logs = Log::orderBy('created_at', 'desc')->with(['user'])->paginate(15);
+        $logs = Log::query()->latest()->with(['user'])->paginate(15);
 
         return view('log.index', ['logs' => $logs]);
     }
@@ -30,11 +32,11 @@ class LogController extends Controller
 
             DB::commit();
 
-            return redirect()->route('logs.index')->with('success', __('Organizations deleted successfully.'));
+            return to_route('logs.index')->with('success', __('Organizations deleted successfully.'));
         } catch (Throwable $throwable) {
             DB::rollback();
 
-            return redirect()->route('logs.index')->with('error', $throwable->getMessage());
+            return to_route('logs.index')->with('error', $throwable->getMessage());
         }
     }
 }

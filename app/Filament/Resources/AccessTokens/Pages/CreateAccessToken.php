@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\AccessTokens\Pages;
 
 use App\Filament\Resources\AccessTokens\AccessTokenResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateAccessToken extends CreateRecord

@@ -9,9 +9,10 @@ use App\Models\ProductLog;
 use App\Models\Tool;
 use App\Models\User;
 use App\Models\Visible;
-use Carbon\Carbon;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -20,7 +21,7 @@ class ProductLogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Factory|View
     {
         return view('productlog.index');
     }
@@ -28,7 +29,7 @@ class ProductLogController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Factory|View
     {
         return view('productlog.create');
     }
@@ -39,7 +40,7 @@ class ProductLogController extends Controller
     public function store(Request $request)
     {
         // $user = auth()->user();
-        $user = User::find(1);
+        $user = User::query()->find(1);
         DB::beginTransaction();
         try {
             $request->validate([
@@ -55,11 +56,11 @@ class ProductLogController extends Controller
                 // if last maintenance created_at isn't null
                 if ($maintenanceCount == 0) {
                     $product_warrantee_date = $product->serializeDate($product->warrantee_date);
-                    $product_warrantee_date = Carbon::parse($product_warrantee_date);
+                    $product_warrantee_date = Date::parse($product_warrantee_date);
                     $elevenMonthsLater = $product_warrantee_date->copy()->addMonths(11);
                     $thirteenMonthsLater = $product_warrantee_date->copy()->addMonths(13);
-                    if (Carbon::now() >= $product_warrantee_date->subMonth() && Carbon::now() <= $product_warrantee_date->addMonths(2)) {
-                        ProductLog::create([
+                    if (Date::now() >= $product_warrantee_date->subMonth() && Date::now() <= $product_warrantee_date->addMonths(2)) {
+                        ProductLog::query()->create([
                             'comment' => $request->comment,
                             'what' => $request->what,
                             'product_id' => $request->product_id,
@@ -68,16 +69,16 @@ class ProductLogController extends Controller
 
                         DB::commit();
 
-                        return redirect()->back()->withInput()->with('success', __('Products updated successfully.'));
+                        return back()->withInput()->with('success', __('Products updated successfully.'));
                     }
                 }
 
                 if ($maintenanceCount < 3 && $maintenanceCount > 0) {
                     $product_warrantee_date = $product->warrantee_date;
-                    $product_warrantee_date = Carbon::parse($product_warrantee_date);
-                    $creationDate = Carbon::parse($lastProductLog->created_at);
-                    if (Carbon::now() >= $product_warrantee_date->subMonth() && Carbon::now() <= $product_warrantee_date->addMonths(2)) {
-                        ProductLog::create([
+                    $product_warrantee_date = Date::parse($product_warrantee_date);
+                    $creationDate = Date::parse($lastProductLog->created_at);
+                    if (Date::now() >= $product_warrantee_date->subMonth() && Date::now() <= $product_warrantee_date->addMonths(2)) {
+                        ProductLog::query()->create([
                             'comment' => $request->comment,
                             'what' => $request->what,
                             'product_id' => $request->product_id,
@@ -86,17 +87,17 @@ class ProductLogController extends Controller
 
                         DB::commit();
 
-                        return redirect()->back()->withInput()->with('success', __('Product updated successfully.'));
+                        return back()->withInput()->with('success', __('Product updated successfully.'));
                     }
                 }
 
                 DB::rollback();
 
-                return redirect()->back()->withInput()->with(['error' => __("Can't create maintenance in 11 month from last maintenance or after 13 month or cant extend warrantee more than 3 year")]);
+                return back()->withInput()->with(['error' => __("Can't create maintenance in 11 month from last maintenance or after 13 month or cant extend warrantee more than 3 year")]);
             }
 
             if ($request->what != ProductLogType::Maintenance) {
-                ProductLog::create([
+                ProductLog::query()->create([
                     'comment' => $request->comment,
                     'what' => $request->what,
                     'product_id' => $request->product_id,
@@ -104,7 +105,7 @@ class ProductLogController extends Controller
 
                 DB::commit();
 
-                return redirect()->back()->withInput()->with('success', __('Product updated successfully.'));
+                return back()->withInput()->with('success', __('Product updated successfully.'));
             }
         } catch (Throwable $throwable) {
             DB::rollback();
@@ -113,14 +114,14 @@ class ProductLogController extends Controller
 
             // return user and visibility data also
 
-            $userVisibility = Visible::whereRelation('product', 'user_id', $user->id)->whereRelation('product', 'product_id', $product->id)->whereRelation('product', 'isVisible', true)->first();
+            $userVisibility = Visible::query()->whereRelation('product', 'user_id', $user->id)->whereRelation('product', 'product_id', $product->id)->whereRelation('product', 'isVisible', true)->first();
             $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
-            $partials = Partial::where('product_id', $product->id)->latest()->limit(6)->get();
-            $users = User::get();
-            $tools = Tool::get();
+            $partials = Partial::query()->where('product_id', $product->id)->latest()->limit(6)->get();
+            $users = User::query()->get();
+            $tools = Tool::query()->get();
             $error = $throwable->getMessage();
 
-            return redirect()->route('products.edit', ['product' => $product])->with(['error' => $error, 'users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials, 'userVisibility' => $userVisibility]);
+            return to_route('products.edit', ['product' => $product])->with(['error' => $error, 'users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials, 'userVisibility' => $userVisibility]);
         }
 
         return null;

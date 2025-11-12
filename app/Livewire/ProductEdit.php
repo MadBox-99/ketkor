@@ -20,13 +20,13 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Livewire\Component;
-
-use function Illuminate\Log\log;
 
 class ProductEdit extends Component implements HasActions, HasSchemas
 {
@@ -198,7 +198,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
 
                                     // If there's a previous maintenance, check 11 months window
                                     if ($lastMaintenance) {
-                                        $elevenMonthsAfter = \Carbon\Carbon::parse($lastMaintenance->when)->addMonths(11);
+                                        $elevenMonthsAfter = Date::parse($lastMaintenance->when)->addMonths(11);
 
                                         if (now()->lessThan($elevenMonthsAfter)) {
                                             return true;
@@ -208,7 +208,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                                     // Check if there's commissioning to use as reference
                                     $commissioning = $this->product->product_logs()->where('what', 'commissioning')->first();
                                     if ($commissioning && ! $lastMaintenance) {
-                                        $elevenMonthsAfter = \Carbon\Carbon::parse($commissioning->when)->addMonths(11);
+                                        $elevenMonthsAfter = Date::parse($commissioning->when)->addMonths(11);
 
                                         if (now()->lessThan($elevenMonthsAfter)) {
                                             return true;
@@ -229,7 +229,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
 
                                 // If there's a previous maintenance, show when next one is available
                                 if ($lastMaintenance) {
-                                    $elevenMonthsAfter = \Carbon\Carbon::parse($lastMaintenance->when)->addMonths(11);
+                                    $elevenMonthsAfter = Date::parse($lastMaintenance->when)->addMonths(11);
 
                                     if (now()->lessThan($elevenMonthsAfter)) {
                                         return __('Maintenance can only be performed 11 months after last maintenance');
@@ -238,7 +238,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
 
                                 // If there's commissioning but no maintenance yet
                                 if ($commissioning && ! $lastMaintenance) {
-                                    $elevenMonthsAfter = \Carbon\Carbon::parse($commissioning->when)->addMonths(11);
+                                    $elevenMonthsAfter = Date::parse($commissioning->when)->addMonths(11);
 
                                     if (now()->lessThan($elevenMonthsAfter)) {
                                         return __('Maintenance can only be performed 11 months after commissioning');
@@ -323,7 +323,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
         }
 
         // Create the event log
-        ProductLog::create([
+        ProductLog::query()->create([
             'product_id' => $this->product->id,
             'what' => $data['what'],
             'comment' => $data['comment'] ?? null,
@@ -351,7 +351,8 @@ class ProductEdit extends Component implements HasActions, HasSchemas
     {
         if ($eventType === 'commissioning') {
             return $this->validateCommissioningTiming();
-        } elseif ($eventType === 'maintenance') {
+        }
+        if ($eventType === 'maintenance') {
             return $this->validateMaintenanceTiming();
         }
 
@@ -397,7 +398,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
 
         // If there's a previous maintenance, validate timing from it
         if ($lastMaintenance) {
-            $referenceDate = \Carbon\Carbon::parse($lastMaintenance->when);
+            $referenceDate = Date::parse($lastMaintenance->when);
             $elevenMonthsAfter = $referenceDate->copy()->addMonths(11);
             $thirteenMonthsAfter = $referenceDate->copy()->addMonths(13);
 
@@ -428,7 +429,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
             ->first();
 
         if ($commissioning) {
-            $referenceDate = \Carbon\Carbon::parse($commissioning->when);
+            $referenceDate = Date::parse($commissioning->when);
             $elevenMonthsAfter = $referenceDate->copy()->addMonths(11);
             $thirteenMonthsAfter = $referenceDate->copy()->addMonths(13);
 
@@ -486,7 +487,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                 $token = Str::random(40); // Generate a unique token
                 $user_id = Auth::user()->id;
                 // Store the token in the database
-                $accessToken = AccessToken::firstOrCreate([
+                $accessToken = AccessToken::query()->firstOrCreate([
                     'user_id' => $user_id,
                     'product_id' => $this->product->id,
                 ]);
@@ -504,7 +505,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
             });
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('livewire.product-edit');
     }

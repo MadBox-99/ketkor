@@ -39,7 +39,7 @@ class PartialController extends Controller
             $request->validate([
                 'name' => ['required', 'string', 'max:200'],
             ]);
-            Partial::create([
+            Partial::query()->create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,
@@ -48,18 +48,18 @@ class PartialController extends Controller
 
             DB::commit();
 
-            $users = User::get();
-            $tools = Tool::get();
+            $users = User::query()->get();
+            $tools = Tool::query()->get();
             $success = __('Product updated successfully.');
 
-            return redirect()->route('products.edit', ['product' => $product])->with(['tools' => $tools, 'users' => $users, 'success' => $success]);
+            return to_route('products.edit', ['product' => $product])->with(['tools' => $tools, 'users' => $users, 'success' => $success]);
         } catch (Throwable $throwable) {
             DB::rollback();
 
-            $users = User::get();
-            $tools = Tool::get();
+            $users = User::query()->get();
+            $tools = Tool::query()->get();
 
-            return redirect()->route('products.edit', ['product' => $product])->with(['error' => $throwable->getMessage(), 'users' => $users, 'tools' => $tools]);
+            return to_route('products.edit', ['product' => $product])->with(['error' => $throwable->getMessage(), 'users' => $users, 'tools' => $tools]);
         }
     }
 

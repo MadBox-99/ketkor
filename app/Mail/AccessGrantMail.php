@@ -2,21 +2,21 @@
 
 namespace App\Mail;
 
-use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Queue\SerializesModels;
 
 class AccessGrantMail extends Mailable
 {
     use Queueable;
     use SerializesModels;
+
     /**
      * Create a new message instance.
      */
-
     public function __construct(public $token, public $name)
     {
         //

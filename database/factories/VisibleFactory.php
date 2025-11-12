@@ -2,10 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\Product;
+use App\Models\User;
+use App\Models\Visible;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Visible>
+ * @extends Factory<Visible>
  */
 class VisibleFactory extends Factory
 {
@@ -17,9 +20,9 @@ class VisibleFactory extends Factory
     public function definition(): array
     {
         return [
-            'isVisible' => $this->faker->boolean(80),
-            'product_id' => \App\Models\Product::factory(),
-            'user_id' => \App\Models\User::factory(),
+            'isVisible' => fake()->boolean(80),
+            'product_id' => Product::factory(),
+            'user_id' => User::factory(),
         ];
     }
 }

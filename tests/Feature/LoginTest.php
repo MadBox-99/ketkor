@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;
@@ -13,7 +14,7 @@ describe('Login (Livewire)', function (): void {
             'password' => Hash::make('password'),
         ]);
 
-        Livewire::test('auth.login')
+        Livewire::test(Login::class)
             ->set('email', $user->email)
             ->set('password', 'password')
             ->call('login')
@@ -27,7 +28,7 @@ describe('Login (Livewire)', function (): void {
             'password' => Hash::make('password'),
         ]);
 
-        Livewire::test('auth.login')
+        Livewire::test(Login::class)
             ->set('email', $user->email)
             ->set('password', 'wrongpassword')
             ->call('login')

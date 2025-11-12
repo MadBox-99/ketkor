@@ -6,6 +6,7 @@ use App\Models\Product;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
@@ -15,6 +16,8 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -128,7 +131,7 @@ class ProductSearchUser extends Component implements HasActions, HasSchemas, Has
                     }),
                 Filter::make('tool_name')
                     ->schema([
-                        \Filament\Forms\Components\TextInput::make('value')
+                        TextInput::make('value')
                             ->label(__('Tool name'))
                             ->placeholder(__('Search by tool...')),
                     ])
@@ -145,9 +148,9 @@ class ProductSearchUser extends Component implements HasActions, HasSchemas, Has
                     }),
                 Filter::make('warranty_date')
                     ->schema([
-                        \Filament\Forms\Components\DatePicker::make('from')
+                        DatePicker::make('from')
                             ->label(__('Warranty from')),
-                        \Filament\Forms\Components\DatePicker::make('to')
+                        DatePicker::make('to')
                             ->label(__('Warranty to')),
                     ])
                     ->query(fn (Builder $query, array $data): Builder => $query->when(
@@ -190,7 +193,7 @@ class ProductSearchUser extends Component implements HasActions, HasSchemas, Has
                     ->modalHeading(__('Remove product'))
                     ->modalDescription(__('Are you sure you want to remove this product from your list?'))
                     ->successNotificationTitle(__('Product removed from your list'))
-                    ->action(function (Product $record) {
+                    ->action(function (Product $record): void {
                         $user = Auth::user();
                         $record->users()->detach($user->id);
                     }),
@@ -208,12 +211,12 @@ class ProductSearchUser extends Component implements HasActions, HasSchemas, Has
 
         return Product::query()
             ->with(['partials', 'are_visible', 'tool'])
-            ->whereHas('users', function (Builder $query) use ($user) {
+            ->whereHas('users', function (Builder $query) use ($user): void {
                 $query->where('user_id', $user->id);
             });
     }
 
-    public function render()
+    public function render(): Factory|View
     {
         return view('livewire.product-search-user');
     }

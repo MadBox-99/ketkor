@@ -10,7 +10,7 @@ use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;
 
-it('renders the product search user component', function () {
+it('renders the product search user component', function (): void {
     $user = User::factory()->create();
 
     actingAs($user);
@@ -19,7 +19,7 @@ it('renders the product search user component', function () {
         ->assertStatus(200);
 });
 
-it('displays user products in the table', function () {
+it('displays user products in the table', function (): void {
     $user = User::factory()->create();
     $tool = Tool::factory()->create([
         'name' => 'Test Tool',
@@ -47,7 +47,7 @@ it('displays user products in the table', function () {
         ->assertSee('TEST-123');
 });
 
-it('filters products by serial number', function () {
+it('filters products by serial number', function (): void {
     $user = User::factory()->create();
     $tool = Tool::factory()->create();
 
@@ -74,7 +74,7 @@ it('filters products by serial number', function () {
         ->assertCanNotSeeTableRecords([$product2]);
 });
 
-it('filters products by tool name', function () {
+it('filters products by tool name', function (): void {
     $user = User::factory()->create();
     $tool1 = Tool::factory()->create(['name' => 'Drill']);
     $tool2 = Tool::factory()->create(['name' => 'Saw']);
@@ -102,7 +102,7 @@ it('filters products by tool name', function () {
         ->assertCanNotSeeTableRecords([$product2]);
 });
 
-it('filters products by warranty date range', function () {
+it('filters products by warranty date range', function (): void {
     $user = User::factory()->create();
     $tool = Tool::factory()->create();
 
@@ -134,7 +134,7 @@ it('filters products by warranty date range', function () {
         ->assertCanNotSeeTableRecords([$product1]);
 });
 
-it('can remove product from user list', function () {
+it('can remove product from user list', function (): void {
     $user = User::factory()->create();
     $tool = Tool::factory()->create();
 
@@ -153,13 +153,13 @@ it('can remove product from user list', function () {
         ->callTableAction('delete', $product);
 
     // Product still exists
-    expect(Product::find($product->id))->not->toBeNull();
+    expect(Product::query()->find($product->id))->not->toBeNull();
 
     // But user is no longer associated with it
     expect($product->users()->where('user_id', $user->id)->exists())->toBeFalse();
 });
 
-it('shows non-visible products in the table', function () {
+it('shows non-visible products in the table', function (): void {
     $user = User::factory()->create();
     $tool = Tool::factory()->create();
 
@@ -182,7 +182,7 @@ it('shows non-visible products in the table', function () {
         ->assertSee('HIDDEN-001');
 });
 
-it('only shows products for authenticated user', function () {
+it('only shows products for authenticated user', function (): void {
     $user1 = User::factory()->create();
     $user2 = User::factory()->create();
     $tool = Tool::factory()->create();

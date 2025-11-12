@@ -29,9 +29,9 @@ class UserImporter extends Importer
 
     public function resolveRecord(): ?User
     {
-        $organization = Organization::firstOrCreate(['name' => $this->data['organization'] ?? null]);
+        $organization = Organization::query()->firstOrCreate(['name' => $this->data['organization'] ?? null]);
 
-        return User::firstOrNew([
+        return User::query()->firstOrNew([
             'email' => $this->data['email'],
             'organization_id' => $organization->id,
             'name' => $this->data['name'] ?? null,

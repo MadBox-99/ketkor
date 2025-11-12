@@ -8,7 +8,9 @@ use App\Models\Product;
 use App\Models\User;
 use App\Models\Visible;
 use Filament\Notifications\Notification;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -26,14 +28,14 @@ class AccessTokenController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function createAccessToken(Product $product)
+    public function createAccessToken(Product $product): RedirectResponse
     {
         config('mail.from.address');
         $admin = User::whereEmail(env('ADMIN_EMAIL'))->first();
         $token = Str::random(40); // Generate a unique token
         $user_id = Auth::user()->id;
         // Store the token in the database
-        $accessToken = AccessToken::firstOrCreate([
+        $accessToken = AccessToken::query()->firstOrCreate([
             'user_id' => $user_id,
             'product_id' => $product->id,
             // Mark the token as not used
@@ -49,26 +51,26 @@ class AccessTokenController extends Controller
             ->success()
             ->send();
 
-        return redirect()->back();
+        return back();
     }
 
     /**
      * Display the specified resource.
      */
-    public function activateAccessToken($token)
+    public function activateAccessToken($token): Redirector|RedirectResponse
     {
-        $accessToken = AccessToken::where('token', $token)->first();
+        $accessToken = AccessToken::query()->where('token', $token)->first();
         if (! $accessToken) {
             Notification::make()
                 ->title('Access token not found')
                 ->danger()
                 ->send();
 
-            return redirect()->route('filament.admin.resources.access-tokens.index');
+            return to_route('filament.admin.resources.access-tokens.index');
         }
         if (! $accessToken?->used) {
             $accessToken->update(['used' => 1]);
-            $visibility = Visible::firstOrNew([
+            $visibility = Visible::query()->firstOrNew([
                 'product_id' => $accessToken->product_id,
                 'user_id' => $accessToken->user_id,
             ]);
@@ -78,10 +80,10 @@ class AccessTokenController extends Controller
                 ->success()
                 ->send();
 
-            return redirect()->route('filament.admin.resources.access-tokens.index');
+            return to_route('filament.admin.resources.access-tokens.index');
         }
 
-        return redirect()->route('filament.admin.resources.access-tokens.index');
+        return to_route('filament.admin.resources.access-tokens.index');
     }
 
     /**

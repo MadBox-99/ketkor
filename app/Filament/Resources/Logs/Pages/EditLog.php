@@ -2,9 +2,8 @@
 
 namespace App\Filament\Resources\Logs\Pages;
 
-use Filament\Actions\DeleteAction;
 use App\Filament\Resources\Logs\LogResource;
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditLog extends EditRecord

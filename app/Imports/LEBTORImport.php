@@ -2,14 +2,14 @@
 
 namespace App\Imports;
 
-use Illuminate\Database\Eloquent\Model;
-use DateTime;
-use App\Models\Tool;
-use App\Models\User;
+use App\Models\Organization;
 use App\Models\Partial;
 use App\Models\Product;
-use App\Models\Organization;
-use Illuminate\Support\Carbon;
+use App\Models\Tool;
+use App\Models\User;
+use DateTime;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Date;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
@@ -37,10 +37,10 @@ class LEBTORImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         if (
-            !isset($row['Gyári szám'])
-            || !isset($row['Beüzemelés dátuma'])
+            ! isset($row['Gyári szám'])
+            || ! isset($row['Beüzemelés dátuma'])
             || is_null($row['beüzemelő szerviz'])
-            || (!isset($row['Beüzemelés dátuma']) && !isset($row['Vásárlás dátuma']))
+            || (! isset($row['Beüzemelés dátuma']) && ! isset($row['Vásárlás dátuma']))
         ) {
             return null;
         }
@@ -55,7 +55,7 @@ class LEBTORImport implements ToModel, WithHeadingRow
 
         if ($row['Beüzemelés dátuma'] !== '?') {
             if (is_numeric(['Beüzemelés dátuma'])) {
-                $row['Beüzemelés dátuma'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['Beüzemelés dátuma'] - 2);
+                $row['Beüzemelés dátuma'] = Date::createFromDate(1900, 1, 1)->addDays($row['Beüzemelés dátuma'] - 2);
             } else {
                 $row['Beüzemelés dátuma'] = null;
             }
@@ -63,16 +63,16 @@ class LEBTORImport implements ToModel, WithHeadingRow
 
         if ($row['Vásárlás dátuma'] !== '?') {
             if (is_numeric(['Vásárlás dátuma'])) {
-                $row['Vásárlás dátuma'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['Vásárlás dátuma'] - 2);
+                $row['Vásárlás dátuma'] = Date::createFromDate(1900, 1, 1)->addDays($row['Vásárlás dátuma'] - 2);
             } else {
                 $row['Vásárlás dátuma'] = null;
             }
         }
 
-        $row['Beüzemelés dátuma'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['Beüzemelés dátuma'] - 2);
-        $row['Vásárlás dátuma'] = Carbon::createFromDate(1900, 1, 1)->addDays($row['Vásárlás dátuma'] - 2);
-        $install_date = Carbon::createFromInterface(new DateTime($row['Beüzemelés dátuma']));
-        $purchase_date = Carbon::createFromInterface(new DateTime($row['Vásárlás dátuma']));
+        $row['Beüzemelés dátuma'] = Date::createFromDate(1900, 1, 1)->addDays($row['Beüzemelés dátuma'] - 2);
+        $row['Vásárlás dátuma'] = Date::createFromDate(1900, 1, 1)->addDays($row['Vásárlás dátuma'] - 2);
+        $install_date = Date::createFromInterface(new DateTime($row['Beüzemelés dátuma']));
+        $purchase_date = Date::createFromInterface(new DateTime($row['Vásárlás dátuma']));
         $warrantee = null;
         if ($purchase_date->diffInMonths($install_date) <= 3) {
             $warrantee = $purchase_date->copy()->addYear();
@@ -80,42 +80,39 @@ class LEBTORImport implements ToModel, WithHeadingRow
             $warrantee = $install_date->copy()->addYear();
         }
 
-        $user = User::where('name', $row['beüzemelő szerviz'])->first();
+        $user = User::query()->where('name', $row['beüzemelő szerviz'])->first();
 
-        if (!$user) {
-            $organization = Organization::firstOrCreate(['name' => $row['beüzemelő szerviz']]);
+        if (! $user) {
+            $organization = Organization::query()->firstOrCreate(['name' => $row['beüzemelő szerviz']]);
 
-            $user = User::firstOrCreate([
+            $user = User::query()->firstOrCreate([
                 'organization_id' => $organization->id,
                 'name' => $row['beüzemelő szerviz'],
             ]);
             $user->assignRole('Organizer');
         }
 
-        $tool = Tool::firstOrCreate(['name' => $row['Típus:'], 'factory_name' => 'Ferroli']);
-        $product = Product::Create(
-            [
-                'tool_id' => $tool->id,
-                'owner_name' => $row['név'] ?? null,
-                'installer_name' => $row['beüzemelő szerviz'] ?? null,
-                'user_id' => $user->id,
-                'city' => $row['Város'] ?? null,
-                'street' => $row['Cím:'] ?? null,
-                'zip' => $row['Ir szám'] ?? null,
-                'purchase_place' => $row['Vásárlás helye'] ?? null,
-                'purchase_date' => $row['Vásárlás dátuma'] ?? null,
-                'installation_date' => $row['Beüzemelés dátuma'] ?? null,
-                'serial_number' => $row['Gyári szám'] ?? null,
-                'warrantee_date' => $warrantee ?? null
-            ]
-        );
-        Partial::create(
-            [
-                'name' => $product->owner_name,
-                'product_id' => $product->id
-            ]
-        );
+        $tool = Tool::query()->firstOrCreate(['name' => $row['Típus:'], 'factory_name' => 'Ferroli']);
+        $product = Product::query()->Create([
+            'tool_id' => $tool->id,
+            'owner_name' => $row['név'] ?? null,
+            'installer_name' => $row['beüzemelő szerviz'] ?? null,
+            'user_id' => $user->id,
+            'city' => $row['Város'] ?? null,
+            'street' => $row['Cím:'] ?? null,
+            'zip' => $row['Ir szám'] ?? null,
+            'purchase_place' => $row['Vásárlás helye'] ?? null,
+            'purchase_date' => $row['Vásárlás dátuma'] ?? null,
+            'installation_date' => $row['Beüzemelés dátuma'] ?? null,
+            'serial_number' => $row['Gyári szám'] ?? null,
+            'warrantee_date' => $warrantee ?? null,
+        ]);
+        Partial::query()->create([
+            'name' => $product->owner_name,
+            'product_id' => $product->id,
+        ]);
         $product->users()->attach($user->id);
+
         return $product;
 
     }

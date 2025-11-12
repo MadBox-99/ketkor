@@ -2,20 +2,21 @@
 
 namespace App\Filament\Resources\Users;
 
-use Filament\Schemas\Schema;
-use Filament\Actions\ImportAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use App\Filament\Imports\UserImporter;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
 use App\Models\User;
+use BackedEnum;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ImportAction;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Hash;
@@ -24,7 +25,7 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Schema $schema): Schema
     {
@@ -74,9 +75,7 @@ class UserResource extends Resource
                 TextColumn::make('roles.name')
                     ->label('Szerepkörök')
                     ->searchable()
-                    ->getStateUsing(function (User $record) {
-                        return $record->roles->pluck('name')->implode(', ');
-                    }),
+                    ->getStateUsing(fn (User $record) => $record->roles->pluck('name')->implode(', ')),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

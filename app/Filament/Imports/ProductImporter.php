@@ -50,7 +50,7 @@ class ProductImporter extends Importer
 
         $this->data['tool'] = $this->options['selectedBrand'];
         if ($this->options['updateExisting'] ?? false) {
-            return Product::firstOrNew([
+            return Product::query()->firstOrNew([
                 'serial_number' => $this->data['serial_number'],
             ]);
         }

@@ -10,17 +10,12 @@ class AdminUserRegistered extends Notification
 {
     use Queueable;
 
-    protected $user;
-
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($user)
-    {
-        $this->user = $user;
-    }
+    public function __construct(protected $user) {}
 
     /**
      * Get the notification's delivery channels.

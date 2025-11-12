@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Product;
+use App\Models\Tool;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,18 +19,18 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'owner_name' => $this->faker->name(),
-            'installer_name' => $this->faker->name(),
-            'city' => $this->faker->city(),
-            'street' => $this->faker->streetAddress(),
-            'zip' => $this->faker->numberBetween(1000, 9999),
-            'purchase_place' => $this->faker->company(),
-            'serial_number' => strtoupper($this->faker->bothify('??-####-????')),
-            'purchase_date' => $this->faker->dateTimeBetween('-2 years', '-1 month'),
-            'installation_date' => $this->faker->dateTimeBetween('-2 years', 'now'),
-            'warrantee_date' => $this->faker->dateTimeBetween('now', '+5 years'),
-            'tool_id' => \App\Models\Tool::factory(),
-            'comments' => $this->faker->optional(0.3)->sentence(),
+            'owner_name' => fake()->name(),
+            'installer_name' => fake()->name(),
+            'city' => fake()->city(),
+            'street' => fake()->streetAddress(),
+            'zip' => fake()->numberBetween(1000, 9999),
+            'purchase_place' => fake()->company(),
+            'serial_number' => strtoupper(fake()->bothify('??-####-????')),
+            'purchase_date' => fake()->dateTimeBetween('-2 years', '-1 month'),
+            'installation_date' => fake()->dateTimeBetween('-2 years', 'now'),
+            'warrantee_date' => fake()->dateTimeBetween('now', '+5 years'),
+            'tool_id' => Tool::factory(),
+            'comments' => fake()->optional(0.3)->sentence(),
         ];
     }
 
@@ -38,8 +39,8 @@ class ProductFactory extends Factory
      */
     public function expiredWarranty(): static
     {
-        return $this->state(fn () => [
-            'warrantee_date' => $this->faker->dateTimeBetween('-2 years', '-1 day'),
+        return $this->state(fn (): array => [
+            'warrantee_date' => fake()->dateTimeBetween('-2 years', '-1 day'),
         ]);
     }
 
@@ -48,8 +49,8 @@ class ProductFactory extends Factory
      */
     public function longWarranty(): static
     {
-        return $this->state(fn () => [
-            'warrantee_date' => $this->faker->dateTimeBetween('+3 years', '+10 years'),
+        return $this->state(fn (): array => [
+            'warrantee_date' => fake()->dateTimeBetween('+3 years', '+10 years'),
         ]);
     }
 
@@ -58,9 +59,9 @@ class ProductFactory extends Factory
      */
     public function recentlyPurchased(): static
     {
-        return $this->state(fn () => [
-            'purchase_date' => $this->faker->dateTimeBetween('-1 month', 'now'),
-            'installation_date' => $this->faker->dateTimeBetween('-1 month', 'now'),
+        return $this->state(fn (): array => [
+            'purchase_date' => fake()->dateTimeBetween('-1 month', 'now'),
+            'installation_date' => fake()->dateTimeBetween('-1 month', 'now'),
         ]);
     }
 
@@ -69,10 +70,10 @@ class ProductFactory extends Factory
      */
     public function withDetails(): static
     {
-        return $this->state(fn () => [
-            'owner_name' => $this->faker->name(),
-            'installer_name' => $this->faker->name(),
-            'comments' => $this->faker->paragraph(),
+        return $this->state(fn (): array => [
+            'owner_name' => fake()->name(),
+            'installer_name' => fake()->name(),
+            'comments' => fake()->paragraph(),
         ]);
     }
 }

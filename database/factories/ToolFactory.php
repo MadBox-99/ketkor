@@ -19,10 +19,10 @@ class ToolFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word(),
-            'category' => $this->faker->randomElement(ProductCategory::class),
-            'tag' => strtoupper($this->faker->bothify('??-####')),
-            'factory_name' => $this->faker->company(),
+            'name' => fake()->word(),
+            'category' => fake()->randomElement(ProductCategory::class),
+            'tag' => strtoupper(fake()->bothify('??-####')),
+            'factory_name' => fake()->company(),
         ];
     }
 }

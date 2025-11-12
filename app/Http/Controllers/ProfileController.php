@@ -27,7 +27,7 @@ class ProfileController extends Controller
 
     public function create(Request $request): View
     {
-        $organizations = Organization::orderBy('name')->get();
+        $organizations = Organization::query()->orderBy('name')->get();
 
         return view('user.create', ['organizations' => $organizations]);
     }
@@ -37,28 +37,26 @@ class ProfileController extends Controller
         DB::beginTransaction();
         try {
             $validated = $request->validated();
-            User::createOrFirst(
-                [
-                    'name' => $validated['name'],
-                    'email' => $validated['email'],
-                    'password' => $validated['password'],
-                    'organization_id' => $validated['organization_id'],
-                ]
-            );
+            User::query()->createOrFirst([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => $validated['password'],
+                'organization_id' => $validated['organization_id'],
+            ]);
             $success = __('Successfully created the user.');
             DB::commit();
 
-            return redirect()->route('users.index')->with(['success' => $success]);
+            return to_route('users.index')->with(['success' => $success]);
         } catch (Throwable $throwable) {
             DB::rollBack();
 
-            return redirect()->back()->withInput()->with('error', $throwable->getMessage());
+            return back()->withInput()->with('error', $throwable->getMessage());
         }
     }
 
     public function show(User $user): View
     {
-        $organizations = Organization::get();
+        $organizations = Organization::query()->get();
         $user = User::whereId($user->id)->with('organization')->first();
         $roles = Role::all();
 
@@ -85,7 +83,7 @@ class ProfileController extends Controller
         ]);
         $user->syncRoles($validated['role']);
 
-        return redirect()->back()->with('status', __('User updated!'))->withInput();
+        return back()->with('status', __('User updated!'))->withInput();
     }
 
     /**
@@ -104,11 +102,11 @@ class ProfileController extends Controller
             Auth::user()->save();
             DB::commit();
 
-            return redirect()->back()->with('status', __('Profile updated successfully.'));
+            return back()->with('status', __('Profile updated successfully.'));
         } catch (Throwable $throwable) {
             DB::rollBack();
 
-            return redirect()->back()->withInput()->with('error', $throwable->getMessage());
+            return back()->withInput()->with('error', $throwable->getMessage());
         }
     }
 
