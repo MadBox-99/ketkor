@@ -272,6 +272,11 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                             ->throttle(16)
                             ->minDistance(5)
                             ->velocityFilterWeight(0.7)
+                            ->backgroundColor('rgba(255, 255, 255, 1)')
+                            ->penColor('rgba(0, 0, 0, 1)')
+                            ->extraAttributes([
+                                'wire:ignore' => true,
+                            ])
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
