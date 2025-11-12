@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire;
 
 use App\Models\Product;
@@ -37,6 +39,5 @@ class ProductSearch extends Component
 
         // $owns = true;
         return view('livewire.product-search', ['product' => $product]);
-
     }
 }

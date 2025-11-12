@@ -1,7 +1,8 @@
 <?php
 
-return [
+declare(strict_types=1);
 
+return [
     /*
     |--------------------------------------------------------------------------
     | Password Reset Language Lines
@@ -18,5 +19,4 @@ return [
     'throttled' => 'Kérjük, várjon, mielőtt újra próbálkozna.',
     'token' => 'Ez a jelszó visszaállítási token érvénytelen.',
     'user' => 'Nem találtunk felhasználót ezzel az e-mail címmel.',
-
 ];

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -46,7 +48,6 @@ class StoreUserRequest extends FormRequest
             'email.unique' => __('The email has already been taken.'),
             'organization_id.required' => __('A organization is required.'),
             'organization_id.exists' => __('The organization has to be exist.'),
-
         ];
     }
 }

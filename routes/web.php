@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\AccessTokenController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\OrganizationController;
@@ -12,7 +14,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Route;
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -52,7 +54,6 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('edit');
         Route::get('/', [ProductController::class, 'index'])->name('index');
         Route::put('/update/{product}', [ProductController::class, 'update'])->name('update');
-
     });
     Route::prefix('accestoken')->name('accestokens.')->group(function (): void {
         Route::get('/createAccessToken/{product}', [AccessTokenController::class, 'createAccessToken'])->name('createAccessToken');

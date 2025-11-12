@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Auth;
 
 use Illuminate\Auth\Events\Lockout;
@@ -12,7 +14,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-#[Layout('components.layouts.auth')]
+#[Layout('components.layouts.auth.simple')]
 class Login extends Component
 {
     #[Validate('required|string|email')]
@@ -28,7 +30,6 @@ class Login extends Component
      */
     public function login(): void
     {
-
         $this->validate();
 
         $this->ensureIsNotRateLimited();
@@ -44,7 +45,7 @@ class Login extends Component
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
-        $this->redirectIntended(default: route('index', absolute: false), navigate: true);
+        $this->redirectIntended(default: route('index', absolute: false), navigate: false);
     }
 
     /**
@@ -73,6 +74,6 @@ class Login extends Component
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+        return Str::transliterate(Str::lower($this->email) . '|' . request()->ip());
     }
 }

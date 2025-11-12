@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire;
 
 use App\Enums\UserRole;
@@ -54,7 +56,6 @@ class ProductEdit extends Component implements HasActions, HasSchemas
 
     public function mount(Product $product, bool $userVisibility): void
     {
-
         $this->product = $product;
         $this->userVisibility = $userVisibility;
 
@@ -93,7 +94,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
         return $schema
             ->components([
                 Section::make(__('Product Information'))
-                    ->description(__("Update product's informations."))
+                    ->description(__('Update product\'s informations.'))
                     ->components([
                         TextInput::make('serial_number')
                             ->label(__('Serial number'))
@@ -502,7 +503,6 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                     ->title(__('Succesfuly send an email to administrator who will grant an access to private datas, please wait until is access in grant.'))
                     ->success()
                     ->send();
-
             });
     }
 

@@ -1,39 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources\Products\Tables;
 
+use App\Filament\Exports\ProductExporter;
+use App\Filament\Imports\ProductImporter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ExportAction;
-use Filament\Actions\Exports\Exporter;
 use Filament\Actions\ImportAction;
-use Filament\Actions\Imports\Importer;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class ProductTable
 {
-    public static function make(
-        Table $table,
-        ?string $importerClass = null,
-        ?string $exporterClass = null
-    ): Table {
-        $headerActions = [];
-
-        if ($importerClass !== null && is_subclass_of($importerClass, Importer::class)) {
-            $headerActions[] = ImportAction::make()
-                ->importer($importerClass)
-                ->options([
-                    'updateExisting' => true,
-                ]);
-        }
-
-        if ($exporterClass !== null && is_subclass_of($exporterClass, Exporter::class)) {
-            $headerActions[] = ExportAction::make()
-                ->exporter($exporterClass);
-        }
-
+    public static function make(Table $table): Table
+    {
         return $table
             ->columns([
                 TextColumn::make('owner_name')
@@ -76,7 +60,15 @@ class ProductTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->headerActions($headerActions)
+            ->headerActions([
+                ImportAction::make()
+                    ->importer(ProductImporter::class)
+                    ->options([
+                        'updateExisting' => true,
+                    ]),
+                ExportAction::make()
+                    ->exporter(ProductExporter::class),
+            ])
             ->filters([
                 //
             ])

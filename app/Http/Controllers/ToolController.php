@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Tool;
@@ -50,7 +52,6 @@ class ToolController extends Controller
 
             return to_route('tools.index')->with('success', __('Tool created successfully.'));
         } catch (Throwable $throwable) {
-
             DB::rollback();
 
             return back()->withInput()->with('error', $throwable->getMessage());
@@ -91,7 +92,7 @@ class ToolController extends Controller
                     'category' => $request->category,
                     'tag' => $request->tag,
                     'factory_name' => $request->factory_name,
-                ]
+                ],
             );
 
             DB::commit();

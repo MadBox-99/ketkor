@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Enums\ProductCategory;
 use App\Livewire\ProductSearchUser;
 use App\Models\Product;

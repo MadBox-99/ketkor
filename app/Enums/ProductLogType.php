@@ -6,7 +6,7 @@ namespace App\Enums;
 
 enum ProductLogType: string
 {
-    const Maintenance = 'maintenance';
+    public const Maintenance = 'maintenance';
 
-    const Installation = 'installation';
+    public const Installation = 'installation';
 }

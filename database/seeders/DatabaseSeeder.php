@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -22,7 +24,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-
         $permissions = [
             // Products
             'products.list' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
@@ -68,7 +69,7 @@ class DatabaseSeeder extends Seeder
         ]);
         $admin = User::factory()->create([
             'name' => 'Admin',
-            'email' => 'zoli.szabok@gamil.com',
+            'email' => 'admin@admin.com',
             'email_verified_at' => now(),
             'password' => Hash::make('password'), // password
             'remember_token' => Str::random(10),
@@ -111,7 +112,6 @@ class DatabaseSeeder extends Seeder
             'category' => ProductCategory::SIME,
             'tag' => 'Próba tag',
             'factory_name' => 'Sime',
-
         ]);
 
         Product::factory(10)->create();
@@ -120,6 +120,5 @@ class DatabaseSeeder extends Seeder
         $user1->products()->attach($productTest1);
         $user1->products()->attach($productTest2);
         $user2->products()->attach($productTest2);
-
     }
 }

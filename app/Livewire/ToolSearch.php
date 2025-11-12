@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire;
 
 use App\Models\Tool;
@@ -19,7 +21,7 @@ class ToolSearch extends Component
 
     public function mount(): void
     {
-        $this->tools = Tool::query()->when($this->tool_name, fn ($query) => $query->where('name', 'LIKE', '%'.$this->tool_name.'%'))->paginate(20);
+        $this->tools = Tool::query()->when($this->tool_name, fn ($query) => $query->where('name', 'LIKE', '%' . $this->tool_name . '%'))->paginate(20);
     }
 
     public function render(): Factory|View

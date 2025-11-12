@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources\Visibles;
 
 use App\Filament\Resources\Visibles\Pages\CreateVisible;

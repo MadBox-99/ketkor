@@ -1,21 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources\Users\Tables;
 
+use App\Filament\Imports\UserImporter;
 use App\Models\User;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ImportAction;
-use Filament\Imports\Importer;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class UserTable
 {
-    public static function make(Table $table, ?string $importerClass = null): Table
+    public static function make(Table $table): Table
     {
-        $tableInstance = $table
+        return $table
             ->columns([
                 TextColumn::make('name')
                     ->sortable()
@@ -43,6 +45,10 @@ class UserTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->headerActions([
+                ImportAction::make()
+                    ->importer(UserImporter::class),
+            ])
             ->filters([
                 //
             ])
@@ -54,14 +60,5 @@ class UserTable
                     DeleteBulkAction::make(),
                 ]),
             ]);
-
-        if ($importerClass !== null && is_subclass_of($importerClass, Importer::class)) {
-            $tableInstance->headerActions([
-                ImportAction::make()
-                    ->importer($importerClass),
-            ]);
-        }
-
-        return $tableInstance;
     }
 }

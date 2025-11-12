@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use DateTime;
@@ -46,7 +48,7 @@ class Product extends Model
     public function serializeDate($date): string
     {
         if (is_null($date)) {
-            $date = new DateTime;
+            $date = new DateTime();
         } elseif (! $date instanceof DateTimeInterface) {
             $date = new DateTime($date);
         }

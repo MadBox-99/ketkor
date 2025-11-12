@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire;
 
 use App\Models\Product;
@@ -23,7 +25,7 @@ class SearchProduct extends Component
                 'partials' => function ($query): void {
                     $query->latest()->limit(1);
                 },
-            ])->where('owner_name', 'LIKE', '%'.$this->owner_name.'%')->paginate(10);
+            ])->where('owner_name', 'LIKE', '%' . $this->owner_name . '%')->paginate(10);
         } else {
             $products = Product::with([
                 'partials' => function ($query): void {
@@ -33,6 +35,5 @@ class SearchProduct extends Component
         }
 
         return view('livewire.search-product', ['products' => $products]);
-
     }
 }

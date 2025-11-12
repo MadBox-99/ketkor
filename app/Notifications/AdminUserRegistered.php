@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
@@ -35,9 +37,9 @@ class AdminUserRegistered extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-            ->line('Egy új felhasználó regisztrált: '.$this->user->name)
-            ->action('Fiók megerősítése', url('/admin/verify-user/'.$this->user->id))
+        return (new MailMessage())
+            ->line('Egy új felhasználó regisztrált: ' . $this->user->name)
+            ->action('Fiók megerősítése', url('/admin/verify-user/' . $this->user->id))
             ->line('Kérjük, erősítse meg a fiókot.');
     }
 

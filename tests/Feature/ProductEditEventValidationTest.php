@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Livewire\ProductEdit;
 use App\Models\Product;
 use App\Models\ProductLog;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Imports;
 
 use App\Enums\ProductCategory;
@@ -47,7 +49,6 @@ class ProductImporter extends Importer
 
     public function resolveRecord(): ?Product
     {
-
         $this->data['tool'] = $this->options['selectedBrand'];
         if ($this->options['updateExisting'] ?? false) {
             return Product::query()->firstOrNew([
@@ -55,15 +56,15 @@ class ProductImporter extends Importer
             ]);
         }
 
-        return new Product;
+        return new Product();
     }
 
     public static function getCompletedNotificationBody(Import $import): string
     {
-        $body = 'Your product import has completed and '.number_format($import->successful_rows).' '.str('row')->plural($import->successful_rows).' imported.';
+        $body = 'Your product import has completed and ' . number_format($import->successful_rows) . ' ' . str('row')->plural($import->successful_rows) . ' imported.';
 
         if (($failedRowsCount = $import->getFailedRowsCount()) !== 0) {
-            $body .= ' '.number_format($failedRowsCount).' '.str('row')->plural($failedRowsCount).' failed to import.';
+            $body .= ' ' . number_format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to import.';
         }
 
         return $body;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Mail\AccessGrantMail;
@@ -76,7 +78,7 @@ class AccessTokenController extends Controller
             ]);
             $visibility->update(['isVisible' => 1]);
             Notification::make()
-                ->title('access grated to '.$accessToken->user->name)
+                ->title('access grated to ' . $accessToken->user->name)
                 ->success()
                 ->send();
 

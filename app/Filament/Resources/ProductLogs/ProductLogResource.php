@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources\ProductLogs;
 
 use App\Filament\Resources\ProductLogs\Pages\CreateProductLog;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\Organization;
@@ -20,7 +22,6 @@ class OrganizationController extends Controller
      */
     public function index(): View
     {
-
         return view('organization.index');
     }
 
@@ -29,7 +30,6 @@ class OrganizationController extends Controller
      */
     public function create(): View
     {
-
         return view('organization.create');
     }
 
@@ -46,7 +46,7 @@ class OrganizationController extends Controller
                     'city' => ['string'],
                     'address' => ['string'],
                     'zip' => ['string'],
-                ]
+                ],
             );
             Organization::query()->create([
                 'name' => $request->name,
@@ -83,7 +83,7 @@ class OrganizationController extends Controller
                     'selected_user_id' => ['required'],
                     'user_id' => ['required'],
                     'product_id' => ['required'],
-                ]
+                ],
             );
             $product = Product::with(['users'])->whereId($request->product_id)->first();
             $selectedUserId = $request->selected_user_id;
@@ -94,7 +94,7 @@ class OrganizationController extends Controller
                 Visible::whereUserId($request->selected_user_id)->whereProductId($product->id)->first()->update(
                     [
                         'isVisible' => $visible->isVisible,
-                    ]
+                    ],
                 );
                 $visible->delete();
             } else {
@@ -102,7 +102,7 @@ class OrganizationController extends Controller
                 $visible->update(
                     [
                         'user_id' => $request->selected_user_id,
-                    ]
+                    ],
                 );
             }
 
@@ -147,7 +147,7 @@ class OrganizationController extends Controller
                     'address' => $request->address,
                     'tax_number' => $request->tax_number,
                     'zip' => $request->zip,
-                ]
+                ],
             );
             DB::commit();
 
@@ -179,7 +179,6 @@ class OrganizationController extends Controller
 
     public function removeUserProduct(User $user, Organization $organization, Product $product): Factory|View
     {
-
         $user->products()->detach($product->id);
         $user = Auth::user();
         $organization_id = $user->organization_id;
@@ -208,7 +207,7 @@ class OrganizationController extends Controller
                     'address' => ['string'],
                     'zip' => ['string'],
                     'tax_number' => ['required', 'max:24'],
-                ]
+                ],
             );
             $organization->update(
                 [
@@ -217,7 +216,7 @@ class OrganizationController extends Controller
                     'address' => $request->address,
                     'tax_number' => $request->tax_number,
                     'zip' => $request->zip,
-                ]
+                ],
             );
             DB::commit();
 
@@ -246,7 +245,7 @@ class OrganizationController extends Controller
         } catch (Throwable $throwable) {
             DB::rollback();
 
-            return to_route('organizations.myorganization')->with('error', __('The user could not be removed from the organisation. You cannot delete your account here.'.$throwable->getMessage()));
+            return to_route('organizations.myorganization')->with('error', __('The user could not be removed from the organisation. You cannot delete your account here.' . $throwable->getMessage()));
         }
     }
 }

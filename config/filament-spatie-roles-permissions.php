@@ -1,7 +1,8 @@
 <?php
 
-return [
+declare(strict_types=1);
 
+return [
     'resources' => [
         'PermissionResource' => \Althinect\FilamentSpatieRolesPermissions\Resources\PermissionResource::class,
         'RoleResource' => \Althinect\FilamentSpatieRolesPermissions\Resources\RoleResource::class,
@@ -138,14 +139,12 @@ return [
     ],
 
     'generator' => [
-
         'guard_names' => [
             'web',
             'api',
         ],
 
         'permission_affixes' => [
-
             /*
              * Permissions Aligned with Policies.
              * DO NOT change the keys unless the genericPolicy.stub is published and altered accordingly

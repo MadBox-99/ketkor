@@ -23,46 +23,46 @@ return RectorConfig::configure()
     ->withImportNames(importShortClasses: true, removeUnusedImports: true)
     ->withParallel()
     ->withPaths([
-        __DIR__.'/app',
-        __DIR__.'/routes',
-        __DIR__.'/tests',
+        __DIR__ . '/app',
+        __DIR__ . '/routes',
+        __DIR__ . '/tests',
     ])
     ->withRules([
         AvoidNegatedCollectionFilterOrRejectRector::class,
     ])
     ->withSkip([
-        __DIR__.'/config/*.php',
-        __DIR__.'/app/Providers/*.php',
-        __DIR__.'/database/migrations',
-        __DIR__.'/database/migrations/*.php',
-        __DIR__.'/Modules/**/database/migrations',
-        __DIR__.'/app/Http/Requests/Api/BaseApiFormRequest.php',
-        __DIR__.'/app/Http/Controllers/Api/BaseApiController.php',
-        __DIR__.'/bootstrap',
-        __DIR__.'/storage',
-        __DIR__.'/vendor',
-        __DIR__.'/node_modules',
-        __DIR__.'/database/migrations',
-        __DIR__.'/app/Providers/ApiServiceProvider.php',
-        RemoveUnusedPrivateMethodRector::class => [__DIR__.'/app/Jobs/*.php',            __DIR__.'/app/Listeners/*.php',            __DIR__.'/Modules/**/Jobs/*.php',            __DIR__.'/Modules/**/Listeners/*.php'],
+        __DIR__ . '/config/*.php',
+        __DIR__ . '/app/Providers/*.php',
+        __DIR__ . '/database/migrations',
+        __DIR__ . '/database/migrations/*.php',
+        __DIR__ . '/Modules/**/database/migrations',
+        __DIR__ . '/app/Http/Requests/Api/BaseApiFormRequest.php',
+        __DIR__ . '/app/Http/Controllers/Api/BaseApiController.php',
+        __DIR__ . '/bootstrap',
+        __DIR__ . '/storage',
+        __DIR__ . '/vendor',
+        __DIR__ . '/node_modules',
+        __DIR__ . '/database/migrations',
+        __DIR__ . '/app/Providers/ApiServiceProvider.php',
+        RemoveUnusedPrivateMethodRector::class => [__DIR__ . '/app/Jobs/*.php',            __DIR__ . '/app/Listeners/*.php',            __DIR__ . '/Modules/**/Jobs/*.php',            __DIR__ . '/Modules/**/Listeners/*.php'],
         DisallowedEmptyRuleFixerRector::class,
         RemoveUselessParamTagRector::class => [
             // Keep @param tags for complex types that help with IDE support
-            __DIR__.'/app/Services',
-            __DIR__.'/app/Console/Commands',
+            __DIR__ . '/app/Services',
+            __DIR__ . '/app/Console/Commands',
         ],
         RemoveUselessReturnTagRector::class => [
             // Keep @return tags for better documentation
-            __DIR__.'/app/Services',
-            __DIR__.'/app/Console/Commands',
+            __DIR__ . '/app/Services',
+            __DIR__ . '/app/Console/Commands',
         ],
         RemoveUselessVarTagRector::class,
         AddVoidReturnTypeWhereNoReturnRector::class => [
             // Don't add void return types to commands as they might return exit codes
-            __DIR__.'/app/Console/Commands',
+            __DIR__ . '/app/Console/Commands',
         ],
         // Kizárjuk ezt a fájlt a facade-ról DI-ra konvertálásból
-        __DIR__.'/app/Filament/Resources/ApiCredentials/Schemas/ApiCredentialForm.php',
+        __DIR__ . '/app/Filament/Resources/ApiCredentials/Schemas/ApiCredentialForm.php',
         // Skip style-related Rector rules that conflict with Pint
         CleanupUnneededNullsafeOperatorRector::class,
         ConsistentImplodeRector::class,
@@ -80,7 +80,7 @@ return RectorConfig::configure()
     ])
     ->withPhpSets()
     ->withAutoloadPaths([
-        __DIR__.'/vendor/autoload.php',
+        __DIR__ . '/vendor/autoload.php',
     ])
     ->withPreparedSets(
         deadCode: true,

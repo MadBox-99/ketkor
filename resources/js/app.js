@@ -1,8 +1,5 @@
-import flatpickr from "flatpickr";
 import "../css/app.css";
 import.meta.glob(["../img/**"]);
-import TomSelect from "tom-select";
-window.TomSelect = TomSelect;
 import "./bootstrap";
 // Dark mode functionality
 function initializeDarkMode() {
@@ -21,14 +18,8 @@ function initializeDarkMode() {
         document.getElementById("theme-toggle-light-icon-mobile"),
     ];
 
-    console.log(
-        "Toggle buttons found:",
-        themeToggleBtns.filter((b) => b).length
-    );
-
     // Check for saved theme preference or default to light mode
     const theme = localStorage.getItem("color-theme");
-    console.log("Current theme:", theme);
 
     if (theme === "dark") {
         document.documentElement.classList.add("dark");
@@ -47,8 +38,6 @@ function initializeDarkMode() {
     // Toggle theme on button click
     themeToggleBtns.forEach((btn, index) => {
         if (btn) {
-            console.log(`Adding click listener to button ${index}`);
-
             // Remove any existing listeners by cloning the node
             const newBtn = btn.cloneNode(true);
             btn.parentNode.replaceChild(newBtn, btn);
@@ -100,9 +89,6 @@ function initializeNavigation() {
             mobileMenu.classList.toggle("hidden");
         });
     }
-
-    // Profile dropdown now uses Alpine.js (x-data, x-show) in the navigation component
-    // No manual JavaScript needed here
 }
 
 // Initialize immediately if DOM is already loaded

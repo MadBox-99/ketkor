@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Livewire\Auth;
 
 use Illuminate\Auth\Events\PasswordReset;
@@ -12,7 +14,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 
-#[Layout('components.layouts.auth')]
+#[Layout('components.layouts.auth.simple')]
 class ResetPassword extends Component
 {
     #[Locked]
@@ -31,7 +33,7 @@ class ResetPassword extends Component
     {
         $this->token = $token;
 
-        $this->email = request()->string('email');
+        $this->email = request()->string('email')->toString();
     }
 
     /**
@@ -57,7 +59,7 @@ class ResetPassword extends Component
                 ])->save();
 
                 event(new PasswordReset($user));
-            }
+            },
         );
 
         // If the password was successfully reset, we will redirect the user back to

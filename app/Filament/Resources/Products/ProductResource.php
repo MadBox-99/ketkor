@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources\Products;
 
-use App\Filament\Exports\ProductExporter;
-use App\Filament\Imports\ProductImporter;
 use App\Filament\Resources\Products\Pages\CreateProduct;
 use App\Filament\Resources\Products\Pages\EditProduct;
 use App\Filament\Resources\Products\Pages\ListProducts;
@@ -28,11 +28,7 @@ class ProductResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return ProductTable::make(
-            $table,
-            ProductImporter::class,
-            ProductExporter::class
-        );
+        return ProductTable::make($table);
     }
 
     public static function getRelations(): array

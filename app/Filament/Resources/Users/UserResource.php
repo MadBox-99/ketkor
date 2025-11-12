@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources\Users;
 
-use App\Filament\Imports\UserImporter;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
@@ -27,7 +28,7 @@ class UserResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return UserTable::make($table, UserImporter::class);
+        return UserTable::make($table);
     }
 
     public static function getRelations(): array

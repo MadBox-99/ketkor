@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Enums\ProductLogType;
@@ -49,7 +51,6 @@ class ProductLogController extends Controller
             ]);
             $product = Product::whereId($request->product_id)->first();
             if ($request->what == ProductLogType::Maintenance) {
-
                 // get last maintenance created_at
                 $lastProductLog = $product->whereRelation('product_logs', 'product_id', $product->id)->whereRelation('product_logs', 'what', ProductLogType::Maintenance)->latest('created_at')->first();
                 $maintenanceCount = $product->whereRelation('product_logs', 'product_id', $product->id)->whereRelation('product_logs', 'what', ProductLogType::Maintenance)->count();
@@ -93,7 +94,7 @@ class ProductLogController extends Controller
 
                 DB::rollback();
 
-                return back()->withInput()->with(['error' => __("Can't create maintenance in 11 month from last maintenance or after 13 month or cant extend warrantee more than 3 year")]);
+                return back()->withInput()->with(['error' => __('Can\'t create maintenance in 11 month from last maintenance or after 13 month or cant extend warrantee more than 3 year')]);
             }
 
             if ($request->what != ProductLogType::Maintenance) {
@@ -123,8 +124,6 @@ class ProductLogController extends Controller
 
             return to_route('products.edit', ['product' => $product])->with(['error' => $error, 'users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials, 'userVisibility' => $userVisibility]);
         }
-
-        return null;
     }
 
     /**
