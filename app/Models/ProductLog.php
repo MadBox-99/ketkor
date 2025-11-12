@@ -18,8 +18,18 @@ class ProductLog extends Model
         'what',
         'comment',
         'when',
+        'is_online',
+        'signature',
         'created_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_online' => 'boolean',
+            'when' => 'datetime',
+        ];
+    }
 
     public function product(): BelongsTo
     {

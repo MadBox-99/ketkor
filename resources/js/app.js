@@ -3,8 +3,6 @@ import.meta.glob(["../img/**"]);
 import "./bootstrap";
 // Dark mode functionality
 function initializeDarkMode() {
-    console.log("Initializing dark mode...");
-
     const themeToggleBtns = [
         document.getElementById("theme-toggle"),
         document.getElementById("theme-toggle-mobile"),
@@ -44,7 +42,6 @@ function initializeDarkMode() {
 
             newBtn.addEventListener("click", function (e) {
                 e.preventDefault();
-                console.log("Theme toggle clicked!");
 
                 // Re-query the icons after DOM manipulation
                 const darkIcons = [
@@ -62,11 +59,9 @@ function initializeDarkMode() {
 
                 // Toggle dark class
                 if (document.documentElement.classList.contains("dark")) {
-                    console.log("Switching to light mode");
                     document.documentElement.classList.remove("dark");
                     localStorage.setItem("color-theme", "light");
                 } else {
-                    console.log("Switching to dark mode");
                     document.documentElement.classList.add("dark");
                     localStorage.setItem("color-theme", "dark");
                 }

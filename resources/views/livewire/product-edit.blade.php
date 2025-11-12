@@ -70,7 +70,9 @@
                             <tr>
                                 <th class="px-6 py-3">{{ __('event') }}</th>
                                 <th class="px-6 py-3">{{ __('event content') }}</th>
+                                <th class="px-6 py-3">{{ __('Mode') }}</th>
                                 <th class="px-6 py-3">{{ __('event time') }}</th>
+                                <th class="px-6 py-3">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -83,7 +85,33 @@
                                         {{ $log->comment }}
                                     </td>
                                     <td class="px-6 py-4 text-gray-700 dark:text-gray-300">
+                                        @if ($log->is_online)
+                                            <span
+                                                class="inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                                                <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                {{ __('Online') }}
+                                            </span>
+                                        @else
+                                            <span
+                                                class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                                <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+                                                {{ __('Offline') }}
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 text-gray-700 dark:text-gray-300">
                                         {{ $product->serializeDate($log->when) }}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        {{ ($this->generateWorksheetAction($log))(['size' => 'sm']) }}
                                     </td>
                                 </tr>
                             @endforeach

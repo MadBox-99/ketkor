@@ -6,13 +6,16 @@ namespace App\Livewire;
 
 use App\Enums\UserRole;
 use App\Mail\AccessGrantMail;
+use App\Mail\WorksheetMail;
 use App\Models\AccessToken;
 use App\Models\Product;
 use App\Models\ProductLog;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -29,6 +32,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 
 class ProductEdit extends Component implements HasActions, HasSchemas
 {
@@ -82,6 +86,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                 'phone' => $firstPartial->phone,
             ]);
         }
+        $this->eventForm->fill();
     }
 
     public function productForm(Schema $schema): Schema
@@ -254,6 +259,18 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                             ->label(__('comment'))
                             ->rows(4)
                             ->columnSpanFull(),
+
+                        Checkbox::make('is_online')
+                            ->label(__('Online work (device was online during work)'))
+                            ->default(true),
+                        SignaturePad::make('signature')
+                            ->label(__('Sign here'))
+                            ->dotSize(2.0)
+                            ->lineMinWidth(0.5)
+                            ->lineMaxWidth(2.5)
+                            ->throttle(16)
+                            ->minDistance(5)
+                            ->velocityFilterWeight(0.7),
                     ])
                     ->columns(2),
             ])
@@ -329,6 +346,8 @@ class ProductEdit extends Component implements HasActions, HasSchemas
             'product_id' => $this->product->id,
             'what' => $data['what'],
             'comment' => $data['comment'] ?? null,
+            'is_online' => $data['is_online'] ?? true,
+            'signature' => $data['signature'] ?? null,
             'when' => now(),
         ]);
 
@@ -502,6 +521,59 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                 Notification::make()
                     ->title(__('Succesfuly send an email to administrator who will grant an access to private datas, please wait until is access in grant.'))
                     ->success()
+                    ->send();
+            });
+    }
+
+    public function generateWorksheetAction(ProductLog $productLog): Action
+    {
+        return Action::make('generateWorksheet')
+            ->label(__('Generate Worksheet'))
+            ->icon('heroicon-o-document-text')
+            ->color('success')
+            ->requiresConfirmation()
+            ->modalHeading(__('Generate and Send Worksheet'))
+            ->modalDescription(__('This will generate a PDF worksheet and send it to the owner\'s email address.'))
+            ->action(function () use ($productLog): void {
+                // Load necessary relationships
+                $this->product->load(['tool', 'partials']);
+                $owner = $this->product->partials->first();
+
+                // Check if owner email exists
+                if (! $owner || ! $owner->email) {
+                    Notification::make()
+                        ->danger()
+                        ->title(__('Owner email is required'))
+                        ->body(__('Please add owner information before generating worksheet.'))
+                        ->send();
+
+                    return;
+                }
+
+                // Get the current user (servicer)
+                $servicer = Auth::user();
+
+                // Generate PDF
+                $pdf = Pdf::loadView('pdf.worksheet', [
+                    'product' => $this->product,
+                    'productLog' => $productLog,
+                    'owner' => $owner,
+                    'servicer' => $servicer,
+                ]);
+
+                $pdfContent = $pdf->output();
+
+                // Send email with PDF attachment
+                Mail::to($owner->email)->send(new WorksheetMail(
+                    $this->product,
+                    $productLog,
+                    $pdfContent,
+                ));
+
+                Notification::make()
+                    ->success()
+                    ->title(__('Worksheet generated and sent'))
+                    ->body(__('The worksheet has been sent to') . ' ' . $owner->email)
                     ->send();
             });
     }

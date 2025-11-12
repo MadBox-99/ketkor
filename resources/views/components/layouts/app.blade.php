@@ -12,8 +12,8 @@
         <link href="https://fonts.bunny.net" rel="preconnect">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <!-- Scripts -->
-        @vite(['resources/js/app.js'])
         @filamentStyles
+        @vite(['resources/js/app.js'])
     </head>
 
     <body class="font-sans antialiased">
@@ -36,6 +36,7 @@
         @livewire('notifications')
 
         @filamentScripts
+        @vite(['resources/js/app.js'])
     </body>
 
 </html>
