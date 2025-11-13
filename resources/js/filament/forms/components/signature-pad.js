@@ -1,9 +1,10 @@
 import SignaturePad from 'signature_pad';
 
-function signaturePadFormComponent({ state, backgroundColor, penColor }) {
+function signaturePadFormComponent({ state, backgroundColor, penColor, disabled = false }) {
     return {
         state: state,
         signaturePad: null,
+        disabled: disabled,
 
         init() {
             const canvas = this.$refs.canvas;
@@ -24,6 +25,11 @@ function signaturePadFormComponent({ state, backgroundColor, penColor }) {
                 penColor: pen,
             });
 
+            // Disable if in read-only mode
+            if (this.disabled) {
+                this.signaturePad.off();
+            }
+
             // Set canvas size
             this.resizeCanvas();
             window.addEventListener('resize', () => this.resizeCanvas());
@@ -37,9 +43,11 @@ function signaturePadFormComponent({ state, backgroundColor, penColor }) {
                 }
             }
 
-            // Save signature when drawing ends
-            canvas.addEventListener('mouseup', () => this.saveSignature());
-            canvas.addEventListener('touchend', () => this.saveSignature());
+            // Save signature when drawing ends (only if not disabled)
+            if (!this.disabled) {
+                canvas.addEventListener('mouseup', () => this.saveSignature());
+                canvas.addEventListener('touchend', () => this.saveSignature());
+            }
         },
 
         resizeCanvas() {

@@ -172,7 +172,9 @@ namespace App\Models{
  * @property int $product_id
  * @property string|null $what
  * @property string|null $comment
- * @property string $when
+ * @property bool $is_online
+ * @property string|null $signature
+ * @property \Carbon\CarbonImmutable $when
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
  * @property-read \App\Models\Product|null $product
@@ -183,7 +185,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductLog whereComment($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductLog whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductLog whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductLog whereIsOnline($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductLog whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductLog whereSignature($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductLog whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductLog whereWhat($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductLog whereWhen($value)

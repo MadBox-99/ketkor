@@ -2,7 +2,6 @@
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Munkalap - {{ $product->serial_number }}</title>
     <style>
         * {
@@ -13,78 +12,10 @@
 
         body {
             font-family: DejaVu Sans, sans-serif;
-            font-size: 12px;
-            line-height: 1.6;
-            color: #333;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 15px;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-
-        .header p {
-            font-size: 11px;
-            color: #666;
-        }
-
-        .section {
-            margin-bottom: 20px;
-        }
-
-        .section-title {
-            font-size: 14px;
-            font-weight: bold;
-            background-color: #f0f0f0;
-            padding: 8px;
-            margin-bottom: 10px;
-            border-left: 4px solid #333;
-        }
-
-        .info-row {
-            display: flex;
-            padding: 5px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .info-label {
-            font-weight: bold;
-            width: 35%;
-            padding-right: 10px;
-        }
-
-        .info-value {
-            width: 65%;
-        }
-
-        .signature-section {
-            margin-top: 40px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .signature-box {
-            width: 45%;
-            border-top: 1px solid #333;
-            padding-top: 10px;
-            text-align: center;
-        }
-
-        .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #333;
-            text-align: center;
             font-size: 10px;
-            color: #666;
+            line-height: 1.3;
+            color: #000;
+            padding: 15px;
         }
 
         table {
@@ -92,161 +23,222 @@
             border-collapse: collapse;
         }
 
-        .comment-box {
-            background-color: #f9f9f9;
-            padding: 10px;
-            border: 1px solid #ddd;
-            margin-top: 5px;
-            min-height: 80px;
+        td, th {
+            border: 1px solid #000;
+            padding: 4px;
+            vertical-align: top;
+        }
+
+        .header-table td {
+            border: 2px solid #000;
+            font-weight: bold;
+        }
+
+        .no-border {
+            border: none !important;
+        }
+
+        .checkbox {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #000;
+            margin-right: 3px;
+            vertical-align: middle;
+        }
+
+        .checkbox.checked {
+            background-color: #000;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .items-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+            padding: 6px 4px;
+        }
+
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 40px;
+            padding-top: 5px;
+            text-align: center;
+        }
+
+        .work-description {
+            min-height: 100px;
+            padding: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>MUNKALAP</h1>
-        <p>{{ $productLog->what === 'commissioning' ? 'Beüzemelés' : ($productLog->what === 'maintenance' ? 'Karbantartás' : 'Javítás') }}</p>
-    </div>
+    <!-- Fejléc -->
+    <table class="header-table" style="margin-bottom: 10px;">
+        <tr>
+            <td style="width: 20%; text-align: center; font-size: 16px;">
+                MUNKALAP
+            </td>
+            <td style="width: 80%; font-size: 9px; text-align: right;">
+                {{ $servicer->organization->name ?? 'Gázszerviz' }}<br>
+                Tel: {{ $servicer->organization->phone ?? 'N/A' }}<br>
+                Email: {{ $servicer->organization->email ?? 'N/A' }}
+            </td>
+        </tr>
+    </table>
 
-    <!-- Megrendelő/Tulajdonos adatok -->
-    <div class="section">
-        <div class="section-title">Megrendelő / Tulajdonos adatok</div>
-        <table>
-            <tr class="info-row">
-                <td class="info-label">Név:</td>
-                <td class="info-value">{{ $owner->name ?? $product->owner_name ?? 'N/A' }}</td>
-            </tr>
-            <tr class="info-row">
-                <td class="info-label">E-mail cím:</td>
-                <td class="info-value">{{ $owner->email ?? 'N/A' }}</td>
-            </tr>
-            <tr class="info-row">
-                <td class="info-label">Telefon:</td>
-                <td class="info-value">{{ $owner->phone ?? 'N/A' }}</td>
-            </tr>
-        </table>
-    </div>
+    <!-- Munka típusa -->
+    <table style="margin-bottom: 5px;">
+        <tr>
+            <td style="width: 25%;">
+                <span class="checkbox {{ $productLog->what === 'commissioning' ? 'checked' : '' }}"></span> ÜZEMBEHELYEZÉS
+            </td>
+            <td style="width: 25%;">
+                <span class="checkbox {{ $productLog->what === 'maintenance' && $product->warrantee_date && $product->warrantee_date->isFuture() ? 'checked' : '' }}"></span> GARANCIÁLIS
+            </td>
+            <td style="width: 25%;">
+                <span class="checkbox {{ $productLog->what === 'maintenance' ? 'checked' : '' }}"></span> KARBANTARTÁS
+            </td>
+            <td style="width: 25%;">
+                <span class="checkbox {{ $productLog->what === 'repair' ? 'checked' : '' }}"></span> JAVÍTÁS
+            </td>
+        </tr>
+    </table>
 
-    <!-- Telepítési hely -->
-    <div class="section">
-        <div class="section-title">Telepítési hely</div>
-        <table>
-            <tr class="info-row">
-                <td class="info-label">Irányítószám:</td>
-                <td class="info-value">{{ $product->zip ?? 'N/A' }}</td>
-            </tr>
-            <tr class="info-row">
-                <td class="info-label">Település:</td>
-                <td class="info-value">{{ $product->city ?? 'N/A' }}</td>
-            </tr>
-            <tr class="info-row">
-                <td class="info-label">Utca, házszám / Hrsz:</td>
-                <td class="info-value">{{ $product->street ?? 'N/A' }}</td>
-            </tr>
-        </table>
-    </div>
+    <!-- Ügyfél adatok -->
+    <table style="margin-bottom: 5px;">
+        <tr>
+            <td style="width: 15%; font-weight: bold;">ÜGYFÉL NEVE:</td>
+            <td style="width: 85%;">{{ $owner->name ?? $product->owner_name ?? '' }}</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">CÍME:</td>
+            <td>{{ $product->zip ?? '' }} {{ $product->city ?? '' }}, {{ $product->street ?? '' }}</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">TÍPUS:</td>
+            <td>{{ $product->tool->name ?? '' }}</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">TELEFON:</td>
+            <td style="width: 35%;">{{ $owner->phone ?? '' }}</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">EMAIL:</td>
+            <td>{{ $owner->email ?? '' }}</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold;">GYÁRI SZÁMA:</td>
+            <td>{{ $product->serial_number }}</td>
+        </tr>
+    </table>
 
-    <!-- Termék adatok -->
-    <div class="section">
-        <div class="section-title">Termék adatok</div>
-        <table>
-            <tr class="info-row">
-                <td class="info-label">Termék megnevezése:</td>
-                <td class="info-value">{{ $product->tool->name ?? 'N/A' }}</td>
-            </tr>
-            <tr class="info-row">
-                <td class="info-label">Gyártó:</td>
-                <td class="info-value">{{ $product->tool->factory_name ?? 'N/A' }}</td>
-            </tr>
-            <tr class="info-row">
-                <td class="info-label">Termék gyári száma:</td>
-                <td class="info-value">{{ $product->serial_number }}</td>
-            </tr>
-            <tr class="info-row">
-                <td class="info-label">Értékesítés dátuma:</td>
-                <td class="info-value">{{ $product->purchase_date?->format('Y. m. d.') ?? 'N/A' }}</td>
-            </tr>
-            <tr class="info-row">
-                <td class="info-label">Beüzemelés dátuma:</td>
-                <td class="info-value">{{ $product->installation_date?->format('Y. m. d.') ?? 'N/A' }}</td>
-            </tr>
-            <tr class="info-row">
-                <td class="info-label">Garancia érvényessége:</td>
-                <td class="info-value">{{ $product->warrantee_date?->format('Y. m. d.') ?? 'N/A' }}</td>
-            </tr>
-        </table>
-    </div>
+    <!-- Alkatrészlista táblázat -->
+    <table class="items-table" style="margin-bottom: 5px;">
+        <tr>
+            <th style="width: 35%;">ANYAG MEGNEVEZÉS</th>
+            <th style="width: 25%;">RAKTÁRI SZÁM</th>
+            <th style="width: 10%;">DB</th>
+            <th style="width: 15%;">EGYSÉGÁR</th>
+            <th style="width: 15%;">ÖSSZEG</th>
+        </tr>
+        @for($i = 0; $i < 8; $i++)
+        <tr>
+            <td style="height: 20px;">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        @endfor
+    </table>
 
-    <!-- Elvégzett munka -->
-    <div class="section">
-        <div class="section-title">Elvégzett munka</div>
-        <table>
-            <tr class="info-row">
-                <td class="info-label">Munka típusa:</td>
-                <td class="info-value">
-                    @if($productLog->what === 'commissioning')
-                        Beüzemelés
-                    @elseif($productLog->what === 'maintenance')
-                        Karbantartás
-                    @else
-                        Javítás
-                    @endif
-                </td>
-            </tr>
-            <tr class="info-row">
-                <td class="info-label">Munka módja:</td>
-                <td class="info-value">{{ $productLog->is_online ? 'Online' : 'Offline' }}</td>
-            </tr>
-            <tr class="info-row">
-                <td class="info-label">Dátum:</td>
-                <td class="info-value">{{ $productLog->when->format('Y. m. d. H:i') }}</td>
-            </tr>
-        </table>
-    </div>
+    <!-- Elvégzett munka és költségek -->
+    <table style="margin-bottom: 5px;">
+        <tr>
+            <td style="width: 70%; font-weight: bold; vertical-align: top;">
+                ELVÉGZETT MUNKA LEÍRÁSA:
+                <div class="work-description">
+                    {{ $productLog->comment ?? '' }}
+                </div>
+            </td>
+            <td style="width: 30%; vertical-align: top;">
+                <table style="width: 100%; border: none;">
+                    <tr>
+                        <td class="no-border" style="font-weight: bold; text-align: right; padding: 2px;">ÖSSZESEN</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border" style="padding: 15px 2px;">
+                            <div style="border: 1px solid #000; padding: 3px; margin-bottom: 3px;">
+                                <span class="checkbox"></span> A beépített alkatrészre hónap garenciát vállalunk
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="no-border" style="border-top: 1px solid #000; font-weight: bold; padding: 2px;">ANYAG</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border" style="border-top: 1px solid #000; font-weight: bold; padding: 2px;">MUNKADÍJ</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border" style="border-top: 1px solid #000; font-weight: bold; padding: 2px;">KISZÁLLÁS</td>
+                    </tr>
+                    <tr>
+                        <td class="no-border" style="border-top: 1px solid #000; font-weight: bold; padding: 2px;">ÖSSZESEN</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 
-    <!-- Megjegyzés -->
-    <div class="section">
-        <div class="section-title">Megjegyzés (elvégzett munka, felhasznált alkatrészek)</div>
-        <div class="comment-box">
-            {{ $productLog->comment ?? 'Nincs megjegyzés' }}
-        </div>
-    </div>
-
-    <!-- Szervizpartner -->
-    <div class="section">
-        <div class="section-title">Szervizpartner adatok</div>
-        <table>
-            <tr class="info-row">
-                <td class="info-label">Szervizpartner neve:</td>
-                <td class="info-value">{{ $servicer->name ?? 'N/A' }}</td>
-            </tr>
-            <tr class="info-row">
-                <td class="info-label">Szervezet:</td>
-                <td class="info-value">{{ $servicer->organization->name ?? 'N/A' }}</td>
-            </tr>
-        </table>
-    </div>
+    <!-- Dátum és igazolás -->
+    <table style="margin-bottom: 10px;">
+        <tr>
+            <td style="width: 60%;">
+                <strong>A MUNKA ELVÉGZÉSÉNEK IDEJE:</strong> {{ $productLog->when->format('Y. m. d. H:i') }}
+            </td>
+            <td style="width: 40%;" rowspan="2">
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size: 8px; padding: 5px;">
+                <strong>A MUNKA ELVÉGZÉSÉT IGAZOLOM:</strong><br>
+                Igazolom, hogy a szerelő {{ $productLog->is_online ? 'online' : 'offline' }} módon elvégezte a munkát {{ $productLog->when->format('Y. m. d.') }} napján.
+            </td>
+        </tr>
+    </table>
 
     <!-- Aláírások -->
-    <div class="signature-section">
-        <div class="signature-box">
-            <div style="height: 60px;"></div>
-            <div>Megrendelő / Meghatalmazottja aláírása</div>
-        </div>
-        <div class="signature-box">
-            @if($productLog->signature)
-                <div style="height: 60px; display: flex; align-items: center; justify-content: center;">
-                    <img src="{{ $productLog->signature }}" alt="Signature" style="max-height: 50px; max-width: 200px;">
+    <table style="margin-top: 20px;">
+        <tr>
+            <td style="width: 50%; height: 60px; text-align: center; vertical-align: bottom; border-right: none;">
+                @if($productLog->signature)
+                    <div style="text-align: center; margin-bottom: 5px;">
+                        <img src="{{ $productLog->signature }}" alt="Signature" style="max-height: 50px; max-width: 180px;">
+                    </div>
+                @endif
+                <div style="border-top: 1px dotted #000; padding-top: 3px; margin: 0 20px;">
+                    ÜGYFÉL ALÁÍRÁSA
                 </div>
-            @else
-                <div style="height: 60px;"></div>
-            @endif
-            <div>Szervizpartner aláírása</div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer">
-        <p>Dokumentum generálva: {{ now()->format('Y. m. d. H:i:s') }}</p>
-    </div>
+            </td>
+            <td style="width: 50%; text-align: center; vertical-align: bottom; border-left: none;">
+                <div style="border-top: 1px dotted #000; padding-top: 3px; margin: 0 20px;">
+                    SZERELŐ ALÁÍRÁSA
+                </div>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>

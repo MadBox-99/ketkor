@@ -2,6 +2,7 @@
     $id = $getId();
     $statePath = $getStatePath();
     $height = $getHeight();
+    $isDisabled = $isDisabled();
     $isDarkMode = \Illuminate\Support\Facades\Request::cookie('theme') === 'dark' || (! \Illuminate\Support\Facades\Request::cookie('theme') && config('filament.dark_mode'));
     $backgroundColor = $getBackgroundColor() ?? ($isDarkMode ? 'rgb(55, 65, 81)' : 'rgb(255, 255, 255)');
     $penColor = $getPenColor() ?? ($isDarkMode ? 'rgb(255, 255, 255)' : 'rgb(0, 0, 0)');
@@ -12,6 +13,7 @@
             state: $wire.$entangle(@js($statePath)),
             backgroundColor: @js($backgroundColor),
             penColor: @js($penColor),
+            disabled: @js($isDisabled),
         })" x-load-src="@js(\Filament\Support\Facades\FilamentAsset::getScriptSrc('signature-pad-field'))"
         {{ $getExtraAttributeBag() }}>
 
@@ -20,7 +22,7 @@
                 class="w-full rounded-lg border-2 border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-700"
                 style="height: {{ $height }}px; touch-action: none;"></canvas>
 
-            @if ($getShowClearButton())
+            @if ($getShowClearButton() && !$isDisabled)
                 <button type="button" @click="clear"
                     class="mt-2 inline-flex items-center gap-2 rounded-lg bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:bg-gray-500 dark:hover:bg-gray-600">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

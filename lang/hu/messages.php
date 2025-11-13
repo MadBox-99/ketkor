@@ -19,4 +19,7 @@ return [
     'throttle' => 'Túl sok bejelentkezési kísérlet. Kérjük, próbálja újra :seconds másodperc múlva.',
     'Clear signature' => 'Aláírás törlése',
     'Servicer signature' => 'Szervizes aláírása',
+    'View Signature' => 'Aláírás megtekintése',
+    'Close' => 'Bezárás',
+    'No signature available' => 'Nincs elérhető aláírás',
 ];

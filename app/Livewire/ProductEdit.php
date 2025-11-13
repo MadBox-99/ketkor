@@ -530,9 +530,9 @@ class ProductEdit extends Component implements HasActions, HasSchemas
             ->requiresConfirmation()
             ->modalHeading(__('Generate and Send Worksheet'))
             ->modalDescription(__('This will generate a PDF worksheet and send it to the owner\'s email address.'))
-            ->action(function (Action $action): void {
+            ->action(function (array $arguments): void {
                 // Get productLog from arguments
-                $productLogId = $action->getArguments()['productLogId'] ?? null;
+                $productLogId = $arguments['productLogId'] ?? null;
                 if (! $productLogId) {
                     Notification::make()
                         ->danger()
@@ -595,6 +595,25 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                     ->body(__('The worksheet has been sent to') . ' ' . $owner->email)
                     ->send();
             });
+    }
+
+    public function viewSignatureAction(): Action
+    {
+        return Action::make('viewSignature')
+            ->label(__('View Signature'))
+            ->icon('heroicon-o-pencil-square')
+            ->color('info')
+            ->modalHeading(__('Servicer Signature'))
+            ->modalContent(function (array $arguments): View {
+                $productLogId = $arguments['productLogId'] ?? null;
+                $productLog = $productLogId ? ProductLog::find($productLogId) : null;
+
+                return view('livewire.signature-preview', [
+                    'signature' => $productLog?->signature,
+                ]);
+            })
+            ->modalSubmitAction(false)
+            ->modalCancelActionLabel(__('Close'));
     }
 
     public function render(): Factory|View

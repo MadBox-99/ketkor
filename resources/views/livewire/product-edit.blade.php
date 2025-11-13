@@ -111,7 +111,12 @@
                                         {{ $product->serializeDate($log->when) }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ ($this->generateWorksheetAction->arguments(['productLogId' => $log->id]))(['size' => 'sm']) }}
+                                        <div class="flex items-center gap-2">
+                                            {{ ($this->generateWorksheetAction)(['productLogId' => $log->id, 'size' => 'sm']) }}
+                                            @if($log->signature)
+                                                {{ ($this->viewSignatureAction)(['productLogId' => $log->id, 'size' => 'sm']) }}
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
