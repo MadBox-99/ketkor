@@ -125,7 +125,7 @@
                     KARBANTARTÁS
                 </td>
                 <td style="width: 25%;">
-                    <span class="checkbox {{ $productLog->what === 'repair' ? 'checked' : '' }}"></span> JAVÍTÁS
+                    <span class="checkbox {{ $productLog->what === 'installation' ? 'checked' : '' }}"></span> JAVÍTÁS
                 </td>
             </tr>
         </table>
