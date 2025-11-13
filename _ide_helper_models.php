@@ -173,6 +173,7 @@ namespace App\Models{
  * @property string|null $what
  * @property string|null $comment
  * @property bool $is_online
+ * @property string|null $worksheet_id
  * @property string|null $signature
  * @property \Carbon\CarbonImmutable $when
  * @property \Carbon\CarbonImmutable|null $created_at
@@ -191,6 +192,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductLog whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductLog whereWhat($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductLog whereWhen($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductLog whereWorksheetId($value)
  */
 	class ProductLog extends \Eloquent {}
 }

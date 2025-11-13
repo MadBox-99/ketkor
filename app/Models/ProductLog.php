@@ -19,6 +19,7 @@ class ProductLog extends Model
         'comment',
         'when',
         'is_online',
+        'worksheet_id',
         'signature',
         'created_at',
     ];
