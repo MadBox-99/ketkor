@@ -23,6 +23,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
@@ -192,18 +193,20 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                             ])
                             ->disableOptionWhen(function (string $value): bool {
                                 // Disable commissioning if already exists
-                                if ($value === 'commissioning') {
-                                    return $this->product->product_logs()->where('what', 'commissioning')->exists();
-                                }
+                                /*  if ($value === 'commissioning') {
+                                     $purchaseDate = $this->product->purchase_date;
 
-                                // Check maintenance timing if there are any previous events
-                                if ($value === 'maintenance') {
+                                     return $this->product
+                                         ->whereHas('product_logs', fn ($query) => $query->whereWhat('commissioning'))
+                                         ->exists() || ! $purchaseDate || now()->greaterThanOrEqualTo($purchaseDate->copy()->addMonths(6));
+                                 } */
+
+                                /* if ($value === 'maintenance') {
                                     $lastMaintenance = $this->product->product_logs()
                                         ->where('what', 'maintenance')
                                         ->latest('when')
                                         ->first();
 
-                                    // If there's a previous maintenance, check 11 months window
                                     if ($lastMaintenance) {
                                         $elevenMonthsAfter = Date::parse($lastMaintenance->when)->addMonths(11);
 
@@ -212,7 +215,6 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                                         }
                                     }
 
-                                    // Check if there's commissioning to use as reference
                                     $commissioning = $this->product->product_logs()->where('what', 'commissioning')->first();
                                     if ($commissioning && ! $lastMaintenance) {
                                         $elevenMonthsAfter = Date::parse($commissioning->when)->addMonths(11);
@@ -223,7 +225,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                                     }
 
                                     return false;
-                                }
+                                } */
 
                                 return false;
                             })
@@ -261,11 +263,13 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                             ->columnSpanFull(),
 
                         Checkbox::make('is_online')
-                            ->label(__('Online work (device was online during work)'))
+                            ->live()
+                            ->label(__('Garrantee paper filled online'))
                             ->default(true),
 
                         SignaturePad::make('signature')
-                            ->label(__('Servicer signature'))
+                            ->visible(fn (Get $get): bool => $get('is_online') === true)
+                            ->label(__('Signature'))
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
@@ -398,8 +402,6 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                 ->danger()
                 ->title(__('Commissioning must be done within 6 months of purchase date'))
                 ->send();
-
-            return false;
         }
 
         return true;
@@ -422,10 +424,8 @@ class ProductEdit extends Component implements HasActions, HasSchemas
             if (now()->lessThan($elevenMonthsAfter)) {
                 Notification::make()
                     ->danger()
-                    ->title(__('Maintenance can only be performed 11-13 months after last maintenance'))
+                    ->title(__('Garrantee maintenance can only be performed 11-13 months after commissioning'))
                     ->send();
-
-                return false;
             }
 
             if (now()->greaterThan($thirteenMonthsAfter)) {
@@ -433,8 +433,6 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                     ->danger()
                     ->title(__('Maintenance window (11-13 months) has expired'))
                     ->send();
-
-                return false;
             }
 
             return true;
@@ -453,10 +451,8 @@ class ProductEdit extends Component implements HasActions, HasSchemas
             if (now()->lessThan($elevenMonthsAfter)) {
                 Notification::make()
                     ->danger()
-                    ->title(__('Maintenance can only be performed 11-13 months after commissioning'))
+                    ->title(__('Garrantee maintenance can only be performed 11-13 months after commissioning'))
                     ->send();
-
-                return false;
             }
 
             if (now()->greaterThan($thirteenMonthsAfter)) {
@@ -464,14 +460,9 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                     ->danger()
                     ->title(__('Maintenance window (11-13 months) has expired'))
                     ->send();
-
-                return false;
             }
-
-            return true;
         }
 
-        // No commissioning or maintenance - allow maintenance anytime
         return true;
     }
 
@@ -603,7 +594,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
             ->label(__('View Signature'))
             ->icon('heroicon-o-pencil-square')
             ->color('info')
-            ->modalHeading(__('Servicer Signature'))
+            ->modalHeading(__('Signature'))
             ->modalContent(function (array $arguments): View {
                 $productLogId = $arguments['productLogId'] ?? null;
                 $productLog = $productLogId ? ProductLog::find($productLogId) : null;
