@@ -80,11 +80,11 @@ class ProductEdit extends Component implements HasActions, HasSchemas
 
         // Fill owner form if has visibility
         if ($this->userVisibility && $product->partials->isNotEmpty()) {
-            $firstPartial = $product->partials->first();
+            $newestPartial = $product->partials->last();
             $this->ownerForm->fill([
-                'name' => $firstPartial->name,
-                'email' => $firstPartial->email,
-                'phone' => $firstPartial->phone,
+                'name' => $newestPartial->name,
+                'email' => $newestPartial->email,
+                'phone' => $newestPartial->phone,
             ]);
         }
         $this->eventForm->fill();
@@ -455,8 +455,6 @@ class ProductEdit extends Component implements HasActions, HasSchemas
             'phone' => $data['phone'],
         ]);
 
-        $this->product->load('partials');
-
         Notification::make()
             ->success()
             ->title(__('Owner data updated successfully'))
@@ -525,7 +523,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                 }
 
                 // Load necessary relationships
-                $owner = $this->product->partials->first();
+                $owner = $this->product->partials->last();
 
                 // Check if owner email exists
                 if (! $owner || ! $owner->email) {
