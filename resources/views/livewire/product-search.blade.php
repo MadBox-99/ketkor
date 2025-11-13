@@ -78,7 +78,7 @@
         @if ($product !== null && $product->exists())
             <div class="overflow-hidden rounded-lg bg-white shadow-lg dark:bg-gray-800" wire:transition>
                 <div
-                    class="border-l-4 border-blue-500 bg-gradient-to-r from-blue-50 to-transparent p-6 dark:from-blue-900/20">
+                    class="border-l-4 border-blue-500 bg-linear-to-r from-blue-50 to-transparent p-6 dark:from-blue-900/20">
                     <div class="flex items-start justify-between">
                         <div class="flex-1">
                             <h2 class="mb-4 text-2xl font-bold text-gray-900 dark:text-white">
@@ -216,9 +216,9 @@
                         </h3>
 
                         <div class="relative space-y-4">
-                            <!-- Timeline line -->
+
                             <div
-                                class="absolute left-4 top-0 h-full w-0.5 bg-gradient-to-b from-gray-300 to-transparent dark:from-gray-600">
+                                class="absolute left-4 top-0 h-full w-0.5 bg-linear-to-b from-gray-300 to-transparent dark:from-gray-600">
                             </div>
 
                             @php
@@ -262,7 +262,7 @@
                             @foreach ($allEvents as $event)
                                 <div class="relative flex gap-4 pl-4">
                                     <!-- Timeline dot -->
-                                    <div class="relative z-10 flex-shrink-0">
+                                    <div class="relative z-10 shrink-0">
                                         @if ($event['important'])
                                             <div
                                                 class="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500 ring-4 ring-white dark:ring-gray-800">
@@ -308,7 +308,7 @@
                                                 @endif
                                             </div>
                                             <time
-                                                class="flex-shrink-0 text-sm font-medium {{ $event['important'] ? 'text-amber-700 dark:text-amber-400' : 'text-gray-500 dark:text-gray-400' }}">
+                                                class="shrink-0 text-sm font-medium {{ $event['important'] ? 'text-amber-700 dark:text-amber-400' : 'text-gray-500 dark:text-gray-400' }}">
                                                 {{ $event['date'] }}
                                             </time>
                                         </div>
@@ -319,7 +319,7 @@
                     </div>
                 @endif
             </div>
-        @elseif ($product !== null && !$product->exists())
+        @elseif (!$product)
             <div
                 class="rounded-lg border-2 border-dashed border-gray-300 bg-white p-8 text-center dark:border-gray-600 dark:bg-gray-800">
                 <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor"

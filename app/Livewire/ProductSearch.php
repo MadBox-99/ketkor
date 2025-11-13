@@ -13,7 +13,7 @@ use Livewire\Component;
 
 class ProductSearch extends Component
 {
-    #[Rule('required|min:3|max:20')]
+    #[Rule('required|min:3|max:255')]
     public $serial_number = '';
 
     public ?Product $product = null;
@@ -24,7 +24,7 @@ class ProductSearch extends Component
     {
         $user = Auth::user();
         $this->validate();
-        $product = Product::with(['tool', 'product_logs'])
+        $product = Product::query()
             ->where('serial_number', $this->serial_number)
             ->first();
         $this->owns = $user->products()->where('serial_number', $this->serial_number)->exists();
