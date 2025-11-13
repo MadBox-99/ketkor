@@ -297,5 +297,18 @@
     "Maintenance can only be performed 11-13 months after commissioning": "Karbantartás csak 11-13 hónappal a beüzemelés után végezhető",
     "Signature": "Aláirás",
     "Garrantee paper filled online": "Garancia papír online kitöltve",
-    "Garrantee maintenance can only be performed 11-13 months after commissioning": "Garanciális karbantartás csak 11-13 hónappal a beüzemelés után végezhető"
+    "Garrantee maintenance can only be performed 11-13 months after commissioning": "Garanciális karbantartás csak 11-13 hónappal a beüzemelés után végezhető",
+    "Please add owner information before generating worksheet.": "Kérjük, adja meg a tulajdonosi adatokat a munkalap generálása előtt.",
+    "Owner email is required": "Tulajdonosi e-mail cím szükséges",
+    "The worksheet has been sent to": "A munkalap elküldésre került a következő címre",
+    "Worksheet generated and sent": "Munkalap generálva és elküldve",
+    "View Signature": "Aláírás megtekintése",
+    "Generate Worksheet": "Munkalap generálása",
+    "Generate and Send Worksheet": "Munkalap generálása és elküldése",
+    "his will generate a PDF worksheet and send it to the owners email address.": "Ez egy PDF munkalapot generál és elküldi a tulajdonos e-mail címére.",
+    "Error": "Hiba",
+    "Product log not found.": "A termék előzmény nem található.",
+    "Close": "Bezárás",
+    "Mode": "Kitöltés módja",
+    "Clear signature": "Aláírás törlése"
 }

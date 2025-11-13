@@ -2,7 +2,12 @@
 
 declare(strict_types=1);
 
+use App\Livewire\Auth\ConfirmPassword;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Livewire\Livewire;
+
+use function Pest\Laravel\actingAs;
 
 test('confirm password screen can be rendered', function (): void {
     $user = User::factory()->create();
@@ -13,22 +18,28 @@ test('confirm password screen can be rendered', function (): void {
 });
 
 test('password can be confirmed', function (): void {
-    $user = User::factory()->create();
-
-    $response = $this->actingAs($user)->post('/confirm-password', [
-        'password' => 'password',
+    $user = User::factory()->create([
+        'password' => Hash::make('password'),
     ]);
 
-    $response->assertRedirect();
-    $response->assertSessionHasNoErrors();
+    actingAs($user);
+
+    Livewire::test(ConfirmPassword::class)
+        ->set('password', 'password')
+        ->call('confirmPassword')
+        ->assertHasNoErrors()
+        ->assertRedirect();
 });
 
 test('password is not confirmed with invalid password', function (): void {
-    $user = User::factory()->create();
-
-    $response = $this->actingAs($user)->post('/confirm-password', [
-        'password' => 'wrong-password',
+    $user = User::factory()->create([
+        'password' => Hash::make('password'),
     ]);
 
-    $response->assertSessionHasErrors();
+    actingAs($user);
+
+    Livewire::test(ConfirmPassword::class)
+        ->set('password', 'wrong-password')
+        ->call('confirmPassword')
+        ->assertHasErrors('password');
 });

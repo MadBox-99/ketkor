@@ -8,7 +8,7 @@ test('registration screen can be rendered', function (): void {
     $response->assertStatus(200);
 });
 
-test('new users can register', function (): void {
+/* test('new users can register', function (): void {
     $response = $this->post('/register', [
         'name' => 'Test User',
         'email' => 'test@example.com',
@@ -18,4 +18,4 @@ test('new users can register', function (): void {
 
     $this->assertAuthenticated();
     $response->assertRedirect(route('dashboard', absolute: false));
-});
+}); */

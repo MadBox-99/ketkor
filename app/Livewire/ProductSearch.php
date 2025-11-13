@@ -27,8 +27,13 @@ class ProductSearch extends Component
         $product = Product::query()
             ->whereSerialNumber($this->serial_number)
             ->first();
-        $this->owns = $user->whereHas('products', fn ($query) => $query->whereSerialNumber($this->serial_number))->exists();
-        $this->product = $product;
+        if ($product) {
+            $this->owns = $product->users?->where('id', $user->id)->isNotEmpty();
+            $this->product = $product;
+        }
+        if (! $product) {
+            $this->product = null;
+        }
 
         return view('livewire.product-search');
     }

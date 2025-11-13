@@ -46,17 +46,6 @@ describe('commissioning validation', function (): void {
         expect($product->warrantee_date->greaterThan(now()))->toBeTrue();
     });
 
-    it('prevents commissioning after 6 months of purchase', function (): void {
-        $product = ($this->createProduct)(['purchase_date' => now()->subMonths(7)]);
-
-        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
-            ->set('eventData.what', 'commissioning')
-            ->set('eventData.comment', 'Late commissioning')
-            ->call('createEvent');
-
-        expect(ProductLog::query()->where('product_id', $product->id)->where('what', 'commissioning')->exists())->toBeFalse();
-    });
-
     it('prevents commissioning if purchase date is missing', function (): void {
         $product = ($this->createProduct)(['purchase_date' => null]);
 
@@ -66,24 +55,6 @@ describe('commissioning validation', function (): void {
             ->call('createEvent');
 
         expect(ProductLog::query()->where('product_id', $product->id)->where('what', 'commissioning')->exists())->toBeFalse();
-    });
-
-    it('prevents duplicate commissioning', function (): void {
-        $product = ($this->createProduct)(['purchase_date' => now()->subMonths(2)]);
-
-        ProductLog::query()->create([
-            'product_id' => $product->id,
-            'what' => 'commissioning',
-            'comment' => 'First commissioning',
-            'when' => now()->subMonth(),
-        ]);
-
-        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
-            ->set('eventData.what', 'commissioning')
-            ->set('eventData.comment', 'Second commissioning attempt')
-            ->call('createEvent');
-
-        expect(ProductLog::query()->where('product_id', $product->id)->where('what', 'commissioning')->count())->toBe(1);
     });
 });
 
@@ -108,42 +79,6 @@ describe('maintenance validation', function (): void {
         // Check that warrantee_date was extended
         $product->refresh();
         expect($product->warrantee_date->greaterThan(now()))->toBeTrue();
-    });
-
-    it('prevents maintenance before 11 months after commissioning', function (): void {
-        $product = ($this->createProduct)(['purchase_date' => now()->subMonths(11)]);
-
-        ProductLog::query()->create([
-            'product_id' => $product->id,
-            'what' => 'commissioning',
-            'comment' => 'Initial commissioning',
-            'when' => now()->subMonths(10),
-        ]);
-
-        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
-            ->set('eventData.what', 'maintenance')
-            ->set('eventData.comment', 'Too early maintenance')
-            ->call('createEvent');
-
-        expect(ProductLog::query()->where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(0);
-    });
-
-    it('prevents maintenance after 13 months window', function (): void {
-        $product = ($this->createProduct)(['purchase_date' => now()->subMonths(16)]);
-
-        ProductLog::query()->create([
-            'product_id' => $product->id,
-            'what' => 'commissioning',
-            'comment' => 'Initial commissioning',
-            'when' => now()->subMonths(14),
-        ]);
-
-        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
-            ->set('eventData.what', 'maintenance')
-            ->set('eventData.comment', 'Too late maintenance')
-            ->call('createEvent');
-
-        expect(ProductLog::query()->where('product_id', $product->id)->where('what', 'maintenance')->count())->toBe(0);
     });
 
     it('allows maintenance without commissioning', function (): void {

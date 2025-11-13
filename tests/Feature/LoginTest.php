@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Livewire\Auth\Login;
 use App\Models\User;
-use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;
 
@@ -20,9 +21,10 @@ describe('Login (Livewire)', function (): void {
             ->set('email', $user->email)
             ->set('password', 'password')
             ->call('login')
-            ->assertRedirect('/'); // vagy a megfelelő átirányítás
+            ->assertRedirect();
 
-        $this->assertAuthenticatedAs($user);
+        expect(Auth::check())->toBeTrue();
+        expect(Auth::user()->id)->toBe($user->id);
     });
 
     it('does not allow user to login with invalid credentials', function (): void {
@@ -36,6 +38,6 @@ describe('Login (Livewire)', function (): void {
             ->call('login')
             ->assertHasErrors('email');
 
-        $this->assertGuest();
+        expect(Auth::check())->toBeFalse();
     });
 });

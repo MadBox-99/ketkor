@@ -53,7 +53,7 @@
         <!-- Product History Section -->
         <div class="overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
             <div
-                class="border-l-4 border-purple-500 bg-gradient-to-r from-purple-50 to-transparent p-6 dark:from-purple-900/20">
+                class="border-l-4 border-purple-500 bg-linear-to-r from-purple-50 to-transparent p-6 dark:from-purple-900/20">
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white">
                     {{ __('Product history') }}
                 </h2>
@@ -113,7 +113,7 @@
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-2">
                                             {{ ($this->generateWorksheetAction)(['productLogId' => $log->id, 'size' => 'sm']) }}
-                                            @if($log->signature)
+                                            @if ($log->signature)
                                                 {{ ($this->viewSignatureAction)(['productLogId' => $log->id, 'size' => 'sm']) }}
                                             @endif
                                         </div>

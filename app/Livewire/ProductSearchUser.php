@@ -206,7 +206,6 @@ class ProductSearchUser extends Component implements HasActions, HasSchemas, Has
         $user = Auth::user();
 
         return Product::query()
-            ->with(['partials', 'are_visible', 'tool'])
             ->whereHas('users', function (Builder $query) use ($user): void {
                 $query->where('user_id', $user->id);
             });

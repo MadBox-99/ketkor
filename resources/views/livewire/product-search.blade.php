@@ -170,7 +170,8 @@
 
                     <!-- Action Buttons -->
                     <div class="mt-6 flex flex-col gap-3 sm:flex-row">
-                        @if ($owns < 1)
+
+                        @if (!$owns)
                             <a href="{{ route('products.add', ['product' => $product->id]) }}" wire:navigate
                                 class="inline-flex items-center justify-center gap-2 rounded-lg bg-green-600 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-offset-gray-800">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

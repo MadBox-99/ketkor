@@ -285,17 +285,61 @@ class ProductEdit extends Component implements HasActions, HasSchemas
             'signature' => $data['signature'] ?? null,
             'when' => now(),
         ]);
-
+        $updateData = [];
         // Update product dates based on event type
         if ($data['what'] === 'commissioning') {
-            $this->product->update([
-                'installation_date' => now(),
-                'warrantee_date' => now()->addYear(),
-            ]);
+            if (! $this->product->product_logs()->where('what', 'commissioning')->exists()) {
+                $updateData = ['warrantee_date' => now()->addYear()];
+            }
+            $updateData['installation_date'] = now();
+
+            $this->product->update($updateData);
+        }
+
+        if ($data['what'] === 'maintenance') {
+            $commissioning = $this->product->product_logs()
+                ->where('what', 'commissioning')
+                ->first();
+
+            $maintenanceCount = $this->product->product_logs()
+                ->where('what', 'maintenance')
+                ->count();
+
+            $shouldExtendWarranty = false;
+
+            // First maintenance: check if within 6 months of commissioning
+            if ($maintenanceCount === 0 && $commissioning) {
+                $sixMonthsAfterCommissioning = Date::parse($commissioning->when)->addMonths(6);
+                if (now()->lessThanOrEqualTo($sixMonthsAfterCommissioning)) {
+                    $shouldExtendWarranty = true;
+                }
+            }
+
+            // Second maintenance: check if within 11-13 months of first maintenance
+            if ($maintenanceCount === 1) {
+                $firstMaintenance = $this->product->product_logs()
+                    ->where('what', 'maintenance')
+                    ->oldest('when')
+                    ->first();
+
+                if ($firstMaintenance) {
+                    $elevenMonthsAfter = Date::parse($firstMaintenance->when)->addMonths(11);
+                    $thirteenMonthsAfter = Date::parse($firstMaintenance->when)->addMonths(13);
+
+                    if (now()->between($elevenMonthsAfter, $thirteenMonthsAfter)) {
+                        $shouldExtendWarranty = true;
+                    }
+                }
+            }
+
+            if ($shouldExtendWarranty) {
+                $this->product->update([
+                    'warrantee_date' => now()->addYear(),
+                ]);
+            }
         }
 
         $this->eventForm->fill();
-        $this->product->load('product_logs');
 
         Notification::make()
             ->success()
@@ -455,7 +499,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
             ->color('success')
             ->requiresConfirmation()
             ->modalHeading(__('Generate and Send Worksheet'))
-            ->modalDescription(__('This will generate a PDF worksheet and send it to the owner\'s email address.'))
+            ->modalDescription(__('his will generate a PDF worksheet and send it to the owners email address.'))
             ->action(function (array $arguments): void {
                 // Get productLog from arguments
                 $productLogId = $arguments['productLogId'] ?? null;
@@ -481,7 +525,6 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                 }
 
                 // Load necessary relationships
-                $this->product->load(['tool', 'partials']);
                 $owner = $this->product->partials->first();
 
                 // Check if owner email exists

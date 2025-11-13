@@ -77,7 +77,7 @@ class DatabaseSeeder extends Seeder
         ]);
         $user1 = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'admin@admin.com',
+            'email' => 'admin@operator.com',
             'email_verified_at' => now(),
             'password' => Hash::make('password'), // password
             'remember_token' => Str::random(10),
