@@ -28,7 +28,11 @@ class ProductLogFormSchema
                     ->required(),
                 Toggle::make('is_online')
                     ->label('Online')
+                    ->live()
                     ->default(false),
+                TextInput::make('worksheet_id')
+                    ->label('Worksheet ID')
+                    ->visible(fn (string $operation, array $get): bool => $get('is_online') === false),
                 SignaturePad::make('signature')
                     ->label('Customer signature')
                     ->disabled(fn (string $operation): bool => $operation === 'edit')

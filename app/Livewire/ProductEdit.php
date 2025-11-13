@@ -193,7 +193,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                             ]),
 
                         Textarea::make('comment')
-                            ->label(__('comment'))
+                            ->label(__('Work description'))
                             ->rows(4)
                             ->columnSpanFull(),
 
@@ -201,7 +201,10 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                             ->live()
                             ->label(__('Garrantee paper filled online'))
                             ->default(true),
-
+                        TextInput::make('worksheet_id')
+                            ->label(__('Worksheet ID'))
+                            ->required(fn (Get $get): bool => $get('is_online') === false)
+                            ->visible(fn (Get $get): bool => $get('is_online') === false),
                         SignaturePad::make('signature')
                             ->visible(fn (Get $get): bool => $get('is_online') === true)
                             ->label(__('Signature'))
@@ -282,6 +285,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
             'what' => $data['what'],
             'comment' => $data['comment'] ?? null,
             'is_online' => $data['is_online'] ?? true,
+            'worksheet_id' => $data['worksheet_id'] ?? null,
             'signature' => $data['signature'] ?? null,
             'when' => now(),
         ]);

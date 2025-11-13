@@ -313,5 +313,8 @@
     "Clear signature": "Aláírás törlése",
     "Work Sheet": "Munkalap",
     "Repair": "Javítás",
-    "All rights reserved.": "Minden jog fenntartva."
+    "All rights reserved.": "Minden jog fenntartva.",
+    "Worksheet close": "Munkalap lezárása",
+    "Work description": "Munkavégzés leírása",
+    "Worksheet ID": "Papir alapú munkalap száma"
 }

@@ -242,27 +242,6 @@
             </tr>
         </table>
 
-        <!-- Aláírások -->
-        <table style="margin-top: 20px;">
-            <tr>
-                <td style="width: 50%; height: 60px; text-align: center; vertical-align: bottom; border-right: none;">
-                    @if ($productLog->signature)
-                        <div style="text-align: center; margin-bottom: 5px;">
-                            <img src="{{ $productLog->signature }}" alt="Signature"
-                                style="max-height: 50px; max-width: 180px;">
-                        </div>
-                    @endif
-                    <div style="border-top: 1px dotted #000; padding-top: 3px; margin: 0 20px;">
-                        ÜGYFÉL ALÁÍRÁSA
-                    </div>
-                </td>
-                <td style="width: 50%; text-align: center; vertical-align: bottom; border-left: none;">
-                    <div style="border-top: 1px dotted #000; padding-top: 3px; margin: 0 20px;">
-                        SZERELŐ ALÁÍRÁSA
-                    </div>
-                </td>
-            </tr>
-        </table>
     </body>
 
 </html>

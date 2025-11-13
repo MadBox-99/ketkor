@@ -32,11 +32,10 @@ class ProductLogTable
                     ->boolean()
                     ->trueIcon('heroicon-o-check')
                     ->falseIcon('heroicon-o-x-mark'),
-                IconColumn::make('signature')
-                    ->label('Signature')
-                    ->boolean()
-                    ->icon(fn ($state): ?string => $state ? 'heroicon-o-check-circle' : null)
-                    ->color(fn ($state): string => $state ? 'success' : 'gray'),
+                TextColumn::make('worksheet_id')
+                    ->label('Worksheet ID')
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
