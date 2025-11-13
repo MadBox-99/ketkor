@@ -191,44 +191,6 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                                 'maintenance' => __('Maintenance'),
                                 'commissioning' => __('Commissioning'),
                             ])
-                            ->disableOptionWhen(function (string $value): bool {
-                                // Disable commissioning if already exists
-                                /*  if ($value === 'commissioning') {
-                                     $purchaseDate = $this->product->purchase_date;
-
-                                     return $this->product
-                                         ->whereHas('product_logs', fn ($query) => $query->whereWhat('commissioning'))
-                                         ->exists() || ! $purchaseDate || now()->greaterThanOrEqualTo($purchaseDate->copy()->addMonths(6));
-                                 } */
-
-                                /* if ($value === 'maintenance') {
-                                    $lastMaintenance = $this->product->product_logs()
-                                        ->where('what', 'maintenance')
-                                        ->latest('when')
-                                        ->first();
-
-                                    if ($lastMaintenance) {
-                                        $elevenMonthsAfter = Date::parse($lastMaintenance->when)->addMonths(11);
-
-                                        if (now()->lessThan($elevenMonthsAfter)) {
-                                            return true;
-                                        }
-                                    }
-
-                                    $commissioning = $this->product->product_logs()->where('what', 'commissioning')->first();
-                                    if ($commissioning && ! $lastMaintenance) {
-                                        $elevenMonthsAfter = Date::parse($commissioning->when)->addMonths(11);
-
-                                        if (now()->lessThan($elevenMonthsAfter)) {
-                                            return true;
-                                        }
-                                    }
-
-                                    return false;
-                                } */
-
-                                return false;
-                            })
                             ->helperText(function () use ($commissioning): ?string {
                                 // Check if maintenance is available based on timing
                                 $lastMaintenance = $this->product->product_logs()
