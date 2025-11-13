@@ -91,8 +91,12 @@
         <table class="header-table" style="margin-bottom: 10px;">
             <tr>
                 <td style="width: 30%; text-align: center; vertical-align: middle;">
-                    <img src="{{ Vite::asset('resources/img/ketkor_logo.webp') }}" alt="Két Kör Kft."
-                        style="max-height: 50px; max-width: 100%;">
+                    @php
+                        $logoPath = resource_path('img/ketkor_logo.webp');
+                        $logoData = base64_encode(file_get_contents($logoPath));
+                        $logoSrc = 'data:image/webp;base64,' . $logoData;
+                    @endphp
+                    <img src="{{ $logoSrc }}" alt="Két Kör Kft." style="max-height: 50px; max-width: 100%;">
                     <div style="font-size: 14px; font-weight: bold; margin-top: 5px;">MUNKALAP</div>
                 </td>
                 <td style="width: 70%; font-size: 9px; text-align: right; vertical-align: middle;">
@@ -192,7 +196,7 @@
                         <tr>
                             <td class="no-border" style="padding: 15px 2px;">
                                 <div style="border: 1px solid #000; padding: 3px; margin-bottom: 3px;">
-                                    <span class="checkbox"></span> A beépített alkatrészre hónap garenciát vállalunk
+                                    <span class="checkbox"></span> A beépített alkatrészre hónap garanciát vállalunk
                                 </div>
                             </td>
                         </tr>
@@ -223,16 +227,18 @@
                 <td style="width: 60%;">
                     <strong>A MUNKA ELVÉGZÉSÉNEK IDEJE:</strong> {{ $productLog->when->format('Y. m. d. H:i') }}
                 </td>
-                <td style="width: 40%;" rowspan="2">
-                    &nbsp;
+                <td style="width: 40%; border-left: none;" rowspan="2">
+                    <img src="{{ $productLog->signature }}" alt="Signature"
+                        style="max-height: 50px; max-width: 180px;">
                 </td>
             </tr>
             <tr>
-                <td style="font-size: 8px; padding: 5px;">
+                <td style="font-size: 8px; padding: 5px; border-right: none;">
                     <strong>A MUNKA ELVÉGZÉSÉT IGAZOLOM:</strong><br>
                     Igazolom, hogy a szerelő {{ $productLog->is_online ? 'online' : 'offline' }} módon elvégezte a
                     munkát {{ $productLog->when->format('Y. m. d.') }} napján.
                 </td>
+
             </tr>
         </table>
 
