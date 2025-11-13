@@ -190,34 +190,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                                 'installation' => __('Installation'),
                                 'maintenance' => __('Maintenance'),
                                 'commissioning' => __('Commissioning'),
-                            ])
-                            ->helperText(function () use ($commissioning): ?string {
-                                // Check if maintenance is available based on timing
-                                $lastMaintenance = $this->product->product_logs()
-                                    ->where('what', 'maintenance')
-                                    ->latest('when')
-                                    ->first();
-
-                                // If there's a previous maintenance, show when next one is available
-                                if ($lastMaintenance) {
-                                    $elevenMonthsAfter = Date::parse($lastMaintenance->when)->addMonths(11);
-
-                                    if (now()->lessThan($elevenMonthsAfter)) {
-                                        return __('Maintenance can only be performed 11 months after last maintenance');
-                                    }
-                                }
-
-                                // If there's commissioning but no maintenance yet
-                                if ($commissioning && ! $lastMaintenance) {
-                                    $elevenMonthsAfter = Date::parse($commissioning->when)->addMonths(11);
-
-                                    if (now()->lessThan($elevenMonthsAfter)) {
-                                        return __('Maintenance can only be performed 11 months after commissioning');
-                                    }
-                                }
-
-                                return null;
-                            }),
+                            ]),
 
                         Textarea::make('comment')
                             ->label(__('comment'))
