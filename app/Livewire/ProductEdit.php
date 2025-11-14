@@ -554,7 +554,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                 $pdfContent = $pdf->output();
 
                 // Send email with PDF attachment
-                Mail::to($owner->email)->send(new WorksheetMail(
+                Mail::to(Auth::user()->email)->send(new WorksheetMail(
                     $this->product,
                     $productLog,
                     $pdfContent,
