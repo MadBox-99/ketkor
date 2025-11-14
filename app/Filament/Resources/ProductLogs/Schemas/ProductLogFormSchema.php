@@ -9,6 +9,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class ProductLogFormSchema
@@ -32,7 +33,7 @@ class ProductLogFormSchema
                     ->default(false),
                 TextInput::make('worksheet_id')
                     ->label('Worksheet ID')
-                    ->visible(fn (string $operation, array $get): bool => $get('is_online') === false),
+                    ->visible(fn (string $operation, Get $get): bool => $get('is_online') === false),
                 SignaturePad::make('signature')
                     ->label('Customer signature')
                     ->disabled(fn (string $operation): bool => $operation === 'edit')
