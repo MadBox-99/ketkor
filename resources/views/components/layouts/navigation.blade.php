@@ -145,7 +145,7 @@
         @auth
             <div class="pt-4 pb-3 border-t border-gray-700">
                 <div class="flex items-center px-5">
-                    <div class="flex-shrink-0">
+                    <div class="shrink-0">
                         <x-user-avatar :user="Auth::user()" size="lg" />
                     </div>
                     <div class="ml-3 min-w-0 flex-1">
@@ -158,7 +158,7 @@
                         <x-dark-mode-toggle-mobile />
 
                         <button
-                            class="relative flex-shrink-0 p-1 text-gray-400 bg-gray-800 rounded-full hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                            class="relative shrink-0 p-1 text-gray-400 bg-gray-800 rounded-full hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                             type="button">
                             <span class="absolute -inset-1.5"></span>
                             <span class="sr-only">{{ __('View notifications') }}</span>

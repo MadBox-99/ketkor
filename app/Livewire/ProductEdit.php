@@ -105,7 +105,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                         TextInput::make('serial_number')
                             ->label(__('Serial number'))
                             ->required()
-                            ->disabled($isOrganizerOrServicer)
+                            ->readOnly($isOrganizerOrServicer)
                             ->maxLength(200),
 
                         TextInput::make('city')
@@ -125,7 +125,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
 
                         TextInput::make('owner_name')
                             ->label(__('Owner name'))
-                            ->disabled()
+                            ->readOnly($isOrganizerOrServicer)
                             ->hidden(! $this->userVisibility)
                             ->maxLength(200),
 
@@ -135,19 +135,19 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                                 DatePicker::make('purchase_date')
                                     ->label(__('Purchase date'))
                                     ->required()
-                                    ->disabled($isOrganizerOrServicer)
+                                    ->readOnly($isOrganizerOrServicer)
                                     ->native(false),
 
                                 DatePicker::make('installation_date')
                                     ->label(__('Installation date'))
                                     ->required()
-                                    ->disabled($isOrganizerOrServicer)
+                                    ->readOnly($isOrganizerOrServicer)
                                     ->native(false),
 
                                 DatePicker::make('warrantee_date')
                                     ->label(__('Warrantee date'))
                                     ->required()
-                                    ->disabled($isOrganizerOrServicer)
+                                    ->readOnly($isOrganizerOrServicer)
                                     ->native(false),
                             ])
                             ->columns(3)
