@@ -7,22 +7,18 @@ use App\Models\Product;
 use App\Models\ProductLog;
 use App\Models\Tool;
 use App\Models\User;
-use App\Models\Visible;
 use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;
 
 beforeEach(function (): void {
-    $this->user = User::factory()->create();
     $this->tool = Tool::factory()->create();
-    actingAs($this->user);
+    actingAs(User::factory()->create());
 
     $this->createProduct = function (array $attributes = []) {
         $product = Product::factory()->create(array_merge([
             'tool_id' => $this->tool->id,
         ], $attributes));
-
-        Visible::factory()->create(['product_id' => $product->id, 'isVisible' => true]);
 
         return $product;
     };
@@ -32,7 +28,7 @@ describe('commissioning validation', function (): void {
     it('allows commissioning within 6 months of purchase', function (): void {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(3)]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
+        Livewire::test(ProductEdit::class, ['product' => $product])
             ->set('eventData.what', 'commissioning')
             ->set('eventData.comment', 'First commissioning')
             ->call('createEvent');
@@ -49,7 +45,7 @@ describe('commissioning validation', function (): void {
     it('prevents commissioning if purchase date is missing', function (): void {
         $product = ($this->createProduct)(['purchase_date' => null]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
+        Livewire::test(ProductEdit::class, ['product' => $product])
             ->set('eventData.what', 'commissioning')
             ->set('eventData.comment', 'Commissioning without purchase date')
             ->call('createEvent');
@@ -69,7 +65,7 @@ describe('maintenance validation', function (): void {
             'when' => now()->subMonths(11),
         ]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
+        Livewire::test(ProductEdit::class, ['product' => $product])
             ->set('eventData.what', 'maintenance')
             ->set('eventData.comment', 'First maintenance')
             ->call('createEvent');
@@ -84,7 +80,7 @@ describe('maintenance validation', function (): void {
     it('allows maintenance without commissioning', function (): void {
         $product = ($this->createProduct)(['purchase_date' => now()->subMonths(12)]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
+        Livewire::test(ProductEdit::class, ['product' => $product])
             ->set('eventData.what', 'maintenance')
             ->set('eventData.comment', 'Maintenance without commissioning')
             ->call('createEvent');
@@ -116,7 +112,7 @@ describe('maintenance validation', function (): void {
             'when' => now()->subMonths(12),
         ]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
+        Livewire::test(ProductEdit::class, ['product' => $product])
             ->set('eventData.what', 'maintenance')
             ->set('eventData.comment', 'Third maintenance')
             ->call('createEvent');
@@ -141,7 +137,7 @@ describe('maintenance validation', function (): void {
             'when' => now()->subMonths(12),
         ]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
+        Livewire::test(ProductEdit::class, ['product' => $product])
             ->set('eventData.what', 'maintenance')
             ->set('eventData.comment', 'Second maintenance')
             ->call('createEvent');
@@ -162,7 +158,7 @@ describe('maintenance validation', function (): void {
         $product->update(['warrantee_date' => now()->addMonths(1)]);
         $originalWarrantyDate = $product->fresh()->warrantee_date->format('Y-m-d H:i:s');
 
-        Livewire::test(ProductEdit::class, ['product' => $product, 'userVisibility' => true])
+        Livewire::test(ProductEdit::class, ['product' => $product])
             ->set('eventData.what', 'maintenance')
             ->set('eventData.comment', 'First maintenance')
             ->call('createEvent');

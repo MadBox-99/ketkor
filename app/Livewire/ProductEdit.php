@@ -6,9 +6,7 @@ namespace App\Livewire;
 
 use App\Enums\UserRole;
 use App\Filament\Forms\Components\SignaturePad;
-use App\Mail\AccessGrantMail;
 use App\Mail\WorksheetMail;
-use App\Models\AccessToken;
 use App\Models\Product;
 use App\Models\ProductLog;
 use App\Models\User;
@@ -32,7 +30,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use Livewire\Component;
 
 class ProductEdit extends Component implements HasActions, HasSchemas
@@ -48,8 +45,6 @@ class ProductEdit extends Component implements HasActions, HasSchemas
 
     public ?array $ownerData = [];
 
-    public bool $userVisibility = false;
-
     protected function getForms(): array
     {
         return [
@@ -59,10 +54,9 @@ class ProductEdit extends Component implements HasActions, HasSchemas
         ];
     }
 
-    public function mount(Product $product, bool $userVisibility): void
+    public function mount(Product $product): void
     {
         $this->product = $product;
-        $this->userVisibility = $userVisibility;
 
         // Fill product form
         $this->productForm->fill([
@@ -79,7 +73,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
         ]);
 
         // Fill owner form if has visibility
-        if ($this->userVisibility && $product->partials->isNotEmpty()) {
+        if ($product->partials->isNotEmpty()) {
             $newestPartial = $product->partials->last();
             $this->ownerForm->fill([
                 'name' => $newestPartial->name,
@@ -110,23 +104,19 @@ class ProductEdit extends Component implements HasActions, HasSchemas
 
                         TextInput::make('city')
                             ->label(__('City'))
-                            ->visible($this->userVisibility)
                             ->maxLength(200),
 
                         TextInput::make('street')
                             ->label(__('Street'))
-                            ->visible($this->userVisibility)
                             ->maxLength(200),
 
                         TextInput::make('zip')
                             ->label(__('Zip'))
-                            ->visible($this->userVisibility)
                             ->maxLength(4),
 
                         TextInput::make('owner_name')
                             ->label(__('Owner name'))
                             ->readOnly($isOrganizerOrServicer)
-                            ->hidden(! $this->userVisibility)
                             ->maxLength(200),
 
                         Section::make(__('Important dates'))
@@ -164,7 +154,6 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                             ->label(__('Product'))
                             ->relationship('tool', 'name')
                             ->required()
-                            ->disabled(! $this->userVisibility)
                             ->searchable()
                             ->preload(),
                     ])
@@ -176,7 +165,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
 
     public function eventForm(Schema $schema): Schema
     {
-        $commissioning = $this->product->product_logs()->where('what', 'commissioning')->first();
+        // $commissioning = $this->product->product_logs()->where('what', 'commissioning')->first();
 
         return $schema
             ->components([
@@ -465,34 +454,6 @@ class ProductEdit extends Component implements HasActions, HasSchemas
             ->send();
     }
 
-    public function permissionAction(): Action
-    {
-        return Action::make('permission')
-            ->label(__('Request Permission'))
-            ->color('warning')
-            ->action(function (): void {
-                config('mail.from.address');
-                $admin = User::whereEmail(env('ADMIN_EMAIL'))->first();
-                $token = Str::random(40); // Generate a unique token
-                $user_id = Auth::user()->id;
-                // Store the token in the database
-                $accessToken = AccessToken::query()->firstOrCreate([
-                    'user_id' => $user_id,
-                    'product_id' => $this->product->id,
-                ]);
-
-                $accessToken->update(['token' => $token, 'used' => false]);
-
-                $user = Auth::user();
-
-                Mail::to($admin)->cc($user->email)->send(new AccessGrantMail($token, $user->name));
-                Notification::make()
-                    ->title(__('Succesfuly send an email to administrator who will grant an access to private datas, please wait until is access in grant.'))
-                    ->success()
-                    ->send();
-            });
-    }
-
     public function generateWorksheetAction(): Action
     {
         return Action::make('generateWorksheet')
@@ -515,7 +476,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                     return;
                 }
 
-                $productLog = ProductLog::find($productLogId);
+                $productLog = ProductLog::query()->find($productLogId);
                 if (! $productLog) {
                     Notification::make()
                         ->danger()
@@ -577,7 +538,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
             ->modalHeading(__('Signature'))
             ->modalContent(function (array $arguments): View {
                 $productLogId = $arguments['productLogId'] ?? null;
-                $productLog = $productLogId ? ProductLog::find($productLogId) : null;
+                $productLog = $productLogId ? ProductLog::query()->find($productLogId) : null;
 
                 return view('livewire.signature-preview', [
                     'signature' => $productLog?->signature,

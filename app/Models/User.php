@@ -58,11 +58,6 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
 
-    /* public function setPasswordAttribute($password): void
-    {
-        $this->attributes['password'] = bcrypt($password);
-    } */
-
     public function organization(): BelongsTo
     {
         return $this->belongsTo(Organization::class);
@@ -76,16 +71,6 @@ class User extends Authenticatable implements FilamentUser
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class);
-    }
-
-    public function AccessTokens(): HasMany
-    {
-        return $this->hasMany(AccessToken::class);
-    }
-
-    public function are_visible(): HasMany
-    {
-        return $this->hasMany(Visible::class);
     }
 
     public function canAccessPanel(Panel $panel): bool

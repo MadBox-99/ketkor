@@ -84,11 +84,6 @@ class Product extends Model
         return $this->hasMany(Partial::class);
     }
 
-    public function are_visible(): HasMany
-    {
-        return $this->hasMany(Visible::class);
-    }
-
     public function organizations(): HasManyThrough
     {
         return $this->hasManyThrough(Organization::class, User::class);

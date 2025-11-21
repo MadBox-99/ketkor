@@ -7,7 +7,6 @@ namespace App\Http\Controllers;
 use App\Models\Organization;
 use App\Models\Product;
 use App\Models\User;
-use App\Models\Visible;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -89,22 +88,8 @@ class OrganizationController extends Controller
             $selectedUserId = $request->selected_user_id;
             $isAttached = $product->users->contains($selectedUserId);
             $product->users()->detach($request->user_id);
-            $visible = Visible::whereUserId($request->user_id)->whereProductId($product->id)->first();
-            if ($isAttached) {
-                Visible::whereUserId($request->selected_user_id)->whereProductId($product->id)->first()->update(
-                    [
-                        'isVisible' => $visible->isVisible,
-                    ],
-                );
-                $visible->delete();
-            } else {
-                $product->users()->attach($request->selected_user_id);
-                $visible->update(
-                    [
-                        'user_id' => $request->selected_user_id,
-                    ],
-                );
-            }
+
+            $product->users()->attach($request->selected_user_id);
 
             DB::commit();
 
@@ -234,7 +219,6 @@ class OrganizationController extends Controller
         try {
             if ($user->id != Auth::user()->id && ! $user->hasRole('Organizer')) {
                 $user->products()->detach();
-                $user->are_visible()->delete();
                 $user->delete();
                 DB::commit();
 

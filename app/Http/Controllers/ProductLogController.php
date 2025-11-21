@@ -10,7 +10,6 @@ use App\Models\Product;
 use App\Models\ProductLog;
 use App\Models\Tool;
 use App\Models\User;
-use App\Models\Visible;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -42,7 +41,7 @@ class ProductLogController extends Controller
     public function store(Request $request)
     {
         // $user = auth()->user();
-        $user = User::query()->find(1);
+        User::query()->find(1);
         DB::beginTransaction();
         try {
             $request->validate([
@@ -115,14 +114,12 @@ class ProductLogController extends Controller
 
             // return user and visibility data also
 
-            $userVisibility = Visible::query()->whereRelation('product', 'user_id', $user->id)->whereRelation('product', 'product_id', $product->id)->whereRelation('product', 'isVisible', true)->first();
-            $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
             $partials = Partial::query()->where('product_id', $product->id)->latest()->limit(6)->get();
             $users = User::query()->get();
             $tools = Tool::query()->get();
             $error = $throwable->getMessage();
 
-            return to_route('products.edit', ['product' => $product])->with(['error' => $error, 'users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials, 'userVisibility' => $userVisibility]);
+            return to_route('products.edit', ['product' => $product])->with(['error' => $error, 'users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials]);
         }
     }
 

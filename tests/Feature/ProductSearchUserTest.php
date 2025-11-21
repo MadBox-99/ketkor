@@ -7,7 +7,6 @@ use App\Livewire\ProductSearchUser;
 use App\Models\Product;
 use App\Models\Tool;
 use App\Models\User;
-use App\Models\Visible;
 use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;
@@ -37,11 +36,6 @@ it('displays user products in the table', function (): void {
 
     $product->users()->attach($user->id);
 
-    Visible::factory()->create([
-        'product_id' => $product->id,
-        'isVisible' => true,
-    ]);
-
     actingAs($user);
 
     Livewire::test(ProductSearchUser::class)
@@ -64,9 +58,6 @@ it('filters products by serial number', function (): void {
 
     $product1->users()->attach($user->id);
     $product2->users()->attach($user->id);
-
-    Visible::factory()->create(['product_id' => $product1->id, 'isVisible' => true]);
-    Visible::factory()->create(['product_id' => $product2->id, 'isVisible' => true]);
 
     actingAs($user);
 
@@ -92,9 +83,6 @@ it('filters products by tool name', function (): void {
 
     $product1->users()->attach($user->id);
     $product2->users()->attach($user->id);
-
-    Visible::factory()->create(['product_id' => $product1->id, 'isVisible' => true]);
-    Visible::factory()->create(['product_id' => $product2->id, 'isVisible' => true]);
 
     actingAs($user);
 
@@ -122,9 +110,6 @@ it('filters products by warranty date range', function (): void {
     $product1->users()->attach($user->id);
     $product2->users()->attach($user->id);
 
-    Visible::factory()->create(['product_id' => $product1->id, 'isVisible' => true]);
-    Visible::factory()->create(['product_id' => $product2->id, 'isVisible' => true]);
-
     actingAs($user);
 
     Livewire::test(ProductSearchUser::class)
@@ -146,8 +131,6 @@ it('can remove product from user list', function (): void {
     ]);
 
     $product->users()->attach($user->id);
-
-    Visible::factory()->create(['product_id' => $product->id, 'isVisible' => true]);
 
     actingAs($user);
 
@@ -172,11 +155,6 @@ it('shows non-visible products in the table', function (): void {
 
     $product->users()->attach($user->id);
 
-    Visible::factory()->create([
-        'product_id' => $product->id,
-        'isVisible' => false,
-    ]);
-
     actingAs($user);
 
     Livewire::test(ProductSearchUser::class)
@@ -200,9 +178,6 @@ it('only shows products for authenticated user', function (): void {
 
     $product1->users()->attach($user1->id);
     $product2->users()->attach($user2->id);
-
-    Visible::factory()->create(['product_id' => $product1->id, 'isVisible' => true]);
-    Visible::factory()->create(['product_id' => $product2->id, 'isVisible' => true]);
 
     actingAs($user1);
 

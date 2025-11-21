@@ -14,31 +14,6 @@
 namespace App\Models{
 /**
  * @property int $id
- * @property string|null $token
- * @property int $used
- * @property int $user_id
- * @property int $product_id
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \App\Models\Product|null $product
- * @property-read \App\Models\User|null $user
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AccessToken newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AccessToken newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AccessToken query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AccessToken whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AccessToken whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AccessToken whereProductId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AccessToken whereToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AccessToken whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AccessToken whereUsed($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|AccessToken whereUserId($value)
- */
-	class AccessToken extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * @property int $id
  * @property int $user_id
  * @property string $what
  * @property string|null $when
@@ -131,8 +106,6 @@ namespace App\Models{
  * @property int|null $tool_id
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Visible> $are_visible
- * @property-read int|null $are_visible_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Organization> $organizations
  * @property-read int|null $organizations_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Partial> $partials
@@ -234,10 +207,6 @@ namespace App\Models{
  * @property string|null $remember_token
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AccessToken> $AccessTokens
- * @property-read int|null $access_tokens_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Visible> $are_visible
- * @property-read int|null $are_visible_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Log> $logs
  * @property-read int|null $logs_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
@@ -268,29 +237,5 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutRole($roles, $guard = null)
  */
 	class User extends \Eloquent implements \Filament\Models\Contracts\FilamentUser {}
-}
-
-namespace App\Models{
-/**
- * @property int $id
- * @property int $isVisible
- * @property int $product_id
- * @property int $user_id
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \App\Models\Product|null $product
- * @property-read \App\Models\User|null $user
- * @method static \Database\Factories\VisibleFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Visible newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Visible newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Visible query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Visible whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Visible whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Visible whereIsVisible($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Visible whereProductId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Visible whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Visible whereUserId($value)
- */
-	class Visible extends \Eloquent {}
 }
 

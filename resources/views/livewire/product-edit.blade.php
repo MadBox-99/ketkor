@@ -1,34 +1,22 @@
 <div class="min-h-screen bg-gray-50 py-8 dark:bg-gray-900">
 
     <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
-        @if (!$userVisibility)
-            {{ $this->permissionAction }}
-        @endif
+
         <!-- Product Information Form -->
         <div class="overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
             <form wire:submit="updateProduct">
                 {{ $this->productForm }}
 
                 <div class="flex items-center gap-4 border-t border-gray-200 px-6 py-4 dark:border-gray-700">
-                    @if ($userVisibility)
-                        <button type="submit"
-                            class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-offset-gray-800">
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7" />
-                            </svg>
-                            {{ __('Save') }}
-                        </button>
-                    @else
-                        <a href="{{ route('accestokens.createAccessToken', ['product' => $product->id]) }}"
-                            class="inline-flex items-center gap-2 rounded-lg bg-amber-600 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 dark:bg-amber-500 dark:hover:bg-amber-600 dark:focus:ring-offset-gray-800">
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                            </svg>
-                            {{ __('Require access') }}
-                        </a>
-                    @endif
+
+                    <button type="submit"
+                        class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-offset-gray-800">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        {{ __('Save') }}
+                    </button>
+
                 </div>
             </form>
         </div>
@@ -138,67 +126,67 @@
         </div>
 
         <!-- Owner Data Section -->
-        @if ($userVisibility)
-            <div class="overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
-                <form wire:submit="updateOwner">
-                    {{ $this->ownerForm }}
 
-                    <div class="border-t border-gray-200 px-6 py-4 dark:border-gray-700">
-                        <button type="submit"
-                            class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-offset-gray-800">
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                            </svg>
-                            {{ __('Update') }}
-                        </button>
-                    </div>
-                </form>
+        <div class="overflow-hidden rounded-lg bg-white shadow dark:bg-gray-800">
+            <form wire:submit="updateOwner">
+                {{ $this->ownerForm }}
 
-                <!-- Ownership History -->
-                @if ($product->partials->count() > 1)
-                    <div class="border-t border-gray-200 p-6 dark:border-gray-700">
-                        <h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
-                            {{ __('Ownership modifications history') }}
-                        </h3>
-                        <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                            {{ __('History of ownership data modifications.') }}
-                        </p>
+                <div class="border-t border-gray-200 px-6 py-4 dark:border-gray-700">
+                    <button type="submit"
+                        class="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-offset-gray-800">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        {{ __('Update') }}
+                    </button>
+                </div>
+            </form>
 
-                        <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
-                            <table class="w-full text-left text-sm">
-                                <thead
-                                    class="border-b border-gray-200 bg-indigo-50 text-xs uppercase text-gray-700 dark:border-gray-700 dark:bg-indigo-900/20 dark:text-gray-300">
-                                    <tr>
-                                        <th class="px-6 py-3">{{ __('name') }}</th>
-                                        <th class="px-6 py-3">{{ __('Email') }}</th>
-                                        <th class="px-6 py-3">{{ __('Mobile') }}</th>
+            <!-- Ownership History -->
+            @if ($product->partials->count() > 1)
+                <div class="border-t border-gray-200 p-6 dark:border-gray-700">
+                    <h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                        {{ __('Ownership modifications history') }}
+                    </h3>
+                    <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+                        {{ __('History of ownership data modifications.') }}
+                    </p>
+
+                    <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                        <table class="w-full text-left text-sm">
+                            <thead
+                                class="border-b border-gray-200 bg-indigo-50 text-xs uppercase text-gray-700 dark:border-gray-700 dark:bg-indigo-900/20 dark:text-gray-300">
+                                <tr>
+                                    <th class="px-6 py-3">{{ __('name') }}</th>
+                                    <th class="px-6 py-3">{{ __('Email') }}</th>
+                                    <th class="px-6 py-3">{{ __('Mobile') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                @foreach ($product->partials as $partial)
+                                    @if ($loop->first)
+                                        @continue
+                                    @endif
+                                    <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                                            {{ $partial->name }}
+                                        </td>
+                                        <td class="px-6 py-4 text-gray-700 dark:text-gray-300">
+                                            {{ $partial->email }}
+                                        </td>
+                                        <td class="px-6 py-4 text-gray-700 dark:text-gray-300">
+                                            {{ $partial->phone }}
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                                    @foreach ($product->partials as $partial)
-                                        @if ($loop->first)
-                                            @continue
-                                        @endif
-                                        <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                                            <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                                                {{ $partial->name }}
-                                            </td>
-                                            <td class="px-6 py-4 text-gray-700 dark:text-gray-300">
-                                                {{ $partial->email }}
-                                            </td>
-                                            <td class="px-6 py-4 text-gray-700 dark:text-gray-300">
-                                                {{ $partial->phone }}
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                @endif
-            </div>
-        @endif
+                </div>
+            @endif
+        </div>
+
     </div>
     <x-filament-actions::modals />
 </div>

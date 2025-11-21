@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Enums\UserRole;
-use App\Models\AccessToken;
 use App\Models\Partial;
 use App\Models\Product;
 use App\Models\Tool;
 use App\Models\User;
-use App\Models\Visible;
+use Filament\Notifications\Notification;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -33,22 +31,13 @@ class ProductController extends Controller
      */
     public function edit(Product $product): View
     {
-        $user = Auth::user();
-
         $product = Product::query()->find($product->id);
-        $userVisibility = Visible::whereUserId(Auth::user()->id)
-            ->whereProductId($product->id)
-            ->first();
-        $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
-        if ($user->hasAnyRole([UserRole::Admin, UserRole::SuperAdmin, UserRole::Operator])) {
-            $userVisibility = true;
-        }
 
         $partials = Partial::query()->where('product_id', $product->id)->latest()->limit(6)->get();
         $users = User::query()->orderBy('name')->get();
         $tools = Tool::query()->orderBy('name')->get();
 
-        return view('product.edit', ['users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials, 'userVisibility' => $userVisibility]);
+        return view('product.edit', ['users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials]);
     }
 
     public function partialUpdate(Request $request, Product $product) {}
@@ -58,7 +47,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $user = Auth::user();
+        Auth::user();
         DB::beginTransaction();
         try {
             $request->validate([
@@ -84,82 +73,44 @@ class ProductController extends Controller
             $users = User::query()->orderBy('name')->get();
             $tools = Tool::query()->orderBy('name')->get();
             $partials = Partial::query()->where('product_id', $product->id)->latest()->limit(6)->get();
-            $userVisibility = Visible::query()->whereRelation('product', 'user_id', $user->id)->whereRelation('product', 'product_id', $product->id)->whereRelation('product', 'isVisible', true)->first();
-            $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
+
             $success = __('Products updated successfully.');
 
-            return to_route('products.edit', ['product' => $product])->with(['success' => $success, 'users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials, 'userVisibility' => $userVisibility]);
+            return to_route('products.edit', ['product' => $product])->with(['success' => $success, 'users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials]);
         } catch (Throwable $throwable) {
             DB::rollback();
 
-            $userVisibility = Visible::query()->whereRelation('product', 'user_id', $user->id)->whereRelation('product', 'product_id', $product->id)->whereRelation('product', 'isVisible', true)->first();
-            $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
             $partials = Partial::query()->where('product_id', $product->id)->latest()->limit(6)->get();
             $users = User::query()->orderBy('name')->get();
             $tools = Tool::query()->orderBy('name')->get();
             $error = $throwable->getMessage();
 
-            return to_route('products.edit', ['product' => $product])->with(['error' => $error, 'users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials, 'userVisibility' => $userVisibility]);
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
-    {
-        DB::beginTransaction();
-        try {
-            $product->delete();
-
-            DB::commit();
-
-            return to_route('products.index')->with('success', __('Product deleted successfully.'));
-        } catch (Throwable $throwable) {
-            DB::rollback();
-
-            return to_route('products.index')->with('error', $throwable->getMessage());
+            return to_route('products.edit', ['product' => $product])->with(['error' => $error, 'users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials]);
         }
     }
 
     public function add(Product $product)
     {
-        $userId = Auth::user()->id;
-        $userVisibility = Visible::query()->firstOrCreate([
-            'product_id' => $product->id,
-            'user_id' => $userId,
-        ]);
-
         $user = Auth::user();
         $user->products()->attach($product->id);
-        $product = Product::whereId($product->id)->with(['users'])->first();
-        $userVisibility = Visible::query()->whereRelation('product', 'user_id', $user->id)->whereRelation('product', 'product_id', $product->id)->whereRelation('product', 'isVisible', true)->first();
-        $userVisibility = $userVisibility !== null && $userVisibility->isVisible;
+        $product = Product::whereId($product->id)->first();
 
         $partials = Partial::query()->where('product_id', $product->id)->latest()->limit(6)->get();
         $users = User::query()->orderBy('name')->get();
         $tools = Tool::query()->orderBy('name')->get();
 
-        return to_route('products.edit', ['product' => $product])->with(['users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials, 'userVisibility' => $userVisibility]);
+        return to_route('products.edit', ['product' => $product])->with(['users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials]);
     }
 
     public function remove(Product $product)
     {
-        $userId = Auth::user()->id;
-        $userVisibility = Visible::query()->where('product_id', $product->id)->where('user_id', $userId)->first();
-        $accessToken = AccessToken::query()->where('product_id', $product->id)->where('user_id', $userId)->first();
-        if (! is_null($accessToken)) {
-            $userVisibility->delete();
-        }
+        Auth::user()->products()->detach($product->id);
+        Notification::make()
+            ->title(__('Succesfuly removed the product from your account.'))
+            ->success()
+            ->send();
 
-        if (! is_null($accessToken)) {
-            $accessToken->delete();
-        }
-
-        $user = User::query()->find($userId);
-        $user->products()->detach($product->id);
-
-        return to_route('products.myproducts')->with('success', __('Succesfuly removed the product from your account.'));
+        return to_route('products.myproducts');
     }
 
     public function search(): Factory|View

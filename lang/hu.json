@@ -317,5 +317,6 @@
     "Worksheet close": "Munkalap lezárása",
     "Work description": "Munkavégzés leírása",
     "Worksheet ID": "Papir alapú munkalap száma",
-    "commisioning": "beüzemelés"
+    "commisioning": "beüzemelés",
+    "Organizations deleted successfully.": "A szervezet sikeresen törölve."
 }
