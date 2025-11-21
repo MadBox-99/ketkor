@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\AccessTokenController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PartialController;
@@ -54,10 +53,6 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('edit');
         Route::get('/', [ProductController::class, 'index'])->name('index');
         Route::put('/update/{product}', [ProductController::class, 'update'])->name('update');
-    });
-    Route::prefix('accestoken')->name('accestokens.')->group(function (): void {
-        Route::get('/createAccessToken/{product}', [AccessTokenController::class, 'createAccessToken'])->name('createAccessToken');
-        Route::get('/activateAccessToken/{token}', [AccessTokenController::class, 'activateAccessToken'])->name('activateAccessToken');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

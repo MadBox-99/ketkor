@@ -11,22 +11,21 @@ use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;
 
+function createTestProduct(Tool $tool, array $attributes = []): Product
+{
+    return Product::factory()->create(array_merge([
+        'tool_id' => $tool->id,
+    ], $attributes));
+}
+
 beforeEach(function (): void {
-    $this->tool = Tool::factory()->create();
     actingAs(User::factory()->create());
-
-    $this->createProduct = function (array $attributes = []) {
-        $product = Product::factory()->create(array_merge([
-            'tool_id' => $this->tool->id,
-        ], $attributes));
-
-        return $product;
-    };
 });
 
 describe('commissioning validation', function (): void {
     it('allows commissioning within 6 months of purchase', function (): void {
-        $product = ($this->createProduct)(['purchase_date' => now()->subMonths(3)]);
+        $tool = Tool::factory()->create();
+        $product = createTestProduct($tool, ['purchase_date' => now()->subMonths(3)]);
 
         Livewire::test(ProductEdit::class, ['product' => $product])
             ->set('eventData.what', 'commissioning')
@@ -43,7 +42,8 @@ describe('commissioning validation', function (): void {
     });
 
     it('prevents commissioning if purchase date is missing', function (): void {
-        $product = ($this->createProduct)(['purchase_date' => null]);
+        $tool = Tool::factory()->create();
+        $product = createTestProduct($tool, ['purchase_date' => null]);
 
         Livewire::test(ProductEdit::class, ['product' => $product])
             ->set('eventData.what', 'commissioning')
@@ -56,7 +56,8 @@ describe('commissioning validation', function (): void {
 
 describe('maintenance validation', function (): void {
     it('allows maintenance 11-13 months after commissioning', function (): void {
-        $product = ($this->createProduct)(['purchase_date' => now()->subMonths(13)]);
+        $tool = Tool::factory()->create();
+        $product = createTestProduct($tool, ['purchase_date' => now()->subMonths(13)]);
 
         ProductLog::query()->create([
             'product_id' => $product->id,
@@ -78,7 +79,8 @@ describe('maintenance validation', function (): void {
     });
 
     it('allows maintenance without commissioning', function (): void {
-        $product = ($this->createProduct)(['purchase_date' => now()->subMonths(12)]);
+        $tool = Tool::factory()->create();
+        $product = createTestProduct($tool, ['purchase_date' => now()->subMonths(12)]);
 
         Livewire::test(ProductEdit::class, ['product' => $product])
             ->set('eventData.what', 'maintenance')
@@ -89,7 +91,8 @@ describe('maintenance validation', function (): void {
     });
 
     it('allows multiple maintenance operations', function (): void {
-        $product = ($this->createProduct)(['purchase_date' => now()->subMonths(36)]);
+        $tool = Tool::factory()->create();
+        $product = createTestProduct($tool, ['purchase_date' => now()->subMonths(36)]);
 
         ProductLog::query()->create([
             'product_id' => $product->id,
@@ -121,7 +124,8 @@ describe('maintenance validation', function (): void {
     });
 
     it('validates second maintenance window from first maintenance', function (): void {
-        $product = ($this->createProduct)(['purchase_date' => now()->subMonths(26)]);
+        $tool = Tool::factory()->create();
+        $product = createTestProduct($tool, ['purchase_date' => now()->subMonths(26)]);
 
         ProductLog::query()->create([
             'product_id' => $product->id,
@@ -146,7 +150,8 @@ describe('maintenance validation', function (): void {
     });
 
     it('does not extend warranty date on maintenance', function (): void {
-        $product = ($this->createProduct)(['purchase_date' => now()->subMonths(24)]);
+        $tool = Tool::factory()->create();
+        $product = createTestProduct($tool, ['purchase_date' => now()->subMonths(24)]);
 
         ProductLog::query()->create([
             'product_id' => $product->id,
