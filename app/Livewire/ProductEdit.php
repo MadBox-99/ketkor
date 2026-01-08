@@ -520,6 +520,18 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                     $productLog,
                     $pdfContent,
                 ));
+                if ($owner || $owner->email) {
+                    Mail::to($owner->email)->send(new WorksheetMail(
+                        $this->product,
+                        $productLog,
+                        $pdfContent,
+                    ));
+                }
+                Mail::to('szervizpartner@ketkorkft.hu')->send(new WorksheetMail(
+                    $this->product,
+                    $productLog,
+                    $pdfContent,
+                ));
 
                 Notification::make()
                     ->success()
