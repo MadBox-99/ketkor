@@ -43,34 +43,21 @@ class ProductImporter extends Importer
                 ->rules(['date']),
             ImportColumn::make('purchase_date')
                 ->rules(['date']),
-            ImportColumn::make('tool_name')
+            ImportColumn::make('tool')
                 ->requiredMapping()
-                ->rules(['required', 'max:200']),
+                ->relationship(resolveUsing: function (string $state, array $options): ?Tool {
+                    $category = $options['selectedBrand'];
+
+                    return Tool::query()->firstOrCreate(
+                        ['name' => $state, 'category' => $category],
+                        ['name' => $state, 'category' => $category],
+                    );
+                }),
         ];
     }
 
     public function resolveRecord(): ?Product
     {
-        $toolName = $this->data['tool_name'] ?? null;
-        $category = $this->options['selectedBrand'];
-
-        if ($toolName) {
-            $tool = Tool::query()->firstOrCreate(
-                [
-                    'name' => $toolName,
-                    'category' => $category,
-                ],
-                [
-                    'name' => $toolName,
-                    'category' => $category,
-                ],
-            );
-
-            $this->data['tool_id'] = $tool->id;
-        }
-
-        unset($this->data['tool_name']);
-
         if ($this->options['updateExisting'] ?? false) {
             return Product::query()->firstOrNew([
                 'serial_number' => $this->data['serial_number'],
