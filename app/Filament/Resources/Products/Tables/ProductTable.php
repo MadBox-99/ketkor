@@ -63,12 +63,6 @@ class ProductTable
             ->headerActions([
                 ImportAction::make()
                     ->importer(ProductImporter::class)
-                    ->acceptedFileTypes([
-                        'text/csv',
-                        'text/plain',
-                        'text/tab-separated-values',
-                        'application/vnd.ms-excel',
-                    ])
                     ->options([
                         'updateExisting' => true,
                     ]),
