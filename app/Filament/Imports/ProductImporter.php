@@ -6,6 +6,7 @@ namespace App\Filament\Imports;
 
 use App\Enums\ProductCategory;
 use App\Models\Product;
+use App\Models\Tool;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
@@ -42,14 +43,34 @@ class ProductImporter extends Importer
                 ->rules(['date']),
             ImportColumn::make('purchase_date')
                 ->rules(['date']),
-            ImportColumn::make('tool')
-                ->relationship('tool', 'name'),
+            ImportColumn::make('tool_name')
+                ->requiredMapping()
+                ->rules(['required', 'max:200']),
         ];
     }
 
     public function resolveRecord(): ?Product
     {
-        $this->data['tool'] = $this->options['selectedBrand'];
+        $toolName = $this->data['tool_name'] ?? null;
+        $category = $this->options['selectedBrand'];
+
+        if ($toolName) {
+            $tool = Tool::query()->firstOrCreate(
+                [
+                    'name' => $toolName,
+                    'category' => $category,
+                ],
+                [
+                    'name' => $toolName,
+                    'category' => $category,
+                ],
+            );
+
+            $this->data['tool_id'] = $tool->id;
+        }
+
+        unset($this->data['tool_name']);
+
         if ($this->options['updateExisting'] ?? false) {
             return Product::query()->firstOrNew([
                 'serial_number' => $this->data['serial_number'],
