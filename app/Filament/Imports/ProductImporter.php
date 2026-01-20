@@ -82,7 +82,7 @@ class ProductImporter extends Importer
 
     public static function getCsvDelimiter(): string
     {
-        return "\t";
+        return ';';
     }
 
     public static function getCompletedNotificationBody(Import $import): string
