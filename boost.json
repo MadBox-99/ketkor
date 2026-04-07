@@ -3,9 +3,10 @@
         "claude_code"
     ],
     "editors": [
-        "claude_code",
-        "vscode"
+        "claude_code"
     ],
-    "guidelines": [],
+    "guidelines": [
+        "filament/filament"
+    ],
     "herd_mcp": true
 }

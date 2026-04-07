@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 return [
     'resources' => [
-        'PermissionResource' => \Althinect\FilamentSpatieRolesPermissions\Resources\PermissionResource::class,
-        'RoleResource' => \Althinect\FilamentSpatieRolesPermissions\Resources\RoleResource::class,
+        'PermissionResource' => \MadBox\FilamentSpatiePermissions\Resources\PermissionResource::class,
+        'RoleResource' => \MadBox\FilamentSpatiePermissions\Resources\RoleResource::class,
     ],
 
     'preload_roles' => true,

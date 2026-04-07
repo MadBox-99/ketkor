@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Althinect\FilamentSpatieRolesPermissions\Concerns\HasSuperAdmin;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,8 +18,12 @@ class User extends Authenticatable implements FilamentUser
 {
     use HasFactory;
     use HasRoles;
-    use HasSuperAdmin;
     use Notifiable;
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('Super Admin');
+    }
 
     /**
      * The attributes that are mass assignable.
