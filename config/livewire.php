@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'layout' => 'components.layouts.app',
+    'component_layout' => 'components.layouts.app',
 
     /*
     |---------------------------------------------------------------------------
@@ -51,7 +51,74 @@ return [
     |
     */
 
-    'lazy_placeholder' => null,
+    'component_placeholder' => null,
+
+    /*
+    |---------------------------------------------------------------------------
+    | Smart wire:key
+    |---------------------------------------------------------------------------
+    |
+    | Helps prevent wire:key issues on deeply nested components. You still need
+    | to add wire:key manually in loops.
+    |
+    */
+
+    'smart_wire_keys' => true,
+
+    /*
+    |---------------------------------------------------------------------------
+    | Component Locations
+    |---------------------------------------------------------------------------
+    |
+    | Defines where Livewire looks for single-file and multi-file (view-based)
+    | components.
+    |
+    */
+
+    'component_locations' => [
+        resource_path('views/components'),
+        resource_path('views/livewire'),
+    ],
+
+    /*
+    |---------------------------------------------------------------------------
+    | Component Namespaces
+    |---------------------------------------------------------------------------
+    |
+    | Creates custom namespaces for organizing view-based components.
+    |
+    */
+
+    'component_namespaces' => [
+        'layouts' => resource_path('views/layouts'),
+        'pages' => resource_path('views/pages'),
+    ],
+
+    /*
+    |---------------------------------------------------------------------------
+    | Make Command Defaults
+    |---------------------------------------------------------------------------
+    |
+    | Configure default component format and emoji usage for make commands.
+    | Set type to 'class' to match v3 behavior.
+    |
+    */
+
+    'make_command' => [
+        'type' => 'class',
+        'emoji' => false,
+    ],
+
+    /*
+    |---------------------------------------------------------------------------
+    | CSP Safe Mode
+    |---------------------------------------------------------------------------
+    |
+    | Enable Content Security Policy mode to avoid unsafe-eval violations.
+    |
+    */
+
+    'csp_safe' => false,
 
     /*
     |---------------------------------------------------------------------------
