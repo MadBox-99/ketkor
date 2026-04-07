@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace App\Livewire\Auth;
 
 use App\Models\User;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Schemas\Schema;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -13,30 +17,63 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 #[Layout('components.layouts.auth.simple')]
-class Register extends Component
+class Register extends Component implements HasSchemas
 {
-    public string $name = '';
+    use InteractsWithSchemas;
 
-    public string $email = '';
+    public ?array $data = [];
 
-    public string $password = '';
+    public function mount(): void
+    {
+        $this->form->fill();
+    }
 
-    public string $password_confirmation = '';
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                TextInput::make('name')
+                    ->label(__('Name'))
+                    ->placeholder(__('Full name'))
+                    ->required()
+                    ->maxLength(255)
+                    ->autofocus(),
 
-    /**
-     * Handle an incoming registration request.
-     */
+                TextInput::make('email')
+                    ->label(__('Email address'))
+                    ->placeholder('email@example.com')
+                    ->email()
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(User::class),
+
+                TextInput::make('password')
+                    ->label(__('Password'))
+                    ->placeholder(__('Password'))
+                    ->password()
+                    ->revealable()
+                    ->required()
+                    ->rule(Password::defaults())
+                    ->confirmed(),
+
+                TextInput::make('password_confirmation')
+                    ->label(__('Confirm password'))
+                    ->placeholder(__('Confirm password'))
+                    ->password()
+                    ->revealable()
+                    ->required(),
+            ])
+            ->statePath('data');
+    }
+
     public function register(): void
     {
-        $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'string', 'confirmed', Password::defaults()],
-        ]);
+        $data = $this->form->getState();
 
-        $validated['password'] = Hash::make($validated['password']);
+        $data['password'] = Hash::make($data['password']);
+        unset($data['password_confirmation']);
 
-        event(new Registered(($user = User::query()->create($validated))));
+        event(new Registered(($user = User::query()->create($data))));
 
         Auth::login($user);
 

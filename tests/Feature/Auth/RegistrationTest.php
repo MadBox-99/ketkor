@@ -14,10 +14,12 @@ test('registration screen can be rendered', function (): void {
 
 test('new users can register', function (): void {
     Livewire::test(Register::class)
-        ->set('name', 'Test User')
-        ->set('email', 'test@example.com')
-        ->set('password', 'password')
-        ->set('password_confirmation', 'password')
+        ->fillForm([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ])
         ->call('register')
         ->assertRedirect();
 
@@ -26,32 +28,38 @@ test('new users can register', function (): void {
 
 test('registration requires valid email', function (): void {
     Livewire::test(Register::class)
-        ->set('name', 'Test User')
-        ->set('email', 'not-an-email')
-        ->set('password', 'password')
-        ->set('password_confirmation', 'password')
+        ->fillForm([
+            'name' => 'Test User',
+            'email' => 'not-an-email',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ])
         ->call('register')
-        ->assertHasErrors(['email']);
+        ->assertHasFormErrors(['email']);
 });
 
 test('registration requires password confirmation', function (): void {
     Livewire::test(Register::class)
-        ->set('name', 'Test User')
-        ->set('email', 'test@example.com')
-        ->set('password', 'password')
-        ->set('password_confirmation', 'wrong-password')
+        ->fillForm([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'wrong-password',
+        ])
         ->call('register')
-        ->assertHasErrors(['password']);
+        ->assertHasFormErrors(['password']);
 });
 
 test('registration requires unique email', function (): void {
     User::factory()->create(['email' => 'taken@example.com']);
 
     Livewire::test(Register::class)
-        ->set('name', 'Test User')
-        ->set('email', 'taken@example.com')
-        ->set('password', 'password')
-        ->set('password_confirmation', 'password')
+        ->fillForm([
+            'name' => 'Test User',
+            'email' => 'taken@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ])
         ->call('register')
-        ->assertHasErrors(['email']);
+        ->assertHasFormErrors(['email']);
 });
