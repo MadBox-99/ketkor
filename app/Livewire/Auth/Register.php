@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Auth;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Spatie\Permission\Models\Role;
 
 #[Layout('components.layouts.auth.simple')]
 class Register extends Component implements HasSchemas
@@ -73,10 +75,15 @@ class Register extends Component implements HasSchemas
         $data['password'] = Hash::make($data['password']);
         unset($data['password_confirmation']);
 
-        event(new Registered(($user = User::query()->create($data))));
+        $user = User::query()->create($data);
+
+        Role::findOrCreate(UserRole::Organizer->value, 'web');
+        $user->assignRole(UserRole::Organizer);
+
+        event(new Registered($user));
 
         Auth::login($user);
 
-        $this->redirect(route('index', absolute: false), navigate: true);
+        $this->redirect(route('verification.notice', absolute: false), navigate: true);
     }
 }

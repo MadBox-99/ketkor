@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\UserRole;
 use App\Livewire\Auth\Register;
 use App\Models\User;
 use Livewire\Livewire;
@@ -21,9 +22,39 @@ test('new users can register', function (): void {
             'password_confirmation' => 'password',
         ])
         ->call('register')
-        ->assertRedirect();
+        ->assertRedirect(route('verification.notice'));
 
     $this->assertAuthenticated();
+});
+
+test('new users get organizer role by default', function (): void {
+    Livewire::test(Register::class)
+        ->fillForm([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ])
+        ->call('register');
+
+    $user = User::query()->where('email', 'test@example.com')->first();
+
+    expect($user->hasRole(UserRole::Organizer))->toBeTrue();
+});
+
+test('new users must verify email', function (): void {
+    Livewire::test(Register::class)
+        ->fillForm([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ])
+        ->call('register');
+
+    $user = User::query()->where('email', 'test@example.com')->first();
+
+    expect($user->hasVerifiedEmail())->toBeFalse();
 });
 
 test('registration requires valid email', function (): void {
