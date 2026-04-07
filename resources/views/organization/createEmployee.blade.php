@@ -20,7 +20,7 @@
                                     {{ __('User create form') }}
                                 </h2>
                             </header>
-                            <form class="mt-6 space-y-6" method="POST" action="{{ route('organizations.store') }}">
+                            <form class="mt-6 space-y-6" method="POST" action="{{ route('organizations.employee.store') }}">
                                 @csrf
                                 @method('PUT')
                                 <div class="mb-4">
