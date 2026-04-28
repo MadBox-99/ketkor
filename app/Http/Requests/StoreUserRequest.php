@@ -8,6 +8,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class StoreUserRequest extends FormRequest
 {
@@ -29,7 +30,7 @@ class StoreUserRequest extends FormRequest
         return [
             'name' => ['required', Rule::unique('users', 'name')],
             'email' => ['required', Rule::unique('users', 'email')],
-            'password' => ['required', 'password'],
+            'password' => ['required', Password::defaults()],
             'organization_id' => ['required', Rule::exists('organizations', 'id')],
         ];
     }
@@ -46,6 +47,7 @@ class StoreUserRequest extends FormRequest
             'name.unique' => __('The name has already been taken.'),
             'email.required' => __('A email is required.'),
             'email.unique' => __('The email has already been taken.'),
+            'password.required' => __('A password is required.'),
             'organization_id.required' => __('A organization is required.'),
             'organization_id.exists' => __('The organization has to be exist.'),
         ];
