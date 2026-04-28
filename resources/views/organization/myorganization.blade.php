@@ -1,7 +1,7 @@
 <x-layouts.app>
     <!-- Page Heading -->
     <x-slot name="header">
-        <x-button-style-link text="Organization edit" route="organizations.create">
+        <x-button-style-link text="Organization edit" route="organizations.employee.create">
             Create Employee
         </x-button-style-link>
     </x-slot>
