@@ -11,6 +11,7 @@ use App\Models\User;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -31,8 +32,6 @@ class ProductController extends Controller
      */
     public function edit(Product $product): View
     {
-        $product = Product::query()->find($product->id);
-
         $partials = Partial::query()->where('product_id', $product->id)->latest()->limit(6)->get();
         $users = User::query()->orderBy('name')->get();
         $tools = Tool::query()->orderBy('name')->get();
@@ -40,22 +39,18 @@ class ProductController extends Controller
         return view('product.edit', ['users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials]);
     }
 
-    public function partialUpdate(Request $request, Product $product) {}
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, Product $product): RedirectResponse
     {
-        Auth::user();
         DB::beginTransaction();
         try {
             $request->validate([
-                'tool_id' => ['required'],
-                'user_ids' => ['required'],
+                'tool_id' => ['required', 'exists:tools,id'],
+                'user_ids' => ['required', 'array'],
+                'user_ids.*' => ['exists:users,id'],
             ]);
-            // Validate Request
-            $product = Product::whereId($product->id)->first();
             $product->update([
                 'serial_number' => $request->serial_number,
                 'installation_date' => $request->installation_date,
@@ -70,39 +65,23 @@ class ProductController extends Controller
             $product->users()->sync($request->user_ids);
 
             DB::commit();
-            $users = User::query()->orderBy('name')->get();
-            $tools = Tool::query()->orderBy('name')->get();
-            $partials = Partial::query()->where('product_id', $product->id)->latest()->limit(6)->get();
 
-            $success = __('Products updated successfully.');
-
-            return to_route('products.edit', ['product' => $product])->with(['success' => $success, 'users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials]);
+            return to_route('products.edit', ['product' => $product])->with('success', __('Products updated successfully.'));
         } catch (Throwable $throwable) {
             DB::rollback();
 
-            $partials = Partial::query()->where('product_id', $product->id)->latest()->limit(6)->get();
-            $users = User::query()->orderBy('name')->get();
-            $tools = Tool::query()->orderBy('name')->get();
-            $error = $throwable->getMessage();
-
-            return to_route('products.edit', ['product' => $product])->with(['error' => $error, 'users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials]);
+            return to_route('products.edit', ['product' => $product])->with('error', $throwable->getMessage());
         }
     }
 
-    public function add(Product $product)
+    public function add(Product $product): RedirectResponse
     {
-        $user = Auth::user();
-        $user->products()->attach($product->id);
-        $product = Product::whereId($product->id)->first();
+        Auth::user()->products()->attach($product->id);
 
-        $partials = Partial::query()->where('product_id', $product->id)->latest()->limit(6)->get();
-        $users = User::query()->orderBy('name')->get();
-        $tools = Tool::query()->orderBy('name')->get();
-
-        return to_route('products.edit', ['product' => $product])->with(['users' => $users, 'tools' => $tools, 'product' => $product, 'partials' => $partials]);
+        return to_route('products.edit', ['product' => $product]);
     }
 
-    public function remove(Product $product)
+    public function remove(Product $product): RedirectResponse
     {
         Auth::user()->products()->detach($product->id);
         Notification::make()

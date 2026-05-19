@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\Partial;
-use App\Models\Product;
-use App\Models\Tool;
-use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -33,35 +31,30 @@ class PartialController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         DB::beginTransaction();
         try {
-            $product = Product::whereId($request->product_id)->with(['users'])->first();
-            $request->validate([
+            $validated = $request->validate([
                 'name' => ['required', 'string', 'max:200'],
+                'email' => ['nullable', 'email'],
+                'phone' => ['nullable', 'string', 'max:50'],
+                'product_id' => ['required', 'exists:products,id'],
             ]);
             Partial::query()->create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'product_id' => $request->product_id,
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'],
+                'product_id' => $validated['product_id'],
             ]);
 
             DB::commit();
 
-            $users = User::query()->get();
-            $tools = Tool::query()->get();
-            $success = __('Product updated successfully.');
-
-            return to_route('products.edit', ['product' => $product])->with(['tools' => $tools, 'users' => $users, 'success' => $success]);
+            return to_route('products.edit', ['product' => $validated['product_id']])->with('success', __('Product updated successfully.'));
         } catch (Throwable $throwable) {
             DB::rollback();
 
-            $users = User::query()->get();
-            $tools = Tool::query()->get();
-
-            return to_route('products.edit', ['product' => $product])->with(['error' => $throwable->getMessage(), 'users' => $users, 'tools' => $tools]);
+            return back()->withInput()->with('error', $throwable->getMessage());
         }
     }
 

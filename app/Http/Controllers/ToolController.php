@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\Tool;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -32,15 +33,15 @@ class ToolController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         DB::beginTransaction();
         try {
             $request->validate([
                 'name' => ['required', 'string'],
-                'category' => ['string'],
-                'tag' => ['string'],
-                'factory_name' => ['string'],
+                'category' => ['nullable', 'string'],
+                'tag' => ['nullable', 'string'],
+                'factory_name' => ['nullable', 'string'],
             ]);
             Tool::query()->create([
                 'name' => $request->name,
@@ -77,14 +78,15 @@ class ToolController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Tool $tool)
+    public function update(Request $request, Tool $tool): RedirectResponse
     {
         DB::beginTransaction();
         try {
             $request->validate([
                 'name' => ['required', 'string'],
-                'category' => ['string'],
-                'factory_name' => ['string'],
+                'category' => ['nullable', 'string'],
+                'tag' => ['nullable', 'string'],
+                'factory_name' => ['nullable', 'string'],
             ]);
             $tool->update(
                 [
@@ -108,8 +110,18 @@ class ToolController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tool $tool): void
+    public function destroy(Tool $tool): RedirectResponse
     {
-        //
+        DB::beginTransaction();
+        try {
+            $tool->delete();
+            DB::commit();
+
+            return to_route('tools.index')->with('success', __('Tool deleted successfully.'));
+        } catch (Throwable $throwable) {
+            DB::rollback();
+
+            return to_route('tools.index')->with('error', $throwable->getMessage());
+        }
     }
 }

@@ -49,7 +49,6 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         Route::get('/myproducts', [ProductController::class, 'myproducts'])->name('myproducts');
         Route::get('/add/{product}', [ProductController::class, 'add'])->name('add');
         Route::delete('/remove/{product}', [ProductController::class, 'remove'])->name('remove');
-        Route::get('/partialUpdate/{product}', [ProductController::class, 'partialUpdate']);
         Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('edit');
         Route::get('/', [ProductController::class, 'index'])->name('index');
         Route::put('/update/{product}', [ProductController::class, 'update'])->name('update');

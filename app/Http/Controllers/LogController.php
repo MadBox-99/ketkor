@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Models\Log;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -25,7 +26,7 @@ class LogController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Log $log)
+    public function destroy(Log $log): RedirectResponse
     {
         DB::beginTransaction();
         try {
@@ -33,7 +34,7 @@ class LogController extends Controller
 
             DB::commit();
 
-            return to_route('logs.index')->with('success', __('Organizations deleted successfully.'));
+            return to_route('logs.index')->with('success', __('Log deleted successfully.'));
         } catch (Throwable $throwable) {
             DB::rollback();
 

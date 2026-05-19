@@ -39,7 +39,7 @@ class ProfileController extends Controller
         DB::beginTransaction();
         try {
             $validated = $request->validated();
-            User::query()->createOrFirst([
+            User::query()->create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'password' => $validated['password'],
@@ -59,7 +59,7 @@ class ProfileController extends Controller
     public function show(User $user): View
     {
         $organizations = Organization::query()->get();
-        $user = User::whereId($user->id)->with('organization')->first();
+        $user->load('organization');
         $roles = Role::all();
 
         return view('user.edit', ['organizations' => $organizations, 'user' => $user, 'roles' => $roles]);
@@ -77,15 +77,23 @@ class ProfileController extends Controller
 
     public function userUpdate(UserUpdateRequest $request, User $user): RedirectResponse
     {
-        $validated = $request->validated();
-        $user->update([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'organization_id' => $validated['organization'],
-        ]);
-        $user->syncRoles($validated['role']);
+        DB::beginTransaction();
+        try {
+            $validated = $request->validated();
+            $user->update([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'organization_id' => $validated['organization'],
+            ]);
+            $user->syncRoles($validated['role']);
+            DB::commit();
 
-        return back()->with('status', __('User updated!'))->withInput();
+            return back()->with('status', __('User updated!'))->withInput();
+        } catch (Throwable $throwable) {
+            DB::rollBack();
+
+            return back()->withInput()->with('error', $throwable->getMessage());
+        }
     }
 
     /**
@@ -95,13 +103,14 @@ class ProfileController extends Controller
     {
         DB::beginTransaction();
         try {
-            Auth::user()->fill($request->validated());
+            $user = Auth::user();
+            $user->fill($request->validated());
 
-            if (Auth::user()->isDirty('email')) {
-                Auth::user()->email_verified_at = null;
+            if ($user->isDirty('email')) {
+                $user->email_verified_at = null;
             }
 
-            Auth::user()->save();
+            $user->save();
             DB::commit();
 
             return back()->with('status', __('Profile updated successfully.'));

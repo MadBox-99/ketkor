@@ -8,8 +8,8 @@ use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Throwable;
 
 class EmployeeController extends Controller
@@ -24,11 +24,11 @@ class EmployeeController extends Controller
         DB::beginTransaction();
         try {
             $validated = $request->validated();
-            $user = User::query()->createOrFirst([
+            $user = User::query()->create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
-                'password' => Hash::make($validated['password']),
-                'organization_id' => $validated['organization_id'],
+                'password' => $validated['password'],
+                'organization_id' => Auth::user()->organization_id,
             ]);
             $user->assignRole('Servicer');
 

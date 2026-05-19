@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -35,7 +36,7 @@ class OrganizationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         DB::beginTransaction();
         try {
@@ -45,18 +46,24 @@ class OrganizationController extends Controller
                     'city' => ['string'],
                     'address' => ['string'],
                     'zip' => ['string'],
+                    'tax_number' => ['required', 'max:24'],
                 ],
             );
-            Organization::query()->create([
+            $organization = Organization::query()->create([
                 'name' => $request->name,
+                'city' => $request->city,
                 'address' => $request->address,
                 'tax_number' => $request->tax_number,
                 'zip' => $request->zip,
             ]);
 
+            $user = Auth::user();
+            $user->organization_id = $organization->id;
+            $user->save();
+
             DB::commit();
 
-            return to_route('organizations.index')->with('success', __('Organization created successfully.'));
+            return to_route('organizations.myorganization')->with('success', __('Organization created successfully.'));
         } catch (Throwable $throwable) {
             DB::rollback();
 
@@ -72,23 +79,19 @@ class OrganizationController extends Controller
         //
     }
 
-    public function productMove(Request $request)
+    public function productMove(Request $request): RedirectResponse
     {
         DB::beginTransaction();
         try {
-            // validation
             $request->validate(
                 [
-                    'selected_user_id' => ['required'],
-                    'user_id' => ['required'],
-                    'product_id' => ['required'],
+                    'selected_user_id' => ['required', 'exists:users,id'],
+                    'user_id' => ['required', 'exists:users,id'],
+                    'product_id' => ['required', 'exists:products,id'],
                 ],
             );
-            $product = Product::with(['users'])->whereId($request->product_id)->first();
-            $selectedUserId = $request->selected_user_id;
-            $isAttached = $product->users->contains($selectedUserId);
+            $product = Product::query()->findOrFail($request->product_id);
             $product->users()->detach($request->user_id);
-
             $product->users()->attach($request->selected_user_id);
 
             DB::commit();
@@ -106,19 +109,13 @@ class OrganizationController extends Controller
      */
     public function edit(Organization $organization): Factory|View
     {
-        $organization = Organization::whereId($organization->id)->first();
-        $organization_id = $organization->id;
-        $products = Product::query()->whereHas('users.organization', function ($query) use ($organization_id): void {
-            $query->where('id', $organization_id);
-        })->get();
-
-        return view('organization.edit', ['organization' => $organization, 'products' => $products]);
+        return view('organization.edit', ['organization' => $organization]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Organization $organization)
+    public function update(Request $request, Organization $organization): RedirectResponse
     {
         DB::beginTransaction();
         try {
@@ -147,7 +144,7 @@ class OrganizationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Organization $organization)
+    public function destroy(Organization $organization): RedirectResponse
     {
         DB::beginTransaction();
         try {
@@ -162,26 +159,36 @@ class OrganizationController extends Controller
         }
     }
 
-    public function removeUserProduct(User $user, Organization $organization, Product $product): Factory|View
+    public function removeUserProduct(User $user, Organization $organization, Product $product): Factory|View|RedirectResponse
     {
+        $authUser = Auth::user();
+
+        if ($user->organization_id !== $authUser->organization_id) {
+            return to_route('organizations.myorganization')->with('error', __('You are not allowed to modify this user.'));
+        }
+
         $user->products()->detach($product->id);
-        $user = Auth::user();
-        $organization_id = $user->organization_id;
-        $organization = Organization::with('users.products')->whereId($organization_id)->first();
 
-        return view('organization.myorganization', ['organization' => $organization]);
+        return $this->renderMyOrganization($authUser->organization_id);
     }
 
-    public function myOrganization(): Factory|View
+    public function myOrganization(): Factory|View|RedirectResponse
     {
-        $user = Auth::user();
-        $organization_id = $user->organization_id;
-        $organization = Organization::with('users.products')->whereId($organization_id)->first();
+        return $this->renderMyOrganization(Auth::user()->organization_id);
+    }
+
+    private function renderMyOrganization(?int $organizationId): Factory|View|RedirectResponse
+    {
+        $organization = Organization::with('users.products')->whereId($organizationId)->first();
+
+        if (! $organization instanceof Organization) {
+            return to_route('organizations.create')->with('error', __('You do not have an organization yet. Please create one.'));
+        }
 
         return view('organization.myorganization', ['organization' => $organization]);
     }
 
-    public function myOrganizationUpdate(Request $request, Organization $organization)
+    public function myOrganizationUpdate(Request $request, Organization $organization): RedirectResponse
     {
         DB::beginTransaction();
         try {
@@ -213,11 +220,17 @@ class OrganizationController extends Controller
         }
     }
 
-    public function removeUserFromOrganization(User $user)
+    public function removeUserFromOrganization(User $user): RedirectResponse
     {
         DB::beginTransaction();
         try {
-            if ($user->id != Auth::user()->id && ! $user->hasRole('Organizer')) {
+            $authUser = Auth::user();
+
+            if ($user->organization_id !== $authUser->organization_id) {
+                return to_route('organizations.myorganization')->with('error', __('The user could not be removed from the organisation. You cannot delete your account here.'));
+            }
+
+            if ($user->id !== $authUser->id && ! $user->hasRole('Organizer')) {
                 $user->products()->detach();
                 $user->delete();
                 DB::commit();
@@ -229,7 +242,7 @@ class OrganizationController extends Controller
         } catch (Throwable $throwable) {
             DB::rollback();
 
-            return to_route('organizations.myorganization')->with('error', __('The user could not be removed from the organisation. You cannot delete your account here.' . $throwable->getMessage()));
+            return to_route('organizations.myorganization')->with('error', __('The user could not be removed from the organisation. You cannot delete your account here.') . ' ' . $throwable->getMessage());
         }
     }
 }
