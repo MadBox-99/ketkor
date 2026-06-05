@@ -18,6 +18,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Admin Notification Emails
+    |--------------------------------------------------------------------------
+    |
+    | These addresses receive notifications about administrative events such
+    | as new user registrations.
+    |
+    */
+
+    'admin_emails' => array_filter(array_map('trim', explode(',', (string) env(
+        'ADMIN_EMAILS',
+        'hegedus.csaba@ketkorkft.hu,denes.katalin@ketkorkft.hu,szolnoki.peter@ketkorkft.hu',
+    )))),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

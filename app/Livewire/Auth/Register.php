@@ -6,6 +6,7 @@ namespace App\Livewire\Auth;
 
 use App\Enums\UserRole;
 use App\Models\User;
+use App\Notifications\AdminUserRegistered;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
@@ -13,6 +14,7 @@ use Filament\Schemas\Schema;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -82,8 +84,22 @@ class Register extends Component implements HasSchemas
 
         event(new Registered($user));
 
+        $this->notifyAdmins($user);
+
         Auth::login($user);
 
         $this->redirect(route('verification.notice', absolute: false), navigate: true);
+    }
+
+    protected function notifyAdmins(User $user): void
+    {
+        $adminEmails = config('app.admin_emails', []);
+
+        if ($adminEmails === []) {
+            return;
+        }
+
+        Notification::route('mail', $adminEmails)
+            ->notify(new AdminUserRegistered($user));
     }
 }
