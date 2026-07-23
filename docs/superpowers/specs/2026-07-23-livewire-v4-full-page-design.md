@@ -100,15 +100,15 @@ Migráció előtt, hogy a felület felére csökkenjen.
 | `PartialController`, `Route::resource('partials')` | 6 stub + 1 duplikált `store` |
 | `ProductLogController`, `Route::resource('productlogs')` | 4 stub + 1 duplikált `store` |
 | `ProfileController::index/create/store/show/userUpdate`, `resources/views/user/` | Nincs `users` route |
-| `App\Livewire\ToolSearch` | Nincs hivatkozva |
 | `OrganizationController::show`, `ProductController::show`, `ToolController::show` | Üres stub |
 
 Minden törölt funkció megvan a Filament panelben (`LogResource`, `PartialResource`,
 `ProductLogResource`, `UserResource`).
 
-**Nyitott pont:** a `ToolSearch` törlésével a `tests/Feature/ToolSearchTest.php` is elesik.
-A CLAUDE.md tiltja tesztek engedély nélküli törlését — ezt külön jóvá kell hagyatni,
-mielőtt a fájl törlődik.
+**Kivétel — `App\Livewire\ToolSearch`:** halott kód (egyetlen nézet sem hivatkozik rá),
+de van rá élő teszt (`tests/Feature/ToolSearchTest.php`). A CLAUDE.md tiltja tesztek
+engedély nélküli törlését, ezért a komponens **és a tesztje is a helyén marad**, amíg
+külön jóváhagyás nem érkezik a törlésére. Nem blokkolja a migráció többi részét.
 
 ## Szeletek
 
@@ -122,7 +122,7 @@ mielőtt a fájl törlődik.
 | `products.edit` | `Products\Edit` | `App\Livewire\ProductEdit` + `ProductController::edit` adatbetöltése |
 | `products.update` | — | beolvad `Products\Edit`-be |
 | `products.add` | — | beolvad `Products\Search`-be, `wire:click` |
-| `products.remove` | — | törölhető, a `MyProducts` record action-je már ezt csinálja |
+| `products.remove` | — | route törlendő; a `MyProducts` record action-je már ezt csinálja |
 
 A `ProductEdit` 500+ soros. A költöztetés során szét kell szedni: a schema-definíciók
 (`productForm`, az esemény-űrlapok) és a validációs logika (`validateMaintenanceTiming`
