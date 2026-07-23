@@ -9,7 +9,6 @@ use App\Models\Product;
 use App\Models\Tool;
 use App\Models\User;
 use Filament\Notifications\Notification;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -66,15 +65,6 @@ class ProductController extends Controller
         }
     }
 
-    public function add(Product $product): RedirectResponse
-    {
-        /** @var User $user */
-        $user = Auth::user();
-        $user->products()->attach($product->id);
-
-        return to_route('products.edit', ['product' => $product]);
-    }
-
     public function remove(Product $product): RedirectResponse
     {
         /** @var User $user */
@@ -86,11 +76,6 @@ class ProductController extends Controller
             ->send();
 
         return to_route('products.myproducts');
-    }
-
-    public function search(): Factory|View
-    {
-        return view('product.search');
     }
 
     public function myproducts(): View
