@@ -10,6 +10,8 @@ use App\Models\User;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\assertDatabaseHas;
+use function Pest\Laravel\assertDatabaseMissing;
+use function Pest\Laravel\assertGuest;
 use function Pest\Laravel\get;
 use function Pest\Livewire\livewire;
 
@@ -68,4 +70,40 @@ it('updates the profile', function (): void {
         ->call('save');
 
     expect($user->fresh()->name)->toBe('New');
+});
+
+it('deletes the account when the current password is correct', function (): void {
+    $user = User::factory()->createOne();
+    actingAs($user);
+
+    livewire(Edit::class)
+        ->set('password', 'password')
+        ->call('destroy');
+
+    assertDatabaseMissing(User::class, ['id' => $user->id]);
+    assertGuest();
+});
+
+it('does not delete the account when the current password is incorrect', function (): void {
+    $user = User::factory()->createOne();
+    actingAs($user);
+
+    livewire(Edit::class)
+        ->set('password', 'wrong-password')
+        ->call('destroy')
+        ->assertHasErrors(['password']);
+
+    assertDatabaseHas(User::class, ['id' => $user->id]);
+});
+
+it('does not delete the account when the password is empty', function (): void {
+    $user = User::factory()->createOne();
+    actingAs($user);
+
+    livewire(Edit::class)
+        ->set('password', '')
+        ->call('destroy')
+        ->assertHasErrors(['password']);
+
+    assertDatabaseHas(User::class, ['id' => $user->id]);
 });
