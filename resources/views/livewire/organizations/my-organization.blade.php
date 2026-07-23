@@ -29,7 +29,7 @@
                 </div>
                 @foreach ($organization->users ?? [] as $user)
                     <div wire:key="user-{{ $user->id }}"
-                        class="mb-4 flex w-full flex-wrap justify-center rounded bg-white px-8 pb-8 pt-6 text-xl shadow-md">
+                        class="mb-4 flex w-full flex-wrap justify-center rounded bg-white px-8 pb-8 pt-6 text-xl shadow-md dark:bg-gray-800">
                         {{-- row 1 --}}
                         <div class="basis-full">
                             <div class="flex h-24 w-full content-between items-center">
@@ -76,7 +76,7 @@
                                 {{-- row 2 --}}
                                 @forelse ($user->products ?? [] as $product)
                                     <div wire:key="product-{{ $product->id }}"
-                                        class="h-20 basis-full rounded py-5 text-center odd:bg-white even:bg-gray-200">
+                                        class="h-20 basis-full rounded py-5 text-center odd:bg-white even:bg-gray-200 dark:odd:bg-gray-800 dark:even:bg-gray-700">
                                         <div class="flex h-20 flex-nowrap items-center sm:h-12">
                                             <div class="xs:basis-1/4 sm:block sm:basis-3/12 md:basis-2/12">
                                                 {{ $product->serial_number }}

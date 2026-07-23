@@ -29,7 +29,7 @@
             </thead>
             <tbody class="dark:bg-slate-800 bg-white">
                 @foreach ($tools as $tool)
-                    <tr class="odd:bg-white even:bg-gray-200">
+                    <tr class="odd:bg-white even:bg-gray-200 dark:odd:bg-gray-800 dark:even:bg-gray-700">
                         <x-table-td>
                             {{ $tool->name }}
                         </x-table-td>
