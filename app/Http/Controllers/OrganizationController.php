@@ -72,14 +72,6 @@ class OrganizationController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Organization $organization): void
-    {
-        //
-    }
-
     public function productMove(Request $request): RedirectResponse
     {
         DB::beginTransaction();

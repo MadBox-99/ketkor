@@ -60,14 +60,6 @@ class ToolController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(Tool $tool): void
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Tool $tool): Factory|View

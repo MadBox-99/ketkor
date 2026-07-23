@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UserUpdateRequest;
-use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,56 +12,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-use Spatie\Permission\Models\Role;
 use Throwable;
 
 class ProfileController extends Controller
 {
-    public function index(): View
-    {
-        $users = User::with(['roles', 'organization'])->paginate(20);
-
-        return view('user.index', ['users' => $users]);
-    }
-
-    public function create(Request $request): View
-    {
-        $organizations = Organization::query()->orderBy('name')->get();
-
-        return view('user.create', ['organizations' => $organizations]);
-    }
-
-    public function store(StoreUserRequest $request): RedirectResponse
-    {
-        DB::beginTransaction();
-        try {
-            $validated = $request->validated();
-            User::query()->create([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'password' => $validated['password'],
-                'organization_id' => $validated['organization_id'],
-            ]);
-            $success = __('Successfully created the user.');
-            DB::commit();
-
-            return to_route('users.index')->with(['success' => $success]);
-        } catch (Throwable $throwable) {
-            DB::rollBack();
-
-            return back()->withInput()->with('error', $throwable->getMessage());
-        }
-    }
-
-    public function show(User $user): View
-    {
-        $organizations = Organization::query()->get();
-        $user->load('organization');
-        $roles = Role::all();
-
-        return view('user.edit', ['organizations' => $organizations, 'user' => $user, 'roles' => $roles]);
-    }
-
     /**
      * Display the user's profile form.
      */
@@ -73,27 +24,6 @@ class ProfileController extends Controller
         return view('profile.edit', [
             'user' => $request->user(),
         ]);
-    }
-
-    public function userUpdate(UserUpdateRequest $request, User $user): RedirectResponse
-    {
-        DB::beginTransaction();
-        try {
-            $validated = $request->validated();
-            $user->update([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'organization_id' => $validated['organization'],
-            ]);
-            $user->syncRoles($validated['role']);
-            DB::commit();
-
-            return back()->with('status', __('User updated!'))->withInput();
-        } catch (Throwable $throwable) {
-            DB::rollBack();
-
-            return back()->withInput()->with('error', $throwable->getMessage());
-        }
     }
 
     /**
