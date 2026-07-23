@@ -7,9 +7,9 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ToolController;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
+use App\Livewire\Index;
 use Illuminate\Support\Facades\Route;
+use Livewire\Livewire;
 
 require __DIR__ . '/auth.php';
 /*
@@ -23,8 +23,14 @@ require __DIR__ . '/auth.php';
 |
 */
 
+// Livewire's Finder resolves a class named "Index" as a sub-namespace's
+// implicit index component and strips it to an empty name, which breaks
+// full-page resolution for a top-level `App\Livewire\Index`. Registering
+// the component name explicitly avoids that name-generation bug.
+Livewire::component('index', Index::class);
+
 Route::middleware(['auth', 'verified'])->group(function (): void {
-    Route::get('/', fn (): Factory|View => view('index'))->name('index');
+    Route::livewire('/', Index::class)->name('index');
 
     Route::get('organizations', [OrganizationController::class, 'index'])->name('organizations.index');
     Route::get('organizations/create', [OrganizationController::class, 'create'])->name('organizations.create');
