@@ -30,10 +30,8 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::livewire('/', Home::class)->name('index');
 
     Route::livewire('organizations', Organizations\Index::class)->name('organizations.index');
-    Route::get('organizations/create', [OrganizationController::class, 'create'])->name('organizations.create');
-    Route::post('organizations', [OrganizationController::class, 'store'])->name('organizations.store');
-    Route::get('organizations/{organization}/edit', [OrganizationController::class, 'edit'])->name('organizations.edit');
-    Route::put('organizations/{organization}', [OrganizationController::class, 'update'])->name('organizations.update');
+    Route::livewire('organizations/create', Organizations\Create::class)->name('organizations.create');
+    Route::livewire('organizations/{organization}/edit', Organizations\Edit::class)->name('organizations.edit');
     Route::delete('organizations/{organization}', [OrganizationController::class, 'destroy'])->name('organizations.destroy');
 
     Route::livewire('tools', Tools\Index::class)->name('tools.index');

@@ -25,53 +25,6 @@ class OrganizationController extends Controller
         return view('organization.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): View
-    {
-        return view('organization.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        DB::beginTransaction();
-        try {
-            $request->validate(
-                [
-                    'name' => ['required', 'string'],
-                    'city' => ['string'],
-                    'address' => ['string'],
-                    'zip' => ['string'],
-                    'tax_number' => ['required', 'max:24'],
-                ],
-            );
-            $organization = Organization::query()->create([
-                'name' => $request->name,
-                'city' => $request->city,
-                'address' => $request->address,
-                'tax_number' => $request->tax_number,
-                'zip' => $request->zip,
-            ]);
-
-            /** @var User $user */
-            $user = Auth::user();
-            $user->organization_id = $organization->id;
-            $user->save();
-
-            DB::commit();
-
-            return to_route('organizations.myorganization')->with('success', __('Organization created successfully.'));
-        } catch (Throwable $throwable) {
-            DB::rollback();
-
-            return back()->withInput()->with('error', $throwable->getMessage());
-        }
-    }
-
     public function productMove(Request $request): RedirectResponse
     {
         DB::beginTransaction();
@@ -90,43 +43,6 @@ class OrganizationController extends Controller
             DB::commit();
 
             return to_route('organizations.myorganization')->with('success', __('Product successfully moved.'));
-        } catch (Throwable $throwable) {
-            DB::rollback();
-
-            return back()->withInput()->with('error', $throwable->getMessage());
-        }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Organization $organization): Factory|View
-    {
-        return view('organization.edit', ['organization' => $organization]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Organization $organization): RedirectResponse
-    {
-        DB::beginTransaction();
-        try {
-            $request->validate([
-                'name' => ['required', 'string'],
-            ]);
-            $organization->update(
-                [
-                    'name' => $request->name,
-                    'city' => $request->city,
-                    'address' => $request->address,
-                    'tax_number' => $request->tax_number,
-                    'zip' => $request->zip,
-                ],
-            );
-            DB::commit();
-
-            return to_route('organizations.index')->with('success', __('Organization updated successfully.'));
         } catch (Throwable $throwable) {
             DB::rollback();
 
