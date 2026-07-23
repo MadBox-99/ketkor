@@ -57,6 +57,7 @@ class OrganizationController extends Controller
                 'zip' => $request->zip,
             ]);
 
+            /** @var User $user */
             $user = Auth::user();
             $user->organization_id = $organization->id;
             $user->save();
@@ -161,6 +162,7 @@ class OrganizationController extends Controller
 
     public function removeUserProduct(User $user, Organization $organization, Product $product): Factory|View|RedirectResponse
     {
+        /** @var User $authUser */
         $authUser = Auth::user();
 
         if ($user->organization_id !== $authUser->organization_id) {
@@ -174,7 +176,10 @@ class OrganizationController extends Controller
 
     public function myOrganization(): Factory|View|RedirectResponse
     {
-        return $this->renderMyOrganization(Auth::user()->organization_id);
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $this->renderMyOrganization($user->organization_id);
     }
 
     private function renderMyOrganization(?int $organizationId): Factory|View|RedirectResponse
@@ -224,6 +229,7 @@ class OrganizationController extends Controller
     {
         DB::beginTransaction();
         try {
+            /** @var User $authUser */
             $authUser = Auth::user();
 
             if ($user->organization_id !== $authUser->organization_id) {

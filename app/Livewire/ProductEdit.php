@@ -249,8 +249,11 @@ class ProductEdit extends Component implements HasActions, HasSchemas
             'tool_id' => $data['tool_id'],
         ]);
 
+        /** @var User $user */
+        $user = Auth::user();
+
         // Sync users if admin/operator
-        if (Auth::user()->hasAnyRole([UserRole::Admin, UserRole::Operator]) && isset($data['user_ids'])) {
+        if ($user->hasAnyRole([UserRole::Admin, UserRole::Operator]) && isset($data['user_ids'])) {
             $this->product->users()->sync($data['user_ids']);
         }
 
@@ -503,6 +506,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                 }
 
                 // Get the current user (servicer)
+                /** @var User $servicer */
                 $servicer = Auth::user();
 
                 // Generate PDF
@@ -516,7 +520,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
                 $pdfContent = $pdf->output();
 
                 // Send email with PDF attachment
-                Mail::to(Auth::user()->email)->send(new WorksheetMail(
+                Mail::to($servicer->email)->send(new WorksheetMail(
                     $this->product,
                     $productLog,
                     $pdfContent,

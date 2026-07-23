@@ -24,11 +24,14 @@ class EmployeeController extends Controller
         DB::beginTransaction();
         try {
             $validated = $request->validated();
+            /** @var User $authUser */
+            $authUser = Auth::user();
+
             $user = User::query()->create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'password' => $validated['password'],
-                'organization_id' => Auth::user()->organization_id,
+                'organization_id' => $authUser->organization_id,
             ]);
             $user->assignRole('Servicer');
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\Models\Product;
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -141,6 +142,7 @@ class ProductSearchUser extends Component implements HasActions, HasSchemas, Has
                     ->modalDescription(__('Are you sure you want to remove this product from your list?'))
                     ->successNotificationTitle(__('Product removed from your list'))
                     ->action(function (Product $record): void {
+                        /** @var User $user */
                         $user = Auth::user();
                         $record->users()->detach($user->id);
                     }),
@@ -154,6 +156,7 @@ class ProductSearchUser extends Component implements HasActions, HasSchemas, Has
 
     protected function getTableQuery(): Builder
     {
+        /** @var User $user */
         $user = Auth::user();
 
         return Product::query()

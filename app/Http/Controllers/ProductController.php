@@ -76,14 +76,18 @@ class ProductController extends Controller
 
     public function add(Product $product): RedirectResponse
     {
-        Auth::user()->products()->attach($product->id);
+        /** @var User $user */
+        $user = Auth::user();
+        $user->products()->attach($product->id);
 
         return to_route('products.edit', ['product' => $product]);
     }
 
     public function remove(Product $product): RedirectResponse
     {
-        Auth::user()->products()->detach($product->id);
+        /** @var User $user */
+        $user = Auth::user();
+        $user->products()->detach($product->id);
         Notification::make()
             ->title(__('Succesfuly removed the product from your account.'))
             ->success()

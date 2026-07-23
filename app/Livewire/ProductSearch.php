@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +23,7 @@ class ProductSearch extends Component
 
     public function find(): Factory|View
     {
+        /** @var User $user */
         $user = Auth::user();
         $this->validate();
         $product = Product::query()

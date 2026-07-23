@@ -103,6 +103,7 @@ class ProfileController extends Controller
     {
         DB::beginTransaction();
         try {
+            /** @var User $user */
             $user = Auth::user();
             $user->fill($request->validated());
 
