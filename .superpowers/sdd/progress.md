@@ -22,3 +22,15 @@ Task 9: complete (commits 2d5afe8..b4f0d70, review clean, 124 tests / 244 assert
   Important (pre-existing, nem regresszió): szervezet törlése hard delete, a users.organization_id-n nincs FK constraint (a migráció foreignIdFor-t használ ->constrained() nélkül), így a törlés árván hagyja a felhasználókat. Ugyanez volt az OrganizationController::destroy()-ban is, de most egy jól látható UI belépési pont is lett rá.
   Minor: OrganizationController::index() halott lett (a route átirányítva) — Task 10/11 takarítja.
 Task 10: complete (commits b4f0d70..a20abd2, review clean, 128 tests / 258 assertions) — Edit validáció szándékosan lazább (csak name required), hűen reprodukálja a törölt OrganizationController::update()-et
+Task 11: complete (commits a20abd2..6f9bcdc, review clean after 2 fixes, 137 tests / 271 assertions) — OrganizationController TÖRÖLVE; jogosultsági rés javítva (null actor org guard); 5 GET-mutáló route megszűnt; moveProduct exists: validációja visszaállítva (migráció közben elveszett); redundáns with() eltávolítva (essentials auto eager loading)
+  Minor: a null-actor-org ág gyakorlatilag elérhetetlen (mount() átirányít + role middleware), ezért nincs rá teszt.
+Task 12: complete (commits 6f9bcdc..26d37b5, review clean after adding deletion tests, 144 tests / 289 assertions) — EmployeeController és ProfileController TÖRÖLVE; app/Http/Controllers-ben már csak Controller.php + Auth/ maradt
+  Minor: StoreUserRequest és ProfileUpdateRequest árván maradt (semmi nem hivatkozik rájuk) — Task 13 takaríthatja.
+  Minor: CreateEmployee 'min:8'-at használ Password::defaults() helyett; ma azonos hatású, de jelszópolitika-szigorítás esetén elcsúszhat.
+Task 13: complete (159 tests / 304 assertions, 0 bukó) — záró ellenőrzés és takarítás.
+  StoreUserRequest és ProfileUpdateRequest törölve (árván maradtak, semmi nem hivatkozott rájuk).
+  organization-search-admin.blade.php törölve (árván maradt, törött 'organizations.destroy' route-ra hivatkozott — előző reviewer jelezte).
+  route:list / route:cache / route:clear mind hibátlanul lefut.
+  A terv Step 4 tinker-parancsa `app(\Livewire\Finder\Finder::class)`-t használ, ami egy ÜRES, konfigurálatlan Finder-példányt hoz létre (a Livewire\LivewireServiceProvider a singletont 'livewire.finder' kulcs alatt regisztrálja, nincs class-alias) — emiatt minden feloldás HIÁNYZIK-ot adna, félrevezetően. A helyes hívás `app('livewire.finder')`; ezzel mindkét hivatkozott komponensnév (`notifications`, `organizations.users-table`) OK.
+  Egyéb, a migrációt megelőző (nem ez okozta) árva Blade fájlok listázva, de NEM törölve — ld. task-13-report.md.
+  rector --dry-run 2 fájlt javasolt (routes/web.php import-rendezés, MaintenanceWindow.php readonly class) — mindkettő a migráció során született kód, alkalmazva.

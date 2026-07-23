@@ -10,15 +10,15 @@ use Carbon\CarbonInterface;
  * The 11-13 month guaranteed maintenance window measured from a reference
  * date (e.g. a commissioning or previous maintenance log's timestamp).
  */
-final class MaintenanceWindow
+final readonly class MaintenanceWindow
 {
     private const int WINDOW_OPENS_AFTER_MONTHS = 11;
 
     private const int WINDOW_CLOSES_AFTER_MONTHS = 13;
 
-    private readonly CarbonInterface $start;
+    private CarbonInterface $start;
 
-    private readonly CarbonInterface $end;
+    private CarbonInterface $end;
 
     public function __construct(CarbonInterface $referenceDate)
     {

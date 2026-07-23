@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 use App\Livewire\Home;
 use App\Livewire\Organizations;
+use App\Livewire\Organizations\Create;
+use App\Livewire\Organizations\CreateEmployee;
+use App\Livewire\Organizations\MyOrganization;
 use App\Livewire\Products\Edit;
 use App\Livewire\Products\Index;
 use App\Livewire\Products\MyProducts;
@@ -28,7 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::livewire('/', Home::class)->name('index');
 
     Route::livewire('organizations', Organizations\Index::class)->name('organizations.index');
-    Route::livewire('organizations/create', Organizations\Create::class)->name('organizations.create');
+    Route::livewire('organizations/create', Create::class)->name('organizations.create');
     Route::livewire('organizations/{organization}/edit', Organizations\Edit::class)->name('organizations.edit');
 
     Route::livewire('tools', Tools\Index::class)->name('tools.index');
@@ -37,8 +40,8 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
 
     Route::prefix('organization')->name('organizations.')->group(function (): void {
         Route::middleware(['role:Organizer|Admin|Super Admin'])->group(function (): void {
-            Route::livewire('/create', Organizations\CreateEmployee::class)->name('employee.create');
-            Route::livewire('/myorganization', Organizations\MyOrganization::class)->name('myorganization');
+            Route::livewire('/create', CreateEmployee::class)->name('employee.create');
+            Route::livewire('/myorganization', MyOrganization::class)->name('myorganization');
         });
     });
 
