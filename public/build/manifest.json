@@ -1,6 +1,6 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-CM5s6Aah.css",
+    "file": "assets/app-BJ_Zjnnw.css",
     "name": "app",
     "names": [
       "app.css"
@@ -13,12 +13,12 @@
     "src": "resources/img/ketkor_logo.webp"
   },
   "resources/js/app.js": {
-    "file": "assets/app-CuanqUHG.js",
+    "file": "assets/app-a_lotONO.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
     "css": [
-      "assets/app-CM5s6Aah.css"
+      "assets/app-BJ_Zjnnw.css"
     ]
   }
 }

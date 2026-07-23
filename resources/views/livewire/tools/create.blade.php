@@ -20,25 +20,43 @@
                             </p>
                         </header>
                         <form class="mt-6 space-y-6" wire:submit="save">
-                            <div class="mb-4">
-                                <x-create-input-text name="name" headText="Tool name"
-                                    wire:model="name"></x-create-input-text>
-                                <x-select-input name="category" headText="Category" wire:model="category">
-                                    @foreach (\App\Enums\ProductCategory::cases() as $productCategory)
-                                        <x-select-input-option :value="$productCategory->value">
-                                            {{ $productCategory->getLabel() }}
-                                        </x-select-input-option>
-                                    @endforeach
-                                </x-select-input>
-                                <x-create-input-text name="tag" headText="tag" wire:model="tag"></x-create-input-text>
-                                <x-select-input name="factory_name" headText="Factory name" wire:model="factory_name">
-                                    <x-select-input-option value="SIME">
-                                        {{ __('SIME') }}
-                                    </x-select-input-option>
-                                    <x-select-input-option value="Ferroli">
-                                        {{ __('Ferroli') }}
-                                    </x-select-input-option>
-                                </x-select-input>
+                            <div class="mb-4 space-y-4">
+                                <x-filament-forms::field-wrapper :label="__('Tool name')" :required="true" id="name" statePath="name">
+                                    <x-filament::input.wrapper :valid="! $errors->has('name')">
+                                        <x-filament::input type="text" id="name" wire:model="name" placeholder="{{ __('Tool name') }}" />
+                                    </x-filament::input.wrapper>
+                                </x-filament-forms::field-wrapper>
+
+                                <x-filament-forms::field-wrapper :label="__('Category')" :required="true" id="category" statePath="category">
+                                    <x-filament::input.wrapper :valid="! $errors->has('category')">
+                                        <x-filament::input.select id="category" wire:model="category">
+                                            @foreach (\App\Enums\ProductCategory::cases() as $productCategory)
+                                                <x-select-input-option :value="$productCategory->value">
+                                                    {{ $productCategory->getLabel() }}
+                                                </x-select-input-option>
+                                            @endforeach
+                                        </x-filament::input.select>
+                                    </x-filament::input.wrapper>
+                                </x-filament-forms::field-wrapper>
+
+                                <x-filament-forms::field-wrapper :label="__('tag')" :required="true" id="tag" statePath="tag">
+                                    <x-filament::input.wrapper :valid="! $errors->has('tag')">
+                                        <x-filament::input type="text" id="tag" wire:model="tag" placeholder="{{ __('tag') }}" />
+                                    </x-filament::input.wrapper>
+                                </x-filament-forms::field-wrapper>
+
+                                <x-filament-forms::field-wrapper :label="__('Factory name')" :required="true" id="factory_name" statePath="factory_name">
+                                    <x-filament::input.wrapper :valid="! $errors->has('factory_name')">
+                                        <x-filament::input.select id="factory_name" wire:model="factory_name">
+                                            <x-select-input-option value="SIME">
+                                                {{ __('SIME') }}
+                                            </x-select-input-option>
+                                            <x-select-input-option value="Ferroli">
+                                                {{ __('Ferroli') }}
+                                            </x-select-input-option>
+                                        </x-filament::input.select>
+                                    </x-filament::input.wrapper>
+                                </x-filament-forms::field-wrapper>
                             </div>
                             {{-- Save Button --}}
                             <button

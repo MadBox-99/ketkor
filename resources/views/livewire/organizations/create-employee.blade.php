@@ -18,12 +18,24 @@
                             </h2>
                         </header>
                         <form class="mt-6 space-y-6" wire:submit="save">
-                            <div class="mb-4">
-                                <x-create-input-text name="name" headText="User name" wire:model="name" />
-                                <x-create-input-text name="email" type="email" headText="Email"
-                                    wire:model="email" />
-                                <x-create-input-text name="password" type="password" headText="Password"
-                                    wire:model="password" />
+                            <div class="mb-4 space-y-4">
+                                <x-filament-forms::field-wrapper :label="__('User name')" :required="true" id="name" statePath="name">
+                                    <x-filament::input.wrapper :valid="! $errors->has('name')">
+                                        <x-filament::input type="text" id="name" wire:model="name" placeholder="{{ __('User name') }}" />
+                                    </x-filament::input.wrapper>
+                                </x-filament-forms::field-wrapper>
+
+                                <x-filament-forms::field-wrapper :label="__('Email')" :required="true" id="email" statePath="email">
+                                    <x-filament::input.wrapper :valid="! $errors->has('email')">
+                                        <x-filament::input type="email" id="email" wire:model="email" placeholder="{{ __('Email') }}" />
+                                    </x-filament::input.wrapper>
+                                </x-filament-forms::field-wrapper>
+
+                                <x-filament-forms::field-wrapper :label="__('Password')" :required="true" id="password" statePath="password">
+                                    <x-filament::input.wrapper :valid="! $errors->has('password')">
+                                        <x-filament::input type="password" id="password" wire:model="password" placeholder="{{ __('Password') }}" />
+                                    </x-filament::input.wrapper>
+                                </x-filament-forms::field-wrapper>
                             </div>
                             {{-- Save Button --}}
                             <button
