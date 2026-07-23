@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductLog;
 use App\Models\User;
 use App\Services\MaintenanceReminderScheduler;
+use App\Support\MaintenanceSchedule;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 
@@ -163,4 +164,54 @@ it('does not duplicate a recipient linked both directly and through the pivot', 
     $product->update(['user_id' => $user->id]);
 
     expect(pendingOn('2026-02-08'))->toHaveCount(1);
+});
+
+it('isProductEligible: reports an eligible product on a normal day as eligible', function (): void {
+    $product = eligibleProduct();
+
+    expect(scheduler()->isProductEligible($product, CarbonImmutable::parse('2026-02-08')))->toBeTrue();
+});
+
+it('isProductEligible: reports ineligible when the global switch is off', function (): void {
+    MaintenanceReminderSetting::current()->update(['enabled' => false]);
+    $product = eligibleProduct();
+
+    expect(scheduler()->isProductEligible($product, CarbonImmutable::parse('2026-02-08')))->toBeFalse();
+});
+
+it('isProductEligible: reports ineligible when the product\'s own reminders are disabled', function (): void {
+    $product = eligibleProduct(['maintenance_reminders_enabled' => false]);
+
+    expect(scheduler()->isProductEligible($product, CarbonImmutable::parse('2026-02-08')))->toBeFalse();
+});
+
+it('isProductEligible: reports ineligible when the warranty date is null', function (): void {
+    $product = eligibleProduct(['warrantee_date' => null]);
+
+    expect(scheduler()->isProductEligible($product, CarbonImmutable::parse('2026-02-08')))->toBeFalse();
+});
+
+it('isProductEligible: reports ineligible when the warranty has expired', function (): void {
+    $product = eligibleProduct(['warrantee_date' => '2026-01-01']);
+
+    expect(scheduler()->isProductEligible($product, CarbonImmutable::parse('2026-02-08')))->toBeFalse();
+});
+
+it('isProductEligible: treats a warranty expiring exactly on the processed day as still eligible, agreeing with pendingFor', function (): void {
+    $product = eligibleProduct(['warrantee_date' => '2026-02-08']);
+
+    expect(scheduler()->isProductEligible($product, CarbonImmutable::parse('2026-02-08')))->toBeTrue()
+        ->and(pendingOn('2026-02-08'))->toHaveCount(1);
+});
+
+it('resolveStage: resolving settings itself matches passing them explicitly', function (): void {
+    $product = eligibleProduct();
+    $schedule = MaintenanceSchedule::for($product);
+    $day = CarbonImmutable::parse('2026-02-08');
+
+    $withExplicitSettings = scheduler()->resolveStage($schedule, $day, MaintenanceReminderSetting::current());
+    $withDefaultSettings = scheduler()->resolveStage($schedule, $day);
+
+    expect($withDefaultSettings)->toBe($withExplicitSettings)
+        ->and($withDefaultSettings)->not->toBeNull();
 });
