@@ -87,6 +87,22 @@ it('reports when a manual reminder cannot be sent', function (): void {
     expect(MaintenanceReminder::query()->count())->toBe(0);
 });
 
+it('reports when a manual reminder cannot be computed due date', function (): void {
+    $product = Product::factory()->createOne([
+        'installation_date' => null,
+        'warrantee_date' => '2030-01-01',
+    ]);
+
+    $product->users()->attach(User::factory()->createOne());
+
+    livewire(ListProducts::class)
+        ->callAction(TestAction::make('sendMaintenanceReminder')->table($product))
+        ->assertNotified();
+
+    Mail::assertNothingQueued();
+    expect(MaintenanceReminder::query()->count())->toBe(0);
+});
+
 it('edits the reminder switch on the user form', function (): void {
     $user = User::factory()->createOne();
 

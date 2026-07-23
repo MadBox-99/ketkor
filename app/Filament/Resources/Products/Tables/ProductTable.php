@@ -99,7 +99,7 @@ class ProductTable
                             Notification::make()
                                 ->warning()
                                 ->title('Nem ment ki emlékeztető')
-                                ->body('A készüléknek nincs értesíthető ügyfele, lejárt vagy hiányzik a garanciája, vagy ki van kapcsolva az emlékeztető.')
+                                ->body('Az emlékeztető nem küldhető: a globális vagy készülék-szintű emlékeztető ki van kapcsolva, a garancia lejárt vagy hiányzik, nincs értesíthető ügyfele, vagy hiányzik a telepítés dátuma és a karbantartási munkalap.')
                                 ->send();
 
                             return;
