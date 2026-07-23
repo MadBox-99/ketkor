@@ -40,7 +40,7 @@ it('ignores non-maintenance logs', function (): void {
 it('falls back to the installation date when there is no maintenance log', function (): void {
     $product = Product::factory()->createOne(['installation_date' => '2025-02-14']);
 
-    expect(MaintenanceSchedule::for($product)->dueDate->toDateString())->toBe('2026-02-14');
+    expect(MaintenanceSchedule::for($product->fresh())->dueDate->toDateString())->toBe('2026-02-14');
 });
 
 it('honours the half-yearly interval', function (): void {
@@ -61,6 +61,8 @@ it('returns null when neither a maintenance log nor an installation date exists'
 
 it('exposes the due date through the product', function (): void {
     $product = Product::factory()->createOne(['installation_date' => '2025-02-14']);
+
+    $product = $product->fresh();
 
     expect($product->nextMaintenanceDueDate())->toBeInstanceOf(CarbonImmutable::class)
         ->and($product->nextMaintenanceDueDate()->toDateString())->toBe('2026-02-14');
