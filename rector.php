@@ -20,8 +20,9 @@ use RectorLaravel\Set\LaravelLevelSetList;
 use RectorLaravel\Set\LaravelSetList;
 
 return RectorConfig::configure()
-    ->withImportNames(importShortClasses: true, removeUnusedImports: true)
+    ->withImportNames()
     ->withParallel()
+    ->withPhpSets(php84: true)
     ->withPaths([
         __DIR__ . '/app',
         __DIR__ . '/routes',
@@ -72,13 +73,13 @@ return RectorConfig::configure()
         NullCoalescingOperatorRector::class,
     ])
     ->withSets([
-        LaravelLevelSetList::UP_TO_LARAVEL_120,
+        LaravelLevelSetList::UP_TO_LARAVEL_130,
         LaravelSetList::LARAVEL_CODE_QUALITY,
         LaravelSetList::LARAVEL_ARRAY_STR_FUNCTION_TO_STATIC_CALL,
         LaravelSetList::LARAVEL_FACADE_ALIASES_TO_FULL_NAMES,
         LaravelSetList::LARAVEL_ELOQUENT_MAGIC_METHOD_TO_QUERY_BUILDER,
     ])
-    ->withPhpSets()
+
     ->withAutoloadPaths([
         __DIR__ . '/vendor/autoload.php',
     ])
