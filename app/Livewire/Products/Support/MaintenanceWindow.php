@@ -4,29 +4,59 @@ declare(strict_types=1);
 
 namespace App\Livewire\Products\Support;
 
-use App\Models\Product;
 use Carbon\CarbonInterface;
-use Illuminate\Support\Facades\Date;
 
+/**
+ * The 11-13 month guaranteed maintenance window measured from a reference
+ * date (e.g. a commissioning or previous maintenance log's timestamp).
+ */
 final class MaintenanceWindow
 {
-    /**
-     * @return array{start: CarbonInterface, end: CarbonInterface}
-     */
-    public static function nextWindow(Product $product): array
-    {
-        $warranteeDate = Date::parse($product->serializeDate($product->warrantee_date));
+    private const int WINDOW_OPENS_AFTER_MONTHS = 11;
 
-        return [
-            'start' => $warranteeDate->copy()->subMonth(),
-            'end' => $warranteeDate->copy()->addMonths(2),
-        ];
+    private const int WINDOW_CLOSES_AFTER_MONTHS = 13;
+
+    private readonly CarbonInterface $start;
+
+    private readonly CarbonInterface $end;
+
+    public function __construct(CarbonInterface $referenceDate)
+    {
+        $this->start = $referenceDate->copy()->addMonths(self::WINDOW_OPENS_AFTER_MONTHS);
+        $this->end = $referenceDate->copy()->addMonths(self::WINDOW_CLOSES_AFTER_MONTHS);
     }
 
-    public static function allows(Product $product, CarbonInterface $now): bool
+    public function start(): CarbonInterface
     {
-        $window = self::nextWindow($product);
+        return $this->start;
+    }
 
-        return $now->between($window['start'], $window['end']);
+    public function end(): CarbonInterface
+    {
+        return $this->end;
+    }
+
+    /**
+     * Whether the given moment falls within the window, inclusive of both bounds.
+     */
+    public function contains(CarbonInterface $moment): bool
+    {
+        return $moment->between($this->start, $this->end);
+    }
+
+    /**
+     * Whether the given moment is strictly before the window opens.
+     */
+    public function isBeforeWindow(CarbonInterface $moment): bool
+    {
+        return $moment->lessThan($this->start);
+    }
+
+    /**
+     * Whether the given moment is strictly after the window closes.
+     */
+    public function isAfterWindow(CarbonInterface $moment): bool
+    {
+        return $moment->greaterThan($this->end);
     }
 }

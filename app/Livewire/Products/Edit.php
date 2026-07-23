@@ -6,6 +6,7 @@ namespace App\Livewire\Products;
 
 use App\Enums\UserRole;
 use App\Livewire\Products\Concerns\BuildsProductSchemas;
+use App\Livewire\Products\Support\MaintenanceWindow;
 use App\Mail\WorksheetMail;
 use App\Models\Partial;
 use App\Models\Product;
@@ -185,10 +186,9 @@ class Edit extends Component implements HasActions, HasSchemas
                     ->first();
 
                 if ($firstMaintenance) {
-                    $elevenMonthsAfter = Date::parse($firstMaintenance->when)->addMonths(11);
-                    $thirteenMonthsAfter = Date::parse($firstMaintenance->when)->addMonths(13);
+                    $window = new MaintenanceWindow(Date::parse($firstMaintenance->when));
 
-                    if (now()->between($elevenMonthsAfter, $thirteenMonthsAfter)) {
+                    if ($window->contains(now())) {
                         $shouldExtendWarranty = true;
                     }
                 }
@@ -258,18 +258,16 @@ class Edit extends Component implements HasActions, HasSchemas
 
         // If there's a previous maintenance, validate timing from it
         if ($lastMaintenance) {
-            $referenceDate = Date::parse($lastMaintenance->when);
-            $elevenMonthsAfter = $referenceDate->copy()->addMonths(11);
-            $thirteenMonthsAfter = $referenceDate->copy()->addMonths(13);
+            $window = new MaintenanceWindow(Date::parse($lastMaintenance->when));
 
-            if (now()->lessThan($elevenMonthsAfter)) {
+            if ($window->isBeforeWindow(now())) {
                 Notification::make()
                     ->danger()
                     ->title(__('Garrantee maintenance can only be performed 11-13 months after commissioning'))
                     ->send();
             }
 
-            if (now()->greaterThan($thirteenMonthsAfter)) {
+            if ($window->isAfterWindow(now())) {
                 Notification::make()
                     ->danger()
                     ->title(__('Maintenance window (11-13 months) has expired'))
@@ -285,18 +283,16 @@ class Edit extends Component implements HasActions, HasSchemas
             ->first();
 
         if ($commissioning) {
-            $referenceDate = Date::parse($commissioning->when);
-            $elevenMonthsAfter = $referenceDate->copy()->addMonths(11);
-            $thirteenMonthsAfter = $referenceDate->copy()->addMonths(13);
+            $window = new MaintenanceWindow(Date::parse($commissioning->when));
 
-            if (now()->lessThan($elevenMonthsAfter)) {
+            if ($window->isBeforeWindow(now())) {
                 Notification::make()
                     ->danger()
                     ->title(__('Garrantee maintenance can only be performed 11-13 months after commissioning'))
                     ->send();
             }
 
-            if (now()->greaterThan($thirteenMonthsAfter)) {
+            if ($window->isAfterWindow(now())) {
                 Notification::make()
                     ->danger()
                     ->title(__('Maintenance window (11-13 months) has expired'))
