@@ -5,16 +5,26 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\MaintenanceReminderStage;
+use App\Enums\MaintenanceReminderStatus;
+use App\Mail\MaintenanceReminderMail;
+use App\Models\MaintenanceReminder;
 use App\Models\MaintenanceReminderSetting;
 use App\Models\Product;
 use App\Models\User;
+use App\Support\MaintenanceReminderTemplateRenderer;
 use App\Support\MaintenanceSchedule;
 use App\Support\PendingMaintenanceReminder;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class MaintenanceReminderScheduler
 {
+    public function __construct(
+        private MaintenanceReminderTemplateRenderer $renderer,
+    ) {}
+
     /**
      * Az adott napra esedékes emlékeztetők, készülék × címzett bontásban.
      *
@@ -122,5 +132,116 @@ class MaintenanceReminderScheduler
         }
 
         return null;
+    }
+
+    /**
+     * Kiküldi az adott napra esedékes összes emlékeztetőt, és visszaadja a sikeres levelek számát.
+     */
+    public function run(CarbonImmutable $day): int
+    {
+        return $this->pendingFor($day)
+            ->filter(fn (PendingMaintenanceReminder $reminder): bool => $this->send($reminder)?->status === MaintenanceReminderStatus::Sent)
+            ->count();
+    }
+
+    /**
+     * Egy készülék összes címzettjének azonnali emlékeztetőt küld, a naptári feltételtől függetlenül.
+     */
+    public function sendManually(Product $product): int
+    {
+        $day = CarbonImmutable::now()->startOfDay();
+
+        if (! $this->isProductEligible($product, $day)) {
+            return 0;
+        }
+
+        $schedule = MaintenanceSchedule::for($product);
+
+        if ($schedule === null) {
+            return 0;
+        }
+
+        return $this->recipientsFor($product)
+            ->filter(function (User $user) use ($product, $schedule): bool {
+                $reminder = new PendingMaintenanceReminder(
+                    product: $product,
+                    user: $user,
+                    stage: MaintenanceReminderStage::Manual,
+                    stageKey: $this->nextManualStageKey($product, $user, $schedule),
+                    schedule: $schedule,
+                );
+
+                return $this->send($reminder)?->status === MaintenanceReminderStatus::Sent;
+            })
+            ->count();
+    }
+
+    /**
+     * Kiküld egy emlékeztetőt és naplózza az eredményt.
+     * Null, ha korábban már sikeresen kiment ugyanez a szakasz.
+     */
+    public function send(PendingMaintenanceReminder $reminder): ?MaintenanceReminder
+    {
+        $log = MaintenanceReminder::query()->firstOrNew([
+            'product_id' => $reminder->product->getKey(),
+            'user_id' => $reminder->user->getKey(),
+            'due_date' => $reminder->schedule->dueDate->toDateString(),
+            'stage' => $reminder->stage,
+            'stage_key' => $reminder->stageKey,
+        ]);
+
+        if ($log->exists && $log->status === MaintenanceReminderStatus::Sent) {
+            return null;
+        }
+
+        $settings = MaintenanceReminderSetting::current();
+        $rendered = $this->renderer->render($reminder, $settings);
+
+        $log->fill([
+            'email' => $reminder->user->email,
+            'last_maintenance_at' => $reminder->schedule->fromMaintenanceLog
+                ? $reminder->schedule->baseDate->toDateString()
+                : null,
+        ]);
+
+        try {
+            Mail::to($reminder->user->email)->send(new MaintenanceReminderMail(
+                product: $reminder->product,
+                subjectLine: $rendered['subject'],
+                body: $rendered['body'],
+                bookingUrl: $settings->booking_url,
+                contactPhone: $settings->contact_phone,
+                contactEmail: $settings->contact_email,
+            ));
+
+            $log->fill([
+                'status' => MaintenanceReminderStatus::Sent,
+                'sent_at' => CarbonImmutable::now(),
+                'error' => null,
+            ]);
+        } catch (Throwable $exception) {
+            $log->fill([
+                'status' => MaintenanceReminderStatus::Failed,
+                'sent_at' => null,
+                'error' => $exception->getMessage(),
+            ]);
+        }
+
+        $log->save();
+
+        return $log;
+    }
+
+    /**
+     * A következő szabad sorszám a manuális küldésekhez, hogy az unique index ne ütközzön.
+     */
+    private function nextManualStageKey(Product $product, User $user, MaintenanceSchedule $schedule): int
+    {
+        return MaintenanceReminder::query()
+            ->where('product_id', $product->getKey())
+            ->where('user_id', $user->getKey())
+            ->where('due_date', $schedule->dueDate->toDateString())
+            ->where('stage', MaintenanceReminderStage::Manual)
+            ->max('stage_key') + 1;
     }
 }
