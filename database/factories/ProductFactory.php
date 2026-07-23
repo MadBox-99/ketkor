@@ -33,8 +33,6 @@ class ProductFactory extends Factory
             'warrantee_date' => fake()->dateTimeBetween('now', '+5 years'),
             'tool_id' => Tool::factory(),
             'comments' => fake()->optional(0.3)->sentence(),
-            'maintenance_interval_months' => 12,
-            'maintenance_reminders_enabled' => true,
         ];
     }
 
