@@ -63,7 +63,7 @@ final class MaintenanceReminderSettingsPage extends Page
                                 ->label('Emlékeztetők küldése bekapcsolva'),
                             TagsInput::make('advance_days')
                                 ->label('Előidők (nap)')
-                                ->helperText('Hány nappal az esedékesség előtt menjen ki emlékeztető.')
+                                ->helperText('Hány nappal az esedékesség előtt menjen ki emlékeztető. Ha üres, csak a lejárt emlékeztetők kerülnek kiküldésre.')
                                 ->placeholder('30')
                                 ->columnSpanFull(),
                             TextInput::make('overdue_repeat_days')

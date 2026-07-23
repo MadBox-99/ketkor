@@ -96,3 +96,15 @@ it('warns when there is no product to preview with', function (): void {
         ->assertNotified()
         ->assertSet('previewBody', null);
 });
+
+it('allows clearing the advance days to disable advance reminders', function (): void {
+    livewire(MaintenanceReminderSettingsPage::class)
+        ->fillForm([
+            'advance_days' => [],
+        ])
+        ->call('save')
+        ->assertNotified()
+        ->assertHasNoFormErrors();
+
+    expect(MaintenanceReminderSetting::current()->advance_days)->toBe([]);
+});
