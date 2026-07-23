@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Home;
+use App\Livewire\Organizations;
 use App\Livewire\Products\Edit;
 use App\Livewire\Products\Index;
 use App\Livewire\Products\MyProducts;
@@ -28,7 +29,7 @@ require __DIR__ . '/auth.php';
 Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::livewire('/', Home::class)->name('index');
 
-    Route::get('organizations', [OrganizationController::class, 'index'])->name('organizations.index');
+    Route::livewire('organizations', Organizations\Index::class)->name('organizations.index');
     Route::get('organizations/create', [OrganizationController::class, 'create'])->name('organizations.create');
     Route::post('organizations', [OrganizationController::class, 'store'])->name('organizations.store');
     Route::get('organizations/{organization}/edit', [OrganizationController::class, 'edit'])->name('organizations.edit');

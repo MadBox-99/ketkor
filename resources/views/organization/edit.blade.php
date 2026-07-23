@@ -42,7 +42,7 @@
             <div class="mb-4 basis-full rounded bg-white px-8 pb-8 pt-6 shadow-md">
                 <div class="flex flex-wrap">
                     <div class="basis-full">
-                        <livewire:organization-details-users-table :organization="$organization->id" />
+                        <livewire:organizations.users-table :organization="$organization->id" />
                     </div>
                 </div>
             </div>
