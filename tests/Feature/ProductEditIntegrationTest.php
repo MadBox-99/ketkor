@@ -97,6 +97,21 @@ describe('product update', function (): void {
             ->toContain($user1->id)
             ->toContain($user2->id);
     });
+
+    it('shows and syncs the users field for a super admin', function (): void {
+        $superAdmin = createUserWithRole('Super Admin');
+        actingAs($superAdmin);
+
+        $product = createProductWithTool();
+        $user1 = User::factory()->createOne();
+
+        Livewire::test(Edit::class, ['product' => $product])
+            ->assertFormFieldVisible('user_ids', 'productForm')
+            ->set('productData.user_ids', [$user1->id])
+            ->call('updateProduct');
+
+        expect($product->users()->pluck('users.id')->toArray())->toContain($user1->id);
+    });
 });
 
 describe('owner update', function (): void {

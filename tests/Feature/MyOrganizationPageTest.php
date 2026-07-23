@@ -96,6 +96,55 @@ it('refuses to move a product to a non-existent user without an unhandled error'
         ->and(User::query()->whereKey($nonExistentUserId)->exists())->toBeFalse();
 });
 
+it('refuses to move a product to a user outside the organizer\'s organization', function (): void {
+    $organization = Organization::factory()->createOne();
+    $organizer = User::factory()->createOne(['organization_id' => $organization->id]);
+    $organizer->assignRole(UserRole::Organizer);
+    $fromUser = User::factory()->createOne(['organization_id' => $organization->id]);
+    $outsider = User::factory()->createOne(['organization_id' => null]);
+    $product = Product::factory()->createOne();
+    $fromUser->products()->attach($product);
+
+    actingAs($organizer);
+
+    livewire(MyOrganization::class)->call('moveProduct', $product->id, $fromUser->id, $outsider->id);
+
+    expect($fromUser->products()->whereKey($product->id)->exists())->toBeTrue()
+        ->and($outsider->products()->whereKey($product->id)->exists())->toBeFalse();
+});
+
+it('refuses to move a product away from a user outside the organizer\'s organization', function (): void {
+    $organization = Organization::factory()->createOne();
+    $organizer = User::factory()->createOne(['organization_id' => $organization->id]);
+    $organizer->assignRole(UserRole::Organizer);
+    $outsiderFromUser = User::factory()->createOne(['organization_id' => null]);
+    $toUser = User::factory()->createOne(['organization_id' => $organization->id]);
+    $product = Product::factory()->createOne();
+    $outsiderFromUser->products()->attach($product);
+
+    actingAs($organizer);
+
+    livewire(MyOrganization::class)->call('moveProduct', $product->id, $outsiderFromUser->id, $toUser->id);
+
+    expect($outsiderFromUser->products()->whereKey($product->id)->exists())->toBeTrue()
+        ->and($toUser->products()->whereKey($product->id)->exists())->toBeFalse();
+});
+
+it('initialises the move-product selector to a real user id instead of null', function (): void {
+    $organization = Organization::factory()->createOne();
+    $organizer = User::factory()->createOne(['organization_id' => $organization->id]);
+    $organizer->assignRole(UserRole::Organizer);
+    $product = Product::factory()->createOne();
+    $organizer->products()->attach($product);
+
+    actingAs($organizer);
+
+    get(route('organizations.myorganization'))
+        ->assertOk()
+        ->assertDontSee('selectedUserId: null', false)
+        ->assertSee('selectedUserId: ' . $organizer->id . ' }', false);
+});
+
 it('moves a product from one member to another', function (): void {
     $organization = Organization::factory()->createOne();
     $organizer = User::factory()->createOne(['organization_id' => $organization->id]);
