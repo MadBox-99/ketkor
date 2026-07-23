@@ -18,7 +18,7 @@ karbantartás esedékessége előtt, illetve ismétlő figyelmeztetést, ha az e
 | Előidő | 30 nappal és 7 nappal az esedékesség előtt (konfigurálható) |
 | Lejárt emlékeztető | 14 naponta, legfeljebb 3 alkalommal (konfigurálható) |
 | Garancia feltétel | Csak akkor megy levél, ha `warrantee_date` kitöltött **és** még nem járt le |
-| Státusz követés | `sent` / `failed` — megnyitás-követés (tracking pixel) nincs |
+| Státusz követés | `sent` / `failed` / `pending` — megnyitás-követés (tracking pixel) nincs |
 | Sablon hatóköre | Egy globális sablon és globális kapcsolati adatok |
 | Architektúra | Menetközben számított esedékesség + kiküldési napló mint idempotencia-kulcs |
 | Ütemezés | Napi egyszeri Artisan command cron-ból |
@@ -47,12 +47,12 @@ egy munkalapot visszamenőleg rögzítenek vagy javítanak.
 | `product_id` | FK `products` | |
 | `user_id` | FK `users` | a címzett |
 | `email` | string | a küldéskori cím, utólagos visszakereséshez |
-| `stage` | string | `advance` / `overdue` |
-| `stage_key` | unsignedSmallInteger | `advance` esetén az előidő napokban (pl. 30 vagy 7), `overdue` esetén az ismétlés sorszáma (1–3) |
+| `stage` | string | `advance` / `overdue` / `manual` |
+| `stage_key` | unsignedSmallInteger | `advance` esetén az előidő napokban (pl. 30 vagy 7); `overdue` esetén az ismétlés sorszáma (1–3); `manual` esetén egy készülék × ügyfél × esedékesség hármashoz tartozó, egyesével növekvő sorszám, hogy egy admin ismételt „Emlékeztető küldése most" akciója se ütközzön az egyedi indexen |
 | `due_date` | date | a kiszámított esedékesség |
 | `last_maintenance_at` | date, nullable | amiből számoltunk |
 | `sent_at` | timestamp, nullable | |
-| `status` | string | `sent` / `failed` |
+| `status` | string | `sent` / `failed` / `pending` |
 | `error` | text, nullable | hibaüzenet `failed` esetén |
 
 **Unique index: `(product_id, user_id, due_date, stage, stage_key)`** — ez garantálja, hogy egy
@@ -76,8 +76,11 @@ nélkül működik tovább.
 - `App\Models\MaintenanceReminder` — `belongsTo(Product)`, `belongsTo(User)`
 - `App\Models\MaintenanceReminderSetting` — `::current()` singleton accessor, ami létrehozza a
   rekordot az alapértelmezésekkel, ha még nincs
-- `App\Enums\MaintenanceReminderStage` — `Advance`, `Overdue`
-- `App\Enums\MaintenanceReminderStatus` — `Sent`, `Failed`
+- `App\Enums\MaintenanceReminderStage` — `Advance`, `Overdue`, `Manual` (utóbbi az admin felületről
+  kézzel indított küldésekhez; lásd az 5. szakaszt)
+- `App\Enums\MaintenanceReminderStatus` — `Sent`, `Failed`, `Pending` (utóbbi az az átmeneti állapot,
+  amíg egy emlékeztető le van foglalva az adatbázisban, de a levél kiküldése még nem történt meg;
+  lásd a 4. szakasz 5. lépését)
 - `Product::lastMaintenanceLog()` — `hasOne(ProductLog)` `where('what', 'maintenance')`,
   `latestOfMany('when')`
 - `Product::nextMaintenanceDueDate(): ?CarbonImmutable` — a közös számítás, amit a cron, az admin
@@ -129,9 +132,14 @@ Páronként, sorrendben:
    - `nap > due` → `overdue`, `stage_key = floor((nap − due) / overdue_repeat_days)`,
      ha az érték 1 és `overdue_max_count` közé esik
    - egyébként nincs teendő
-5. **Küldés** — `App\Mail\MaintenanceReminderMail` (`ShouldQueue`). A naplórekord `sent` státusszal
-   jön létre, kivétel esetén `failed` státusszal és a hibaüzenettel. Egy készülék hibája nem akasztja
-   meg a futást.
+5. **Küldés** — `App\Mail\MaintenanceReminderMail` (`ShouldQueue`). A levél kiküldése előtt a
+   naplórekord `pending` státusszal jön létre (vagy egy korábbi `pending`/`failed` sor kerül
+   újrafelhasználásra) egy tranzakción belüli zárolással; ez foglalja le az emlékeztetőt, mielőtt a
+   levél kimegy, így egy párhuzamos futás nem tudja ugyanazt duplán elküldeni — az egyedi index
+   kényszeríti ki, hogy a foglalás egyszer sikerüljön. A levél sikeres kiküldése után a rekord `sent`
+   státuszra vált, kivétel esetén `failed` státuszra és a hibaüzenettel. Egy készülék (vagy egy
+   emlékeztető) hibája nem akasztja meg a futást: a hibát a hívó (`MaintenanceReminderScheduler::run()`)
+   elkapja, naplózza, és a következő emlékeztetővel folytatja.
 
 Két következmény, amit a terv tudatosan felvállal:
 
@@ -150,7 +158,8 @@ Két következmény, amit a terv tudatosan felvállal:
 - **`ProductResource`** — az űrlapon intervallum select (6 / 12 hónap) és emlékeztető kapcsoló; a
   táblában „Következő esedékesség" oszlop és **„Emlékeztető küldése most"** akció. Az akció a
   scheduler ugyanazon útját hívja, csak a dátum-egyezés feltételt hagyja ki — a jogosultsági szűrőt
-  (garancia, kapcsolók, e-mail cím) nem —, és ugyanúgy naplóz.
+  (garancia, kapcsolók, e-mail cím) nem —, és ugyanúgy naplóz, `manual` szakasszal, hogy az egyedi
+  index ne ütközzön az automatikus `advance`/`overdue` bejegyzésekkel.
 - **`UserResource`** — ügyfélszintű emlékeztető kapcsoló.
 
 ## 6. Tesztelés

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ProductLogType;
+use App\Support\MaintenanceSchedule;
+use Carbon\CarbonImmutable;
 use Database\Factories\ProductFactory;
 use DateTime;
 use DateTimeInterface;
@@ -15,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Override;
 
 #[DateFormat('Y-m-d')]
@@ -32,6 +36,8 @@ use Override;
     'tool_id',
     'user_id',
     'comments',
+    'maintenance_interval_months',
+    'maintenance_reminders_enabled',
     'created_at',
 ])]
 class Product extends Model
@@ -46,6 +52,8 @@ class Product extends Model
             'warrantee_date' => 'date:Y-m-d',
             'purchase_date' => 'date:Y-m-d',
             'installation_date' => 'date:Y-m-d',
+            'maintenance_interval_months' => 'integer',
+            'maintenance_reminders_enabled' => 'boolean',
         ];
     }
 
@@ -79,6 +87,24 @@ class Product extends Model
     public function product_logs(): HasMany
     {
         return $this->hasMany(ProductLog::class);
+    }
+
+    /**
+     * A készülék legutolsó karbantartási munkalapja.
+     */
+    public function lastMaintenanceLog(): HasOne
+    {
+        return $this->hasOne(ProductLog::class)
+            ->where('what', ProductLogType::Maintenance)
+            ->latestOfMany('when');
+    }
+
+    /**
+     * A következő karbantartás esedékessége, vagy null, ha nem számítható.
+     */
+    public function nextMaintenanceDueDate(): ?CarbonImmutable
+    {
+        return MaintenanceSchedule::for($this)?->dueDate;
     }
 
     /**

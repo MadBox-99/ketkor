@@ -7,6 +7,7 @@ namespace App\Filament\Resources\Users\Schemas;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Hash;
 
@@ -37,6 +38,9 @@ class UserFormSchema
                     ->password()
                     ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
                     ->dehydrated(fn (?string $state): bool => filled($state)),
+                Toggle::make('maintenance_reminders_enabled')
+                    ->label('Karbantartás emlékeztető küldése')
+                    ->default(true),
             ]);
     }
 }

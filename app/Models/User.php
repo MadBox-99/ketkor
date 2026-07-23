@@ -25,6 +25,7 @@ use Spatie\Permission\Traits\HasRoles;
     'password',
     'email_verified_at',
     'organization_id',
+    'maintenance_reminders_enabled',
 ])]
 #[Hidden([
     'password',
@@ -53,6 +54,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'maintenance_reminders_enabled' => 'boolean',
         ];
     }
 
