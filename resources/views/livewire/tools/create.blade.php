@@ -24,12 +24,11 @@
                                 <x-create-input-text name="name" headText="Tool name"
                                     wire:model="name"></x-create-input-text>
                                 <x-select-input name="category" headText="Category" wire:model="category">
-                                    <x-select-input-option value="Boiler">
-                                        {{ __('Boiler') }}
-                                    </x-select-input-option>
-                                    <x-select-input-option value="Heat pump">
-                                        {{ __('heat pump') }}
-                                    </x-select-input-option>
+                                    @foreach (\App\Enums\ProductCategory::cases() as $productCategory)
+                                        <x-select-input-option :value="$productCategory->value">
+                                            {{ $productCategory->getLabel() }}
+                                        </x-select-input-option>
+                                    @endforeach
                                 </x-select-input>
                                 <x-create-input-text name="tag" headText="tag" wire:model="tag"></x-create-input-text>
                                 <x-select-input name="factory_name" headText="Factory name" wire:model="factory_name">

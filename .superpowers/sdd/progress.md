@@ -34,3 +34,4 @@ Task 13: complete (159 tests / 304 assertions, 0 bukó) — záró ellenőrzés 
   A terv Step 4 tinker-parancsa `app(\Livewire\Finder\Finder::class)`-t használ, ami egy ÜRES, konfigurálatlan Finder-példányt hoz létre (a Livewire\LivewireServiceProvider a singletont 'livewire.finder' kulcs alatt regisztrálja, nincs class-alias) — emiatt minden feloldás HIÁNYZIK-ot adna, félrevezetően. A helyes hívás `app('livewire.finder')`; ezzel mindkét hivatkozott komponensnév (`notifications`, `organizations.users-table`) OK.
   Egyéb, a migrációt megelőző (nem ez okozta) árva Blade fájlok listázva, de NEM törölve — ld. task-13-report.md.
   rector --dry-run 2 fájlt javasolt (routes/web.php import-rendezés, MaintenanceWindow.php readonly class) — mindkettő a migráció során született kód, alkalmazva.
+Task 13: complete (commit 05c3eab, 159 tests / 304 assertions) — árva form requestek és 1 árva nézet törölve; route:list és route:cache OK

@@ -9,6 +9,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rules\Password;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -23,8 +24,18 @@ class CreateEmployee extends Component
     #[Validate('required|unique:users,email')]
     public string $email = '';
 
-    #[Validate('required|min:8')]
+    #[Validate]
     public string $password = '';
+
+    /**
+     * @return array<string, array<int, Password|string>>
+     */
+    protected function rules(): array
+    {
+        return [
+            'password' => ['required', Password::defaults()],
+        ];
+    }
 
     public function save(): void
     {

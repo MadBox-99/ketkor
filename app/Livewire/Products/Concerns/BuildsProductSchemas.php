@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Products\Concerns;
 
+use App\Enums\UserRole;
 use App\Filament\Forms\Components\SignaturePad;
 use App\Models\User;
 use Filament\Forms\Components\Checkbox;
@@ -23,7 +24,7 @@ trait BuildsProductSchemas
         /** @var User $user */
         $user = Auth::user();
         $isOrganizerOrServicer = $user->hasAnyRole(['Organizer', 'Servicer']);
-        $isAdminOrOperator = $user->hasAnyRole(['Admin', 'Operator', 'Super-Admin']);
+        $isAdminOrOperator = $user->hasAnyRole([UserRole::Admin, UserRole::Operator, UserRole::SuperAdmin]);
 
         return $schema
             ->components([

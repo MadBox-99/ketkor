@@ -41,7 +41,7 @@
                     </form>
                 </div>
                 @foreach ($organization->users ?? [] as $user)
-                    <div
+                    <div wire:key="user-{{ $user->id }}"
                         class="mb-4 flex w-full flex-wrap justify-center rounded bg-white px-8 pb-8 pt-6 text-xl shadow-md">
                         {{-- row 1 --}}
                         <div class="basis-full">
@@ -88,7 +88,8 @@
                                 </div>
                                 {{-- row 2 --}}
                                 @forelse ($user->products ?? [] as $product)
-                                    <div class="h-20 basis-full rounded py-5 text-center odd:bg-white even:bg-gray-200">
+                                    <div wire:key="product-{{ $product->id }}"
+                                        class="h-20 basis-full rounded py-5 text-center odd:bg-white even:bg-gray-200">
                                         <div class="flex h-20 flex-nowrap items-center sm:h-12">
                                             <div class="xs:basis-1/4 sm:block sm:basis-3/12 md:basis-2/12">
                                                 {{ $product->serial_number }}
@@ -108,10 +109,11 @@
                                             <div class="xs:basis-1/4 xs:text-base sm:block sm:basis-2/12 md:basis-2/12">
                                                 <x-primary-button class="bg-primary" type="button"
                                                     x-data=""
-                                                    x-on:click.prevent="$dispatch('open-modal','{{ 'confirm-user-move-' . $product->id . '-' . $user->id }}')">{{ __('Moving to') }}</x-danger-button>
+                                                    x-on:click.prevent="$dispatch('open-modal','{{ 'confirm-user-move-' . $product->id . '-' . $user->id }}')">{{ __('Moving to') }}</x-primary-button>
 
                                                     <x-modal :name="'confirm-user-move-' . $product->id . '-' . $user->id" focusable>
-                                                        <form class="p-6" x-data="{ selectedUserId: null }"
+                                                        <form class="p-6"
+                                                            x-data="{ selectedUserId: {{ optional($user->organization->users->first())->id ?? 'null' }} }"
                                                             wire:submit="moveProduct({{ $product->id }}, {{ $user->id }}, selectedUserId)">
                                                             <h2 class="text-lg font-medium text-gray-900">
                                                                 {{ __('Are you sure you want to move the product?') }}

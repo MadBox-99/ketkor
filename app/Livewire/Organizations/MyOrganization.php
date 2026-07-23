@@ -101,6 +101,24 @@ class MyOrganization extends Component
             return;
         }
 
+        /** @var User $authUser */
+        $authUser = Auth::user();
+
+        $fromUser = User::query()->find($fromUserId);
+        $toUser = User::query()->find($toUserId);
+
+        if (
+            $authUser->organization_id === null
+            || ! $fromUser instanceof User
+            || ! $toUser instanceof User
+            || $fromUser->organization_id !== $authUser->organization_id
+            || $toUser->organization_id !== $authUser->organization_id
+        ) {
+            session()->flash('error', __('You are not allowed to modify this user.'));
+
+            return;
+        }
+
         DB::beginTransaction();
 
         try {

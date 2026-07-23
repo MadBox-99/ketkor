@@ -47,7 +47,7 @@ class Search extends Component
 
         /** @var User $user */
         $user = Auth::user();
-        $user->products()->attach($this->product->id);
+        $user->products()->syncWithoutDetaching($this->product->id);
 
         $this->redirectRoute('products.edit', ['product' => $this->product], navigate: true);
     }

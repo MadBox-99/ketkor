@@ -30,13 +30,17 @@ require __DIR__ . '/auth.php';
 Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::livewire('/', Home::class)->name('index');
 
-    Route::livewire('organizations', Organizations\Index::class)->name('organizations.index');
+    Route::middleware(['role:Admin|Super Admin|Operator'])->group(function (): void {
+        Route::livewire('organizations', Organizations\Index::class)->name('organizations.index');
+    });
     Route::livewire('organizations/create', Create::class)->name('organizations.create');
     Route::livewire('organizations/{organization}/edit', Organizations\Edit::class)->name('organizations.edit');
 
-    Route::livewire('tools', Tools\Index::class)->name('tools.index');
-    Route::livewire('tools/create', Tools\Create::class)->name('tools.create');
-    Route::livewire('tools/{tool}/edit', Tools\Edit::class)->name('tools.edit');
+    Route::middleware(['role:Admin|Super Admin|Operator'])->group(function (): void {
+        Route::livewire('tools', Tools\Index::class)->name('tools.index');
+        Route::livewire('tools/create', Tools\Create::class)->name('tools.create');
+        Route::livewire('tools/{tool}/edit', Tools\Edit::class)->name('tools.edit');
+    });
 
     Route::prefix('organization')->name('organizations.')->group(function (): void {
         Route::middleware(['role:Organizer|Admin|Super Admin'])->group(function (): void {
@@ -46,7 +50,9 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     });
 
     Route::prefix('product')->name('products.')->group(function (): void {
-        Route::livewire('/', Index::class)->name('index');
+        Route::middleware(['role:Admin|Super Admin|Operator'])->group(function (): void {
+            Route::livewire('/', Index::class)->name('index');
+        });
         Route::livewire('/search', Search::class)->name('search');
         Route::livewire('/myproducts', MyProducts::class)->name('myproducts');
         Route::livewire('/edit/{product}', Edit::class)->name('edit');

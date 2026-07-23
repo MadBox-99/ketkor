@@ -119,7 +119,7 @@ class Edit extends Component implements HasActions, HasSchemas
         $user = Auth::user();
 
         // Sync users if admin/operator
-        if ($user->hasAnyRole([UserRole::Admin, UserRole::Operator]) && isset($data['user_ids'])) {
+        if ($user->hasAnyRole([UserRole::Admin, UserRole::Operator, UserRole::SuperAdmin]) && isset($data['user_ids'])) {
             $this->product->users()->sync($data['user_ids']);
         }
 

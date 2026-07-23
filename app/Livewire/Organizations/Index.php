@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Livewire\Organizations;
 
+use App\Enums\UserRole;
 use App\Models\Organization;
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -19,6 +21,7 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -76,6 +79,18 @@ class Index extends Component implements HasActions, HasSchemas, HasTable
                     ->color('danger')
                     ->requiresConfirmation()
                     ->action(function (Organization $record): void {
+                        /** @var User $user */
+                        $user = Auth::user();
+
+                        if (! $user->hasAnyRole([UserRole::Admin, UserRole::SuperAdmin, UserRole::Operator])) {
+                            Notification::make()
+                                ->title(__('You do not have permission to perform this action.'))
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
                         $record->delete();
 
                         Notification::make()
