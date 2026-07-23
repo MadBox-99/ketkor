@@ -7,6 +7,7 @@ namespace App\Filament\Resources\Products\Schemas;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
 
 class ProductFormSchema
@@ -43,6 +44,17 @@ class ProductFormSchema
                     ->preload()
                     ->relationship('tool', 'name')
                     ->required(),
+                Select::make('maintenance_interval_months')
+                    ->label('Karbantartási ciklus')
+                    ->options([
+                        6 => 'Féléves',
+                        12 => 'Éves',
+                    ])
+                    ->default(12)
+                    ->required(),
+                Toggle::make('maintenance_reminders_enabled')
+                    ->label('Karbantartás emlékeztető küldése')
+                    ->default(true),
             ]);
     }
 }
