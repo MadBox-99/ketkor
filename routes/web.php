@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\OrganizationController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ToolController;
 use App\Livewire\Home;
+use App\Livewire\Products\Edit;
 use App\Livewire\Products\MyProducts;
 use App\Livewire\Products\Search;
 use Illuminate\Support\Facades\Route;
@@ -56,9 +56,8 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::prefix('product')->name('products.')->group(function (): void {
         Route::livewire('/search', Search::class)->name('search');
         Route::livewire('/myproducts', MyProducts::class)->name('myproducts');
-        Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('edit');
+        Route::livewire('/edit/{product}', Edit::class)->name('edit');
         Route::get('/', [ProductController::class, 'index'])->name('index');
-        Route::put('/update/{product}', [ProductController::class, 'update'])->name('update');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

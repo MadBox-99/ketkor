@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Livewire\ProductEdit;
+use App\Livewire\Products\Edit;
 use App\Models\Partial;
 use App\Models\Product;
 use App\Models\Tool;
@@ -10,6 +10,7 @@ use App\Models\User;
 use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\get;
 
 use Spatie\Permission\Models\Role;
 
@@ -40,7 +41,7 @@ describe('component rendering', function (): void {
         actingAs(User::factory()->createOne());
         $product = createProductWithTool();
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->assertStatus(200);
     });
 
@@ -51,7 +52,7 @@ describe('component rendering', function (): void {
             'city' => 'Budapest',
         ]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->assertSet('productData.serial_number', 'PREFILLED-001')
             ->assertSet('productData.city', 'Budapest');
     });
@@ -63,7 +64,7 @@ describe('product update', function (): void {
         $product = createProductWithTool();
         $newTool = Tool::factory()->createOne();
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->set('productData.serial_number', 'UPDATED-001')
             ->set('productData.city', 'Debrecen')
             ->set('productData.street', 'Main Street')
@@ -88,7 +89,7 @@ describe('product update', function (): void {
         $user1 = User::factory()->createOne();
         $user2 = User::factory()->createOne();
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->set('productData.user_ids', [$user1->id, $user2->id])
             ->call('updateProduct');
 
@@ -103,7 +104,7 @@ describe('owner update', function (): void {
         actingAs(User::factory()->createOne());
         $product = createProductWithTool();
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->set('ownerData.name', 'John Doe')
             ->set('ownerData.email', 'john@example.com')
             ->set('ownerData.phone', '+36301234567')
@@ -126,7 +127,7 @@ describe('owner update', function (): void {
             'phone' => '+36301111111',
         ]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->assertSet('ownerData.name', 'Jane Doe')
             ->assertSet('ownerData.email', 'jane@example.com')
             ->assertSet('ownerData.phone', '+36301111111');
@@ -138,7 +139,7 @@ describe('event creation', function (): void {
         actingAs(User::factory()->createOne());
         $product = createProductWithTool();
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->set('eventData.what', 'installation')
             ->set('eventData.comment', 'Installation done')
             ->call('createEvent')
@@ -151,7 +152,7 @@ describe('event creation', function (): void {
         actingAs(User::factory()->createOne());
         $product = createProductWithTool();
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->set('eventData.what', 'installation')
             ->set('eventData.is_online', true)
             ->call('createEvent');
@@ -165,7 +166,7 @@ describe('filament actions', function (): void {
         actingAs(User::factory()->createOne());
         $product = createProductWithTool();
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->assertActionExists('generateWorksheet');
     });
 
@@ -173,7 +174,16 @@ describe('filament actions', function (): void {
         actingAs(User::factory()->createOne());
         $product = createProductWithTool();
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->assertActionExists('viewSignature');
     });
+});
+
+it('renders as a full-page livewire component', function (): void {
+    actingAs(User::factory()->createOne());
+    $product = Product::factory()->createOne();
+
+    get(route('products.edit', ['product' => $product]))
+        ->assertOk()
+        ->assertSeeLivewire(Edit::class);
 });

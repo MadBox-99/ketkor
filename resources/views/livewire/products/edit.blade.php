@@ -1,5 +1,19 @@
 <div class="min-h-screen bg-gray-50 py-8 dark:bg-gray-900">
 
+    <x-slot name="header">
+        <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                {{ __('Edit product') }}
+            </h1>
+
+            <x-button-style-link text="Edit product" route="products.myproducts">
+                {{ __('Back') }}
+            </x-button-style-link>
+        </div>
+    </x-slot>
+
+    <x-alert />
+
     <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
 
         <!-- Product Information Form -->

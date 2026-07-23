@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Livewire;
+namespace App\Livewire\Products;
 
 use App\Enums\UserRole;
 use App\Filament\Forms\Components\SignaturePad;
 use App\Mail\WorksheetMail;
+use App\Models\Partial;
 use App\Models\Product;
 use App\Models\ProductLog;
+use App\Models\Tool;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
@@ -28,12 +30,15 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Mail;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-class ProductEdit extends Component implements HasActions, HasSchemas
+#[Layout('components.layouts.app')]
+class Edit extends Component implements HasActions, HasSchemas
 {
     use InteractsWithActions;
     use InteractsWithSchemas;
@@ -45,6 +50,15 @@ class ProductEdit extends Component implements HasActions, HasSchemas
     public ?array $eventData = [];
 
     public ?array $ownerData = [];
+
+    /** @var Collection<int, Partial> */
+    public Collection $partials;
+
+    /** @var Collection<int, User> */
+    public Collection $users;
+
+    /** @var Collection<int, Tool> */
+    public Collection $tools;
 
     protected function getForms(): array
     {
@@ -58,6 +72,13 @@ class ProductEdit extends Component implements HasActions, HasSchemas
     public function mount(Product $product): void
     {
         $this->product = $product;
+        $this->partials = Partial::query()
+            ->where('product_id', $product->id)
+            ->latest()
+            ->limit(6)
+            ->get();
+        $this->users = User::query()->orderBy('name')->get();
+        $this->tools = Tool::query()->orderBy('name')->get();
 
         // Fill product form
         $this->productForm->fill([
@@ -567,6 +588,6 @@ class ProductEdit extends Component implements HasActions, HasSchemas
 
     public function render(): Factory|View
     {
-        return view('livewire.product-edit');
+        return view('livewire.products.edit');
     }
 }
