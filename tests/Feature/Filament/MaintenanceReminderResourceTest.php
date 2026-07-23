@@ -65,7 +65,19 @@ it('filters by status', function (): void {
 });
 
 it('is read only', function (): void {
+    $record = reminderRecord(MaintenanceReminderStatus::Sent, 30);
+
     expect(MaintenanceReminderResource::canCreate())->toBeFalse()
+        ->and(MaintenanceReminderResource::canEdit($record))->toBeFalse()
+        ->and(MaintenanceReminderResource::canDelete($record))->toBeFalse()
+        ->and(MaintenanceReminderResource::canDeleteAny())->toBeFalse()
         ->and(MaintenanceReminderResource::getPages())->toHaveKeys(['index'])
         ->and(MaintenanceReminderResource::getPages())->toHaveCount(1);
+});
+
+it('exposes no table actions', function (): void {
+    $table = livewire(ListMaintenanceReminders::class)->instance()->getTable();
+
+    expect($table->getRecordActions())->toBeEmpty()
+        ->and($table->getToolbarActions())->toBeEmpty();
 });

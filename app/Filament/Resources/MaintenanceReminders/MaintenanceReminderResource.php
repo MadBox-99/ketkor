@@ -11,6 +11,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Override;
 
 final class MaintenanceReminderResource extends Resource
@@ -33,6 +34,24 @@ final class MaintenanceReminderResource extends Resource
 
     #[Override]
     public static function canCreate(): bool
+    {
+        return false;
+    }
+
+    #[Override]
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
+
+    #[Override]
+    public static function canDelete(Model $record): bool
+    {
+        return false;
+    }
+
+    #[Override]
+    public static function canDeleteAny(): bool
     {
         return false;
     }
