@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Enums\UserRole;
 use App\Livewire\Organizations\MyOrganization;
 use App\Models\Organization;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -75,4 +76,39 @@ it('refuses to remove a member whose organization is null', function (): void {
     livewire(MyOrganization::class)->call('removeMember', $target->id);
 
     expect(User::query()->whereKey($target->id)->exists())->toBeTrue();
+});
+
+it('refuses to move a product to a non-existent user without an unhandled error', function (): void {
+    $organization = Organization::factory()->createOne();
+    $organizer = User::factory()->createOne(['organization_id' => $organization->id]);
+    $organizer->assignRole(UserRole::Organizer);
+    $fromUser = User::factory()->createOne(['organization_id' => $organization->id]);
+    $product = Product::factory()->createOne();
+    $fromUser->products()->attach($product);
+
+    $nonExistentUserId = User::query()->max('id') + 1;
+
+    actingAs($organizer);
+
+    livewire(MyOrganization::class)->call('moveProduct', $product->id, $fromUser->id, $nonExistentUserId);
+
+    expect($fromUser->products()->whereKey($product->id)->exists())->toBeTrue()
+        ->and(User::query()->whereKey($nonExistentUserId)->exists())->toBeFalse();
+});
+
+it('moves a product from one member to another', function (): void {
+    $organization = Organization::factory()->createOne();
+    $organizer = User::factory()->createOne(['organization_id' => $organization->id]);
+    $organizer->assignRole(UserRole::Organizer);
+    $fromUser = User::factory()->createOne(['organization_id' => $organization->id]);
+    $toUser = User::factory()->createOne(['organization_id' => $organization->id]);
+    $product = Product::factory()->createOne();
+    $fromUser->products()->attach($product);
+
+    actingAs($organizer);
+
+    livewire(MyOrganization::class)->call('moveProduct', $product->id, $fromUser->id, $toUser->id);
+
+    expect($fromUser->products()->whereKey($product->id)->exists())->toBeFalse()
+        ->and($toUser->products()->whereKey($product->id)->exists())->toBeTrue();
 });

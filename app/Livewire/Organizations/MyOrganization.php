@@ -11,6 +11,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -82,6 +83,25 @@ class MyOrganization extends Component
 
     public function moveProduct(int $productId, int $fromUserId, int $toUserId): void
     {
+        $validator = Validator::make(
+            [
+                'product_id' => $productId,
+                'from_user_id' => $fromUserId,
+                'to_user_id' => $toUserId,
+            ],
+            [
+                'product_id' => ['required', 'exists:products,id'],
+                'from_user_id' => ['required', 'exists:users,id'],
+                'to_user_id' => ['required', 'exists:users,id'],
+            ],
+        );
+
+        if ($validator->fails()) {
+            session()->flash('error', $validator->errors()->first());
+
+            return;
+        }
+
         DB::beginTransaction();
 
         try {
