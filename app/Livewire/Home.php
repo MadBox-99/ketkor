@@ -10,10 +10,10 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 #[Layout('components.layouts.app')]
-class Index extends Component
+class Home extends Component
 {
     public function render(): Factory|View
     {
-        return view('livewire.index');
+        return view('livewire.home');
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Livewire\Index;
+use App\Livewire\Home;
 use App\Models\User;
 
 use function Pest\Laravel\actingAs;
@@ -13,5 +13,5 @@ it('renders the index page as a full-page livewire component', function (): void
 
     get(route('index'))
         ->assertOk()
-        ->assertSeeLivewire(Index::class);
+        ->assertSeeLivewire(Home::class);
 });
