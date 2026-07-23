@@ -6,9 +6,12 @@ namespace App\Filament\Resources\MaintenanceReminders\Tables;
 
 use App\Enums\MaintenanceReminderStage;
 use App\Enums\MaintenanceReminderStatus;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class MaintenanceReminderTable
 {
@@ -64,6 +67,23 @@ class MaintenanceReminderTable
                 SelectFilter::make('stage')
                     ->label('Szakasz')
                     ->options(MaintenanceReminderStage::class),
+                Filter::make('sent_at')
+                    ->label('Kiküldés dátuma')
+                    ->schema([
+                        DatePicker::make('sent_from')
+                            ->label('Kiküldve ettől'),
+                        DatePicker::make('sent_until')
+                            ->label('Kiküldve eddig'),
+                    ])
+                    ->query(fn (Builder $query, array $data): Builder => $query
+                        ->when(
+                            $data['sent_from'] ?? null,
+                            fn (Builder $query, string $date): Builder => $query->whereDate('sent_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['sent_until'] ?? null,
+                            fn (Builder $query, string $date): Builder => $query->whereDate('sent_at', '<=', $date),
+                        )),
             ])
             ->recordActions([])
             ->toolbarActions([]);

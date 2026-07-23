@@ -64,6 +64,22 @@ it('filters by status', function (): void {
         ->assertCanNotSeeTableRecords([$sent]);
 });
 
+it('filters by sent date range', function (): void {
+    $inRange = reminderRecord(MaintenanceReminderStatus::Sent, 30);
+    $inRange->forceFill(['sent_at' => '2026-03-15 10:00:00'])->save();
+
+    $outOfRange = reminderRecord(MaintenanceReminderStatus::Sent, 7);
+    $outOfRange->forceFill(['sent_at' => '2026-01-01 10:00:00'])->save();
+
+    livewire(ListMaintenanceReminders::class)
+        ->filterTable('sent_at', [
+            'sent_from' => '2026-03-01',
+            'sent_until' => '2026-03-31',
+        ])
+        ->assertCanSeeTableRecords([$inRange])
+        ->assertCanNotSeeTableRecords([$outOfRange]);
+});
+
 it('is read only', function (): void {
     $record = reminderRecord(MaintenanceReminderStatus::Sent, 30);
 
