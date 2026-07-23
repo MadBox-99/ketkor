@@ -11,6 +11,8 @@ use App\Models\ProductLog;
 use App\Models\User;
 use App\Services\MaintenanceReminderScheduler;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 beforeEach(function (): void {
@@ -75,8 +77,8 @@ it('sends the 7 day reminder after the 30 day one', function (): void {
 });
 
 it('logs a failure and keeps processing the other products', function (): void {
-    sendableProduct(['serial_number' => 'FAIL-0001']);
-    sendableProduct(['serial_number' => 'OK-0001']);
+    sendableProduct(['serial_number' => 'SN-0001']);
+    sendableProduct(['serial_number' => 'SN-0002']);
 
     Mail::shouldReceive('to')->andReturnUsing(function (string $email) {
         static $call = 0;
@@ -156,4 +158,37 @@ it('refuses a manual send for an ineligible product', function (): void {
     expect(app(MaintenanceReminderScheduler::class)->sendManually($product))->toBe(0);
 
     Mail::assertNothingQueued();
+});
+
+it('does not abort the run when a concurrent send already inserted the same occurrence', function (): void {
+    sendableProduct();
+
+    $conflictInserted = false;
+
+    MaintenanceReminder::creating(function (MaintenanceReminder $reminder) use (&$conflictInserted): void {
+        if ($conflictInserted) {
+            return;
+        }
+
+        $conflictInserted = true;
+
+        DB::table('maintenance_reminders')->insert([
+            'product_id' => $reminder->product_id,
+            'user_id' => $reminder->user_id,
+            'email' => $reminder->email,
+            'stage' => $reminder->stage->value,
+            'stage_key' => $reminder->stage_key,
+            'due_date' => $reminder->due_date->toDateString(),
+            'last_maintenance_at' => $reminder->last_maintenance_at?->toDateString(),
+            'sent_at' => null,
+            'status' => $reminder->status->value,
+            'error' => $reminder->error,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    });
+
+    expect(fn () => runOn('2026-02-08'))->not->toThrow(QueryException::class);
+
+    expect(MaintenanceReminder::query()->count())->toBe(1);
 });

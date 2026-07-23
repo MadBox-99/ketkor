@@ -15,6 +15,7 @@ use App\Support\MaintenanceReminderTemplateRenderer;
 use App\Support\MaintenanceSchedule;
 use App\Support\PendingMaintenanceReminder;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
@@ -227,7 +228,12 @@ class MaintenanceReminderScheduler
             ]);
         }
 
-        $log->save();
+        try {
+            $log->save();
+        } catch (QueryException $exception) {
+            /** Egy párhuzamos futás ugyanezt az emlékeztetőt már rögzítette. */
+            return null;
+        }
 
         return $log;
     }
