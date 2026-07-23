@@ -199,6 +199,42 @@ it('does not abort the run when a concurrent send already inserted the same occu
     }
 });
 
+it('does not abort the run when a single reminder throws outside the mail call', function (): void {
+    $productOne = sendableProduct(['serial_number' => 'SN-0001']);
+    $productTwo = sendableProduct(['serial_number' => 'SN-0002']);
+
+    $hasThrown = false;
+
+    MaintenanceReminder::creating(function (MaintenanceReminder $reminder) use (&$hasThrown, $productOne): void {
+        if ($hasThrown || $reminder->product_id !== $productOne->id) {
+            return;
+        }
+
+        $hasThrown = true;
+
+        throw new RuntimeException('Unexpected failure while claiming the reminder');
+    });
+
+    try {
+        $sent = null;
+
+        expect(function () use (&$sent): void {
+            $sent = runOn('2026-02-08');
+        })->not->toThrow(Throwable::class);
+
+        expect($sent)->toBe(1);
+
+        Mail::assertQueued(MaintenanceReminderMail::class, 1);
+
+        $reminder = MaintenanceReminder::query()->sole();
+
+        expect($reminder->product_id)->toBe($productTwo->id)
+            ->and($reminder->status)->toBe(MaintenanceReminderStatus::Sent);
+    } finally {
+        Event::forget('eloquent.creating: ' . MaintenanceReminder::class);
+    }
+});
+
 it('retries a pending reminder left behind by a crashed process', function (): void {
     $product = sendableProduct();
 

@@ -139,11 +139,27 @@ class MaintenanceReminderScheduler
 
     /**
      * Kiküldi az adott napra esedékes összes emlékeztetőt, és visszaadja a sikeres levelek számát.
+     *
+     * Egy készülék hibája nem akaszthatja meg a futást: ha a `send()` hívás bármilyen okból
+     * (sablon-feloldás, adatbázis-tranzakció) kivételt dob, azt itt elkapjuk, naplózzuk és a
+     * következő emlékeztetővel folytatjuk. A kivételt dobó emlékeztető nem számít sikeres küldésnek.
      */
     public function run(CarbonImmutable $day): int
     {
         return $this->pendingFor($day)
-            ->filter(fn (PendingMaintenanceReminder $reminder): bool => $this->send($reminder)?->status === MaintenanceReminderStatus::Sent)
+            ->filter(function (PendingMaintenanceReminder $reminder): bool {
+                try {
+                    return $this->send($reminder)?->status === MaintenanceReminderStatus::Sent;
+                } catch (Throwable $exception) {
+                    Log::error('Nem sikerült feldolgozni egy karbantartás emlékeztetőt, a futás folytatódik.', [
+                        'product_id' => $reminder->product->getKey(),
+                        'user_id' => $reminder->user->getKey(),
+                        'exception' => $exception->getMessage(),
+                    ]);
+
+                    return false;
+                }
+            })
             ->count();
     }
 
@@ -194,6 +210,14 @@ class MaintenanceReminderScheduler
      *
      * Null-t ad vissza, ha az emlékeztetőt korábban már sikeresen elküldte, vagy ha egy párhuzamos
      * futás közben egy új emlékeztetőt már lefoglalt.
+     *
+     * Megjegyzés a `Mail::to(...)->send(...)` hívásról: a `MaintenanceReminderMail` `ShouldQueue`,
+     * ezért ez a hívás valójában csak sorba állítja a levelet. A `sync` várólista-driverrel (ami
+     * jelenleg `QUEUE_CONNECTION`-ként be van állítva) ez azonnali, helyben történő kézbesítést jelent,
+     * ezért egy kézbesítési hiba itt, szinkron módon elkapható és `Failed` státuszként naplózható.
+     * Egy valódi (aszinkron) várólista-driverrel a `sent` státusz csak azt jelentené, hogy a levelet
+     * elfogadta a worker sorba állításra, a tényleges kézbesítési hiba pedig a workeren, ettől a
+     * metódustól függetlenül dőlne el — a `failed` ág itt gyakorlatilag sosem futna le.
      */
     public function send(PendingMaintenanceReminder $reminder): ?MaintenanceReminder
     {
