@@ -1,5 +1,5 @@
 <x-mail::message>
-{!! nl2br(e($body)) !!}
+<div>{!! nl2br(e($body)) !!}</div>
 
 @if ($bookingUrl)
 <x-mail::button :url="$bookingUrl">

@@ -40,3 +40,19 @@ it('renders a booking button only when a booking url is set', function (): void 
 it('is queueable', function (): void {
     expect(reminderMail())->toBeInstanceOf(ShouldQueue::class);
 });
+
+it('does not turn markdown in the body into links', function (): void {
+    $mail = new MaintenanceReminderMail(
+        product: Product::factory()->createOne(['serial_number' => 'AB-1234-CDEF']),
+        subjectLine: 'Esedékes karbantartás',
+        body: 'Tisztelt [Kattints ide](https://evil.example)!',
+        bookingUrl: null,
+        contactPhone: null,
+        contactEmail: null,
+    );
+
+    $rendered = $mail->render();
+
+    expect($rendered)->not->toContain('href="https://evil.example"')
+        ->and($rendered)->toContain('[Kattints ide](https://evil.example)');
+});
