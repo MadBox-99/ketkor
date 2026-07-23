@@ -25,6 +25,7 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -458,7 +459,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
     {
         return Action::make('generateWorksheet')
             ->label(__('Generate Worksheet'))
-            ->icon('heroicon-o-document-text')
+            ->icon(Heroicon::OutlinedDocumentText)
             ->color('success')
             ->requiresConfirmation()
             ->modalHeading(__('Generate and Send Worksheet'))
@@ -545,7 +546,7 @@ class ProductEdit extends Component implements HasActions, HasSchemas
     {
         return Action::make('viewSignature')
             ->label(__('View Signature'))
-            ->icon('heroicon-o-pencil-square')
+            ->icon(Heroicon::OutlinedPencilSquare)
             ->color('info')
             ->modalHeading(__('Signature'))
             ->modalContent(function (array $arguments): View {

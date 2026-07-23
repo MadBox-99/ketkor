@@ -10,6 +10,7 @@ use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
 use Illuminate\Support\Facades\Hash;
+use Override;
 
 class UserImporter extends Importer
 {
@@ -28,6 +29,7 @@ class UserImporter extends Importer
         ];
     }
 
+    #[Override]
     public function resolveRecord(): ?User
     {
         $organization = Organization::query()->firstOrCreate(['name' => $this->data['organization'] ?? null]);

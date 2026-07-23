@@ -8,8 +8,10 @@ use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
+use Tests\TestCase;
 
 test('reset password link screen can be rendered', function (): void {
+    /** @var TestCase $this */
     $response = $this->get('/forgot-password');
 
     $response->assertStatus(200);
@@ -18,7 +20,7 @@ test('reset password link screen can be rendered', function (): void {
 test('reset password link can be requested', function (): void {
     Notification::fake();
 
-    $user = User::factory()->create();
+    $user = User::factory()->createOne();
 
     Livewire::test(ForgotPassword::class)
         ->set('email', $user->email)
@@ -28,9 +30,10 @@ test('reset password link can be requested', function (): void {
 });
 
 test('reset password screen can be rendered', function (): void {
+    /** @var TestCase $this */
     Notification::fake();
 
-    $user = User::factory()->create();
+    $user = User::factory()->createOne();
 
     Livewire::test(ForgotPassword::class)
         ->set('email', $user->email)
@@ -48,7 +51,7 @@ test('reset password screen can be rendered', function (): void {
 test('password can be reset with valid token', function (): void {
     Notification::fake();
 
-    $user = User::factory()->create();
+    $user = User::factory()->createOne();
 
     Livewire::test(ForgotPassword::class)
         ->set('email', $user->email)

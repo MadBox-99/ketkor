@@ -11,7 +11,7 @@ use Livewire\Livewire;
 use function Pest\Laravel\actingAs;
 
 beforeEach(function (): void {
-    actingAs(User::factory()->create());
+    actingAs(User::factory()->createOne());
 });
 
 it('renders the product search component', function (): void {
@@ -20,8 +20,8 @@ it('renders the product search component', function (): void {
 });
 
 it('finds a product by serial number', function (): void {
-    $tool = Tool::factory()->create();
-    $product = Product::factory()->create([
+    $tool = Tool::factory()->createOne();
+    $product = Product::factory()->createOne([
         'serial_number' => 'FIND-ME-123',
         'tool_id' => $tool->id,
     ]);
@@ -54,9 +54,9 @@ it('validates serial number minimum length', function (): void {
 });
 
 it('detects if current user owns the product', function (): void {
-    $user = User::factory()->create();
-    $tool = Tool::factory()->create();
-    $product = Product::factory()->create([
+    $user = User::factory()->createOne();
+    $tool = Tool::factory()->createOne();
+    $product = Product::factory()->createOne([
         'serial_number' => 'OWNED-001',
         'tool_id' => $tool->id,
     ]);
@@ -71,8 +71,8 @@ it('detects if current user owns the product', function (): void {
 });
 
 it('detects if current user does not own the product', function (): void {
-    $tool = Tool::factory()->create();
-    Product::factory()->create([
+    $tool = Tool::factory()->createOne();
+    Product::factory()->createOne([
         'serial_number' => 'NOT-OWNED-001',
         'tool_id' => $tool->id,
     ]);

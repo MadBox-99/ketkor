@@ -13,18 +13,18 @@ use function Pest\Laravel\actingAs;
 
 function createTestProduct(Tool $tool, array $attributes = []): Product
 {
-    return Product::factory()->create(array_merge([
+    return Product::factory()->createOne(array_merge([
         'tool_id' => $tool->id,
     ], $attributes));
 }
 
 beforeEach(function (): void {
-    actingAs(User::factory()->create());
+    actingAs(User::factory()->createOne());
 });
 
 describe('commissioning validation', function (): void {
     it('allows commissioning within 6 months of purchase', function (): void {
-        $tool = Tool::factory()->create();
+        $tool = Tool::factory()->createOne();
         $product = createTestProduct($tool, ['purchase_date' => now()->subMonths(3)]);
 
         Livewire::test(ProductEdit::class, ['product' => $product])
@@ -42,7 +42,7 @@ describe('commissioning validation', function (): void {
     });
 
     it('prevents commissioning if purchase date is missing', function (): void {
-        $tool = Tool::factory()->create();
+        $tool = Tool::factory()->createOne();
         $product = createTestProduct($tool, ['purchase_date' => null]);
 
         Livewire::test(ProductEdit::class, ['product' => $product])
@@ -56,7 +56,7 @@ describe('commissioning validation', function (): void {
 
 describe('maintenance validation', function (): void {
     it('allows maintenance 11-13 months after commissioning', function (): void {
-        $tool = Tool::factory()->create();
+        $tool = Tool::factory()->createOne();
         $product = createTestProduct($tool, ['purchase_date' => now()->subMonths(13)]);
 
         ProductLog::query()->create([
@@ -79,7 +79,7 @@ describe('maintenance validation', function (): void {
     });
 
     it('allows maintenance without commissioning', function (): void {
-        $tool = Tool::factory()->create();
+        $tool = Tool::factory()->createOne();
         $product = createTestProduct($tool, ['purchase_date' => now()->subMonths(12)]);
 
         Livewire::test(ProductEdit::class, ['product' => $product])
@@ -91,7 +91,7 @@ describe('maintenance validation', function (): void {
     });
 
     it('allows multiple maintenance operations', function (): void {
-        $tool = Tool::factory()->create();
+        $tool = Tool::factory()->createOne();
         $product = createTestProduct($tool, ['purchase_date' => now()->subMonths(36)]);
 
         ProductLog::query()->create([
@@ -124,7 +124,7 @@ describe('maintenance validation', function (): void {
     });
 
     it('validates second maintenance window from first maintenance', function (): void {
-        $tool = Tool::factory()->create();
+        $tool = Tool::factory()->createOne();
         $product = createTestProduct($tool, ['purchase_date' => now()->subMonths(26)]);
 
         ProductLog::query()->create([
@@ -150,7 +150,7 @@ describe('maintenance validation', function (): void {
     });
 
     it('does not extend warranty date on maintenance', function (): void {
-        $tool = Tool::factory()->create();
+        $tool = Tool::factory()->createOne();
         $product = createTestProduct($tool, ['purchase_date' => now()->subMonths(24)]);
 
         ProductLog::query()->create([

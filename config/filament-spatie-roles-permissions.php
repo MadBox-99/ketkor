@@ -1,11 +1,14 @@
 <?php
 
 declare(strict_types=1);
+use App\Models\User;
+use MadBox\FilamentSpatiePermissions\Resources\PermissionResource;
+use MadBox\FilamentSpatiePermissions\Resources\RoleResource;
 
 return [
     'resources' => [
-        'PermissionResource' => \MadBox\FilamentSpatiePermissions\Resources\PermissionResource::class,
-        'RoleResource' => \MadBox\FilamentSpatiePermissions\Resources\RoleResource::class,
+        'PermissionResource' => PermissionResource::class,
+        'RoleResource' => RoleResource::class,
     ],
 
     'preload_roles' => true,
@@ -203,7 +206,7 @@ return [
         ],
 
         'excluded_policy_models' => [
-            \App\Models\User::class,
+            User::class,
         ],
 
         /*
@@ -213,7 +216,7 @@ return [
             // 'view-log'
         ],
 
-        'user_model' => \App\Models\User::class,
+        'user_model' => User::class,
 
         'user_model_class' => 'User',
 

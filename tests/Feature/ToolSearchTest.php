@@ -10,7 +10,7 @@ use Livewire\Livewire;
 use function Pest\Laravel\actingAs;
 
 beforeEach(function (): void {
-    actingAs(User::factory()->create());
+    actingAs(User::factory()->createOne());
 });
 
 it('renders the tool search component', function (): void {
@@ -19,8 +19,8 @@ it('renders the tool search component', function (): void {
 });
 
 it('displays tools in the view', function (): void {
-    Tool::factory()->create(['name' => 'Drill Machine']);
-    Tool::factory()->create(['name' => 'Circular Saw']);
+    Tool::factory()->createOne(['name' => 'Drill Machine']);
+    Tool::factory()->createOne(['name' => 'Circular Saw']);
 
     Livewire::test(ToolSearch::class)
         ->assertSee('Drill Machine')
@@ -28,9 +28,9 @@ it('displays tools in the view', function (): void {
 });
 
 it('filters tools by name via wire:model.live', function (): void {
-    Tool::factory()->create(['name' => 'Drill Machine']);
-    Tool::factory()->create(['name' => 'Circular Saw']);
-    Tool::factory()->create(['name' => 'Drill Press']);
+    Tool::factory()->createOne(['name' => 'Drill Machine']);
+    Tool::factory()->createOne(['name' => 'Circular Saw']);
+    Tool::factory()->createOne(['name' => 'Drill Press']);
 
     Livewire::test(ToolSearch::class)
         ->set('tool_name', 'Drill')
@@ -40,7 +40,7 @@ it('filters tools by name via wire:model.live', function (): void {
 });
 
 it('shows no tools when filter has no matches', function (): void {
-    Tool::factory()->create(['name' => 'Drill Machine']);
+    Tool::factory()->createOne(['name' => 'Drill Machine']);
 
     Livewire::test(ToolSearch::class)
         ->set('tool_name', 'Nonexistent')

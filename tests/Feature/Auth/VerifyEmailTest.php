@@ -25,7 +25,7 @@ it('sends verification email to unverified user', function (): void {
 it('redirects already verified user instead of sending email', function (): void {
     Notification::fake();
 
-    $user = User::factory()->create(); // verified by default
+    $user = User::factory()->createOne(); // verified by default
     actingAs($user);
 
     Livewire::test(VerifyEmail::class)

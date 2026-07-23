@@ -13,24 +13,29 @@ use App\Models\Tool;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Override;
 
-class ToolResource extends Resource
+final class ToolResource extends Resource
 {
     protected static ?string $model = Tool::class;
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    #[Override]
     public static function form(Schema $schema): Schema
     {
         return ToolFormSchema::make($schema);
     }
 
+    #[Override]
     public static function table(Table $table): Table
     {
         return ToolTable::make($table);
     }
 
+    #[Override]
     public static function getRelations(): array
     {
         return [
@@ -38,6 +43,7 @@ class ToolResource extends Resource
         ];
     }
 
+    #[Override]
     public static function getPages(): array
     {
         return [

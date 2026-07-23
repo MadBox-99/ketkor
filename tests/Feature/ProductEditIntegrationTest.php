@@ -19,7 +19,7 @@ function createUserWithRole(string ...$roles): User
         Role::findOrCreate($role, 'web');
     }
 
-    $user = User::factory()->create();
+    $user = User::factory()->createOne();
     $user->assignRole($roles);
 
     return $user;
@@ -27,9 +27,9 @@ function createUserWithRole(string ...$roles): User
 
 function createProductWithTool(array $attributes = []): Product
 {
-    $tool = Tool::factory()->create();
+    $tool = Tool::factory()->createOne();
 
-    return Product::factory()->create(array_merge([
+    return Product::factory()->createOne(array_merge([
         'tool_id' => $tool->id,
         'purchase_date' => now()->subMonths(3),
     ], $attributes));
@@ -37,7 +37,7 @@ function createProductWithTool(array $attributes = []): Product
 
 describe('component rendering', function (): void {
     it('renders the product edit component', function (): void {
-        actingAs(User::factory()->create());
+        actingAs(User::factory()->createOne());
         $product = createProductWithTool();
 
         Livewire::test(ProductEdit::class, ['product' => $product])
@@ -45,7 +45,7 @@ describe('component rendering', function (): void {
     });
 
     it('populates product form with existing data', function (): void {
-        actingAs(User::factory()->create());
+        actingAs(User::factory()->createOne());
         $product = createProductWithTool([
             'serial_number' => 'PREFILLED-001',
             'city' => 'Budapest',
@@ -59,9 +59,9 @@ describe('component rendering', function (): void {
 
 describe('product update', function (): void {
     it('updates product data', function (): void {
-        actingAs(User::factory()->create());
+        actingAs(User::factory()->createOne());
         $product = createProductWithTool();
-        $newTool = Tool::factory()->create();
+        $newTool = Tool::factory()->createOne();
 
         Livewire::test(ProductEdit::class, ['product' => $product])
             ->set('productData.serial_number', 'UPDATED-001')
@@ -85,8 +85,8 @@ describe('product update', function (): void {
         actingAs($admin);
 
         $product = createProductWithTool();
-        $user1 = User::factory()->create();
-        $user2 = User::factory()->create();
+        $user1 = User::factory()->createOne();
+        $user2 = User::factory()->createOne();
 
         Livewire::test(ProductEdit::class, ['product' => $product])
             ->set('productData.user_ids', [$user1->id, $user2->id])
@@ -100,7 +100,7 @@ describe('product update', function (): void {
 
 describe('owner update', function (): void {
     it('creates a new partial with owner data', function (): void {
-        actingAs(User::factory()->create());
+        actingAs(User::factory()->createOne());
         $product = createProductWithTool();
 
         Livewire::test(ProductEdit::class, ['product' => $product])
@@ -118,7 +118,7 @@ describe('owner update', function (): void {
     });
 
     it('populates owner form with latest partial data', function (): void {
-        actingAs(User::factory()->create());
+        actingAs(User::factory()->createOne());
         $product = createProductWithTool();
         $product->partials()->create([
             'name' => 'Jane Doe',
@@ -135,7 +135,7 @@ describe('owner update', function (): void {
 
 describe('event creation', function (): void {
     it('creates an installation event', function (): void {
-        actingAs(User::factory()->create());
+        actingAs(User::factory()->createOne());
         $product = createProductWithTool();
 
         Livewire::test(ProductEdit::class, ['product' => $product])
@@ -148,7 +148,7 @@ describe('event creation', function (): void {
     });
 
     it('creates an event with online flag', function (): void {
-        actingAs(User::factory()->create());
+        actingAs(User::factory()->createOne());
         $product = createProductWithTool();
 
         Livewire::test(ProductEdit::class, ['product' => $product])
@@ -162,7 +162,7 @@ describe('event creation', function (): void {
 
 describe('filament actions', function (): void {
     it('has generate worksheet action', function (): void {
-        actingAs(User::factory()->create());
+        actingAs(User::factory()->createOne());
         $product = createProductWithTool();
 
         Livewire::test(ProductEdit::class, ['product' => $product])
@@ -170,7 +170,7 @@ describe('filament actions', function (): void {
     });
 
     it('has view signature action', function (): void {
-        actingAs(User::factory()->create());
+        actingAs(User::factory()->createOne());
         $product = createProductWithTool();
 
         Livewire::test(ProductEdit::class, ['product' => $product])

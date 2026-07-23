@@ -12,7 +12,7 @@ use Livewire\Livewire;
 use function Pest\Laravel\actingAs;
 
 it('renders the product search user component', function (): void {
-    $user = User::factory()->create();
+    $user = User::factory()->createOne();
 
     actingAs($user);
 
@@ -21,13 +21,13 @@ it('renders the product search user component', function (): void {
 });
 
 it('displays user products in the table', function (): void {
-    $user = User::factory()->create();
-    $tool = Tool::factory()->create([
+    $user = User::factory()->createOne();
+    $tool = Tool::factory()->createOne([
         'name' => 'Test Tool',
         'category' => ProductCategory::KAZAN,
     ]);
 
-    $product = Product::factory()->create([
+    $product = Product::factory()->createOne([
         'serial_number' => 'TEST-123',
         'tool_id' => $tool->id,
         'city' => 'Test City',
@@ -44,14 +44,14 @@ it('displays user products in the table', function (): void {
 });
 
 it('filters products by serial number', function (): void {
-    $user = User::factory()->create();
-    $tool = Tool::factory()->create();
+    $user = User::factory()->createOne();
+    $tool = Tool::factory()->createOne();
 
-    $product1 = Product::factory()->create([
+    $product1 = Product::factory()->createOne([
         'serial_number' => 'ABC-123',
         'tool_id' => $tool->id,
     ]);
-    $product2 = Product::factory()->create([
+    $product2 = Product::factory()->createOne([
         'serial_number' => 'XYZ-456',
         'tool_id' => $tool->id,
     ]);
@@ -68,15 +68,15 @@ it('filters products by serial number', function (): void {
 });
 
 it('filters products by tool name', function (): void {
-    $user = User::factory()->create();
-    $tool1 = Tool::factory()->create(['name' => 'Drill']);
-    $tool2 = Tool::factory()->create(['name' => 'Saw']);
+    $user = User::factory()->createOne();
+    $tool1 = Tool::factory()->createOne(['name' => 'Drill']);
+    $tool2 = Tool::factory()->createOne(['name' => 'Saw']);
 
-    $product1 = Product::factory()->create([
+    $product1 = Product::factory()->createOne([
         'serial_number' => 'DRILL-001',
         'tool_id' => $tool1->id,
     ]);
-    $product2 = Product::factory()->create([
+    $product2 = Product::factory()->createOne([
         'serial_number' => 'SAW-001',
         'tool_id' => $tool2->id,
     ]);
@@ -93,15 +93,15 @@ it('filters products by tool name', function (): void {
 });
 
 it('filters products by warranty date range', function (): void {
-    $user = User::factory()->create();
-    $tool = Tool::factory()->create();
+    $user = User::factory()->createOne();
+    $tool = Tool::factory()->createOne();
 
-    $product1 = Product::factory()->create([
+    $product1 = Product::factory()->createOne([
         'serial_number' => 'OLD-001',
         'tool_id' => $tool->id,
         'warrantee_date' => now()->subYear(),
     ]);
-    $product2 = Product::factory()->create([
+    $product2 = Product::factory()->createOne([
         'serial_number' => 'NEW-001',
         'tool_id' => $tool->id,
         'warrantee_date' => now()->addYear(),
@@ -122,10 +122,10 @@ it('filters products by warranty date range', function (): void {
 });
 
 it('can remove product from user list', function (): void {
-    $user = User::factory()->create();
-    $tool = Tool::factory()->create();
+    $user = User::factory()->createOne();
+    $tool = Tool::factory()->createOne();
 
-    $product = Product::factory()->create([
+    $product = Product::factory()->createOne([
         'serial_number' => 'DELETE-ME',
         'tool_id' => $tool->id,
     ]);
@@ -145,10 +145,10 @@ it('can remove product from user list', function (): void {
 });
 
 it('shows non-visible products in the table', function (): void {
-    $user = User::factory()->create();
-    $tool = Tool::factory()->create();
+    $user = User::factory()->createOne();
+    $tool = Tool::factory()->createOne();
 
-    $product = Product::factory()->create([
+    $product = Product::factory()->createOne([
         'serial_number' => 'HIDDEN-001',
         'tool_id' => $tool->id,
     ]);
@@ -163,15 +163,15 @@ it('shows non-visible products in the table', function (): void {
 });
 
 it('only shows products for authenticated user', function (): void {
-    $user1 = User::factory()->create();
-    $user2 = User::factory()->create();
-    $tool = Tool::factory()->create();
+    $user1 = User::factory()->createOne();
+    $user2 = User::factory()->createOne();
+    $tool = Tool::factory()->createOne();
 
-    $product1 = Product::factory()->create([
+    $product1 = Product::factory()->createOne([
         'serial_number' => 'USER1-PRODUCT',
         'tool_id' => $tool->id,
     ]);
-    $product2 = Product::factory()->create([
+    $product2 = Product::factory()->createOne([
         'serial_number' => 'USER2-PRODUCT',
         'tool_id' => $tool->id,
     ]);

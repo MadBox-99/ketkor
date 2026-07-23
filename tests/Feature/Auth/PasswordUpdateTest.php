@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
 
 test('password can be updated', function (): void {
-    $user = User::factory()->create([
+    /** @var TestCase $this */
+    $user = User::factory()->createOne([
         'password' => Hash::make('password'),
     ]);
 
@@ -24,7 +26,8 @@ test('password can be updated', function (): void {
 });
 
 test('correct password must be provided to update password', function (): void {
-    $user = User::factory()->create([
+    /** @var TestCase $this */
+    $user = User::factory()->createOne([
         'password' => Hash::make('password'),
     ]);
 

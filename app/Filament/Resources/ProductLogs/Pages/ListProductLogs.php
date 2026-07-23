@@ -7,11 +7,13 @@ namespace App\Filament\Resources\ProductLogs\Pages;
 use App\Filament\Resources\ProductLogs\ProductLogResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Override;
 
-class ListProductLogs extends ListRecords
+final class ListProductLogs extends ListRecords
 {
     protected static string $resource = ProductLogResource::class;
 
+    #[Override]
     protected function getHeaderActions(): array
     {
         return [

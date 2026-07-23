@@ -60,14 +60,14 @@ class DatabaseSeeder extends Seeder
             $permission = Permission::query()->firstOrCreate(['name' => $name, 'guard_name' => 'web']);
             $permission->syncRoles($permissionRoles);
         }
-        $organization = Organization::factory()->create([
+        $organization = Organization::factory()->createOne([
             'id' => 1,
             'name' => 'Default Organization',
             'address' => '123 Main St',
             'zip' => '12345',
             'tax_number' => '123456789',
         ]);
-        $admin = User::factory()->create([
+        $admin = User::factory()->createOne([
             'name' => 'Admin',
             'email' => 'admin@admin.com',
             'email_verified_at' => now(),
@@ -75,7 +75,7 @@ class DatabaseSeeder extends Seeder
             'remember_token' => Str::random(10),
             'organization_id' => $organization->id,
         ]);
-        $user1 = User::factory()->create([
+        $user1 = User::factory()->createOne([
             'name' => 'Test User',
             'email' => 'admin@operator.com',
             'email_verified_at' => now(),
@@ -84,7 +84,7 @@ class DatabaseSeeder extends Seeder
             'organization_id' => $organization->id,
         ]);
 
-        $user2 = User::factory()->create([
+        $user2 = User::factory()->createOne([
             'name' => 'Test User 2',
             'email' => 'test@test2.com',
             'email_verified_at' => now(),
@@ -92,7 +92,7 @@ class DatabaseSeeder extends Seeder
             'remember_token' => Str::random(10),
             'organization_id' => $organization->id,
         ]);
-        $user3 = User::factory()->create([
+        $user3 = User::factory()->createOne([
             'name' => 'Test User 3',
             'email' => 'test@test3.com',
             'email_verified_at' => now(),
@@ -106,7 +106,7 @@ class DatabaseSeeder extends Seeder
         $user1->assignRole([UserRole::Admin, UserRole::Operator, UserRole::SuperAdmin]);
         $user2->assignRole(UserRole::Organizer);
         $user3->assignRole(UserRole::Servicer);
-        Tool::factory()->create([
+        Tool::factory()->createOne([
             'id' => '1',
             'name' => 'Brava Slim 25 BT',
             'category' => ProductCategory::SIME,

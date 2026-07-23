@@ -7,6 +7,7 @@ namespace App\Filament\Resources\ProductLogs\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -30,8 +31,8 @@ class ProductLogTable
                 IconColumn::make('is_online')
                     ->label('Online')
                     ->boolean()
-                    ->trueIcon('heroicon-o-check')
-                    ->falseIcon('heroicon-o-x-mark'),
+                    ->trueIcon(Heroicon::OutlinedCheck)
+                    ->falseIcon(Heroicon::OutlinedXMark),
                 TextColumn::make('worksheet_id')
                     ->label('Worksheet ID')
                     ->sortable()

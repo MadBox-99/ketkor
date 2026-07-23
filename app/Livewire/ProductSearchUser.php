@@ -43,7 +43,7 @@ class ProductSearchUser extends Component implements HasActions, HasSchemas, Has
                     ->weight('medium'),
                 TextColumn::make('owner')
                     ->label(__('Owner'))
-                    ->getStateUsing(fn(Product $record): string => $record->partials->first()?->name ?? '-')
+                    ->getStateUsing(fn (Product $record): string => $record->partials->first()?->name ?? '-')
                     ->placeholder('-'),
                 TextColumn::make('tool.category')
                     ->label(__('Type'))

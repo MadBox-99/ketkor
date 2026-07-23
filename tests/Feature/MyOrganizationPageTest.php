@@ -18,18 +18,15 @@ beforeEach(function (): void {
 });
 
 it('links the create employee button to the employee create route', function (): void {
-    $organization = Organization::factory()->create([
+    $organization = Organization::factory()->createOne([
         'name' => 'Test Org',
     ]);
-    $organizer = User::factory()->create([
+    $organizer = User::factory()->createOne([
         'organization_id' => $organization->id,
     ]);
     $organizer->assignRole(UserRole::Organizer);
 
     actingAs($organizer);
 
-    get(route('organizations.myorganization'))
-        ->assertOk()
-        ->assertSee(route('organizations.employee.create'), false)
-        ->assertDontSee('href="' . route('organizations.create') . '"', false);
+    get(route('organizations.myorganization'))->assertOk()->assertSeeHtml(route('organizations.employee.create'))->assertDontSeeHtml('href="' . route('organizations.create') . '"');
 });

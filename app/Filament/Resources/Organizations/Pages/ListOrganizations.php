@@ -7,11 +7,13 @@ namespace App\Filament\Resources\Organizations\Pages;
 use App\Filament\Resources\Organizations\OrganizationResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Override;
 
-class ListOrganizations extends ListRecords
+final class ListOrganizations extends ListRecords
 {
     protected static string $resource = OrganizationResource::class;
 
+    #[Override]
     protected function getHeaderActions(): array
     {
         return [

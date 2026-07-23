@@ -8,14 +8,17 @@ use App\Models\User;
 use App\Notifications\AdminUserRegistered;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
+use Tests\TestCase;
 
 test('registration screen can be rendered', function (): void {
+    /** @var TestCase $this */
     $response = $this->get('/register');
 
     $response->assertStatus(200);
 });
 
 test('new users can register', function (): void {
+    /** @var TestCase $this */
     Livewire::test(Register::class)
         ->fillForm([
             'name' => 'Test User',
@@ -79,13 +82,11 @@ test('admins are notified when a new user registers', function (): void {
 
     Notification::assertSentOnDemand(
         AdminUserRegistered::class,
-        function (AdminUserRegistered $notification, array $channels, object $notifiable): bool {
-            return $notifiable->routes['mail'] === [
-                'hegedus.csaba@ketkorkft.hu',
-                'denes.katalin@ketkorkft.hu',
-                'szolnoki.peter@ketkorkft.hu',
-            ];
-        },
+        fn (AdminUserRegistered $notification, array $channels, object $notifiable): bool => $notifiable->routes['mail'] === [
+            'hegedus.csaba@ketkorkft.hu',
+            'denes.katalin@ketkorkft.hu',
+            'szolnoki.peter@ketkorkft.hu',
+        ],
     );
 });
 
@@ -114,7 +115,7 @@ test('registration requires password confirmation', function (): void {
 });
 
 test('registration requires unique email', function (): void {
-    User::factory()->create(['email' => 'taken@example.com']);
+    User::factory()->createOne(['email' => 'taken@example.com']);
 
     Livewire::test(Register::class)
         ->fillForm([

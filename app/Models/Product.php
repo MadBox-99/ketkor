@@ -4,38 +4,42 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\ProductFactory;
 use DateTime;
 use DateTimeInterface;
+use Illuminate\Database\Eloquent\Attributes\DateFormat;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Override;
 
+#[DateFormat('Y-m-d')]
+#[Fillable([
+    'owner_name',
+    'installer_name',
+    'city',
+    'street',
+    'zip',
+    'purchase_place',
+    'serial_number',
+    'purchase_date',
+    'installation_date',
+    'warrantee_date',
+    'tool_id',
+    'user_id',
+    'comments',
+    'created_at',
+])]
 class Product extends Model
 {
+    /** @use HasFactory<ProductFactory> */
     use HasFactory;
 
-    protected $fillable = [
-        'owner_name',
-        'installer_name',
-        'city',
-        'street',
-        'zip',
-        'purchase_place',
-        'serial_number',
-        'purchase_date',
-        'installation_date',
-        'warrantee_date',
-        'tool_id',
-        'user_id',
-        'comments',
-        'created_at',
-    ];
-
-    protected $dateFormat = 'Y-m-d';
-
+    #[Override]
     protected function casts(): array
     {
         return [
@@ -45,6 +49,7 @@ class Product extends Model
         ];
     }
 
+    #[Override]
     public function serializeDate($date): string
     {
         if (is_null($date)) {

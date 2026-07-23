@@ -7,11 +7,13 @@ namespace App\Filament\Resources\Partials\Pages;
 use App\Filament\Resources\Partials\PartialResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Override;
 
-class EditPartial extends EditRecord
+final class EditPartial extends EditRecord
 {
     protected static string $resource = PartialResource::class;
 
+    #[Override]
     protected function getHeaderActions(): array
     {
         return [

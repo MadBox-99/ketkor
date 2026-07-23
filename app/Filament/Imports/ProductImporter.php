@@ -12,6 +12,7 @@ use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
+use Override;
 
 class ProductImporter extends Importer
 {
@@ -56,6 +57,7 @@ class ProductImporter extends Importer
         ];
     }
 
+    #[Override]
     public function resolveRecord(): ?Product
     {
         if ($this->options['updateExisting'] ?? false) {
@@ -83,6 +85,7 @@ class ProductImporter extends Importer
         return $body;
     }
 
+    #[Override]
     public static function getOptionsFormComponents(): array
     {
         return [

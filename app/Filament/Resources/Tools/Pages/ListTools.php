@@ -7,11 +7,13 @@ namespace App\Filament\Resources\Tools\Pages;
 use App\Filament\Resources\Tools\ToolResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use Override;
 
-class ListTools extends ListRecords
+final class ListTools extends ListRecords
 {
     protected static string $resource = ToolResource::class;
 
+    #[Override]
     protected function getHeaderActions(): array
     {
         return [

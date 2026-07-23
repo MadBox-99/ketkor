@@ -13,7 +13,7 @@ uses(RefreshDatabase::class);
 
 describe('Login (Livewire)', function (): void {
     it('allows user to login with correct credentials', function (): void {
-        $user = User::factory()->create([
+        $user = User::factory()->createOne([
             'password' => Hash::make('password'),
         ]);
 
@@ -28,7 +28,7 @@ describe('Login (Livewire)', function (): void {
     });
 
     it('does not allow user to login with invalid credentials', function (): void {
-        $user = User::factory()->create([
+        $user = User::factory()->createOne([
             'password' => Hash::make('password'),
         ]);
 

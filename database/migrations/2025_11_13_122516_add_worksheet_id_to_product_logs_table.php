@@ -13,7 +13,7 @@ return new class() extends Migration
      */
     public function up(): void
     {
-        Schema::table('product_logs', function (Blueprint $table) {
+        Schema::table('product_logs', function (Blueprint $table): void {
             $table->text('worksheet_id')->nullable()->after('is_online');
         });
     }
@@ -23,7 +23,7 @@ return new class() extends Migration
      */
     public function down(): void
     {
-        Schema::table('product_logs', function (Blueprint $table) {
+        Schema::table('product_logs', function (Blueprint $table): void {
             $table->dropColumn('worksheet_id');
         });
     }

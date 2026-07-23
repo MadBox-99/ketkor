@@ -9,14 +9,17 @@ use Livewire\Livewire;
 
 use function Pest\Laravel\assertGuest;
 
+use Tests\TestCase;
+
 test('login screen can be rendered', function (): void {
+    /** @var TestCase $this */
     $response = $this->get('/login');
 
     $response->assertStatus(200);
 });
 
 test('users can authenticate using the login screen', function (): void {
-    $user = User::factory()->create([
+    $user = User::factory()->createOne([
         'password' => Hash::make('password'),
     ]);
 
@@ -31,7 +34,7 @@ test('users can authenticate using the login screen', function (): void {
 });
 
 test('users can not authenticate with invalid password', function (): void {
-    $user = User::factory()->create([
+    $user = User::factory()->createOne([
         'password' => Hash::make('password'),
     ]);
 
@@ -45,7 +48,8 @@ test('users can not authenticate with invalid password', function (): void {
 });
 
 test('users can logout', function (): void {
-    $user = User::factory()->create();
+    /** @var TestCase $this */
+    $user = User::factory()->createOne();
 
     $response = $this->actingAs($user)->post('/logout');
 

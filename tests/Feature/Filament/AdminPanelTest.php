@@ -15,27 +15,31 @@ use function Pest\Laravel\actingAs;
 use function Pest\Livewire\livewire;
 
 use Spatie\Permission\Models\Role;
+use Tests\TestCase;
 
 function createAdminUser(): User
 {
     Role::findOrCreate('Admin', 'web');
     Role::findOrCreate('Super-Admin', 'web');
 
-    $user = User::factory()->create();
+    $user = User::factory()->createOne();
     $user->assignRole('Admin');
 
     return $user;
 }
 
 it('redirects unauthenticated users from admin panel', function (): void {
+    /** @var TestCase $this */
     $this->get('/admin')->assertRedirect('/admin/login');
 });
 
 it('renders the admin login page', function (): void {
+    /** @var TestCase $this */
     $this->get('/admin/login')->assertOk();
 });
 
 it('allows admin users to access admin panel', function (): void {
+    /** @var TestCase $this */
     $user = createAdminUser();
 
     actingAs($user);
@@ -44,7 +48,8 @@ it('allows admin users to access admin panel', function (): void {
 });
 
 it('denies non-admin users access to admin panel', function (): void {
-    $user = User::factory()->create();
+    /** @var TestCase $this */
+    $user = User::factory()->createOne();
 
     actingAs($user);
 
