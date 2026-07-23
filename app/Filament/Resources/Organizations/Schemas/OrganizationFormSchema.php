@@ -22,7 +22,8 @@ class OrganizationFormSchema
                     ->maxLength(300),
                 TextInput::make('tax_number')
                     ->label('Tax number')
-                    ->maxLength(300),
+                    ->required()
+                    ->maxLength(24),
                 TextInput::make('address')
                     ->label('Address')
                     ->maxLength(300),

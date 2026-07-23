@@ -4,38 +4,43 @@ declare(strict_types=1);
 
 namespace App\Livewire\Tools;
 
+use App\Filament\Resources\Tools\Schemas\ToolFormSchema;
 use App\Models\Tool;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Schemas\Schema;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Throwable;
 
 #[Layout('components.layouts.app')]
-class Create extends Component
+class Create extends Component implements HasSchemas
 {
-    #[Validate('required|string')]
-    public string $name = '';
+    use InteractsWithSchemas;
 
-    #[Validate('nullable|string')]
-    public ?string $category = null;
+    public ?array $data = [];
 
-    #[Validate('nullable|string')]
-    public ?string $tag = null;
+    public function mount(): void
+    {
+        $this->form->fill();
+    }
 
-    #[Validate('nullable|string')]
-    public ?string $factory_name = null;
+    public function form(Schema $schema): Schema
+    {
+        return ToolFormSchema::make($schema)->statePath('data');
+    }
 
     public function save(): void
     {
-        $validated = $this->validate();
+        $data = $this->form->getState();
 
         DB::beginTransaction();
 
         try {
-            Tool::query()->create($validated);
+            Tool::query()->create($data);
             DB::commit();
         } catch (Throwable $throwable) {
             DB::rollback();

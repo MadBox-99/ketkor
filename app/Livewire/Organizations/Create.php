@@ -4,43 +4,45 @@ declare(strict_types=1);
 
 namespace App\Livewire\Organizations;
 
+use App\Filament\Resources\Organizations\Schemas\OrganizationFormSchema;
 use App\Models\Organization;
 use App\Models\User;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Schemas\Schema;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Throwable;
 
 #[Layout('components.layouts.app')]
-class Create extends Component
+class Create extends Component implements HasSchemas
 {
-    #[Validate('required|string')]
-    public string $name = '';
+    use InteractsWithSchemas;
 
-    #[Validate('string')]
-    public string $city = '';
+    public ?array $data = [];
 
-    #[Validate('string')]
-    public string $address = '';
+    public function mount(): void
+    {
+        $this->form->fill();
+    }
 
-    #[Validate('string')]
-    public string $zip = '';
-
-    #[Validate('required|max:24')]
-    public string $tax_number = '';
+    public function form(Schema $schema): Schema
+    {
+        return OrganizationFormSchema::make($schema)->statePath('data');
+    }
 
     public function save(): void
     {
-        $validated = $this->validate();
+        $data = $this->form->getState();
 
         DB::beginTransaction();
 
         try {
-            $organization = Organization::query()->create($validated);
+            $organization = Organization::query()->create($data);
 
             /** @var User $user */
             $user = Auth::user();

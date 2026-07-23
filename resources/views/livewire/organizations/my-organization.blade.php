@@ -12,38 +12,10 @@
         <div class="border-b flex justify-center border-gray-900/10 pb-12">
             <div class="flex w-full max-w-7xl flex-wrap justify-center text-center">
                 <div class="w-full" name='form_field'>
-                    <form class="mb-4 flex basis-full flex-wrap justify-center rounded bg-white px-8 pb-8 pt-6 shadow-md"
+                    <form class="mb-4 flex basis-full flex-wrap justify-center rounded bg-white px-8 pb-8 pt-6 shadow-md dark:bg-gray-800"
                         wire:submit="updateOrganization">
-                        <div class="flex basis-full flex-wrap gap-4 text-left text-xl">
-                            <x-filament-forms::field-wrapper :label="__('Organization name')" :required="true" id="name" statePath="name" class="basis-full">
-                                <x-filament::input.wrapper :valid="! $errors->has('name')">
-                                    <x-filament::input type="text" id="name" wire:model="name" placeholder="{{ __('Organization name') }}" />
-                                </x-filament::input.wrapper>
-                            </x-filament-forms::field-wrapper>
-
-                            <x-filament-forms::field-wrapper :label="__('City')" :required="true" id="city" statePath="city" class="basis-full">
-                                <x-filament::input.wrapper :valid="! $errors->has('city')">
-                                    <x-filament::input type="text" id="city" wire:model="city" placeholder="{{ __('City') }}" />
-                                </x-filament::input.wrapper>
-                            </x-filament-forms::field-wrapper>
-
-                            <x-filament-forms::field-wrapper :label="__('Address')" :required="true" id="address" statePath="address" class="basis-full">
-                                <x-filament::input.wrapper :valid="! $errors->has('address')">
-                                    <x-filament::input type="text" id="address" wire:model="address" placeholder="{{ __('Address') }}" />
-                                </x-filament::input.wrapper>
-                            </x-filament-forms::field-wrapper>
-
-                            <x-filament-forms::field-wrapper :label="__('Tax number')" :required="true" id="tax_number" statePath="tax_number" class="basis-full">
-                                <x-filament::input.wrapper :valid="! $errors->has('tax_number')">
-                                    <x-filament::input type="text" id="tax_number" wire:model="tax_number" placeholder="{{ __('Tax number') }}" />
-                                </x-filament::input.wrapper>
-                            </x-filament-forms::field-wrapper>
-
-                            <x-filament-forms::field-wrapper :label="__('Zip')" :required="true" id="zip" statePath="zip" class="basis-full">
-                                <x-filament::input.wrapper :valid="! $errors->has('zip')">
-                                    <x-filament::input type="text" id="zip" wire:model="zip" placeholder="{{ __('Zip') }}" />
-                                </x-filament::input.wrapper>
-                            </x-filament-forms::field-wrapper>
+                        <div class="basis-full text-left text-xl">
+                            {{ $this->form }}
                         </div>
                         <div class="basis-full text-left">
                             {{-- Save Button --}}

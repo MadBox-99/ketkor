@@ -39,10 +39,29 @@ it('renders the organization form legibly in dark mode', function (): void {
         // text is light, i.e. its red channel is high.
         ->assertScript(<<<'JS'
             (() => {
-                const label = document.querySelector('label[for="name"]');
+                const label = document.querySelector('label[for="form.name"]');
                 if (! label) { return 'no-label'; }
                 const rgb = getComputedStyle(label).color.match(/\d+/g).map(Number);
                 return rgb[0] > 140 ? 'light' : 'dark';
             })()
-        JS, 'light');
+        JS, 'light')
+        // A light label only helps if the surface behind it is dark too. Walk up
+        // from the label and find the first ancestor that actually paints a
+        // background, then assert it is not a light surface.
+        ->assertScript(<<<'JS'
+            (() => {
+                let node = document.querySelector('label[for="form.name"]');
+                if (! node) { return 'no-label'; }
+                while (node && node !== document.documentElement) {
+                    const bg = getComputedStyle(node).backgroundColor;
+                    const rgba = bg.match(/[\d.]+/g).map(Number);
+                    const opaque = rgba.length < 4 || rgba[3] > 0;
+                    if (opaque && bg !== 'rgba(0, 0, 0, 0)') {
+                        return rgba[0] > 140 ? 'light' : 'dark';
+                    }
+                    node = node.parentElement;
+                }
+                return 'none';
+            })()
+        JS, 'dark');
 });

@@ -45,8 +45,8 @@ it('renders the create page', function (): void {
 
 it('creates a tool', function (): void {
     livewire(Create::class)
-        ->set('name', 'Drill')
-        ->set('category', 'sime')
+        ->set('data.name', 'Drill')
+        ->set('data.category', 'sime')
         ->call('save')
         ->assertRedirect(route('tools.index'));
 
@@ -55,9 +55,9 @@ it('creates a tool', function (): void {
 
 it('requires a name when creating a tool', function (): void {
     livewire(Create::class)
-        ->set('name', '')
+        ->set('data.name', '')
         ->call('save')
-        ->assertHasErrors(['name' => 'required']);
+        ->assertHasErrors(['data.name' => 'required']);
 });
 
 it('renders the edit page', function (): void {
@@ -70,7 +70,7 @@ it('updates a tool', function (): void {
     $tool = Tool::factory()->createOne(['name' => 'Old']);
 
     livewire(Edit::class, ['tool' => $tool])
-        ->set('name', 'New')
+        ->set('data.name', 'New')
         ->call('save')
         ->assertRedirect(route('tools.index'));
 
@@ -79,8 +79,8 @@ it('updates a tool', function (): void {
 
 it('persists a valid product category selected from the enum-backed dropdown options', function (): void {
     livewire(Create::class)
-        ->set('name', 'Heat Pump 3000')
-        ->set('category', ProductCategory::SPRSUN->value)
+        ->set('data.name', 'Heat Pump 3000')
+        ->set('data.category', ProductCategory::SPRSUN->value)
         ->call('save')
         ->assertRedirect(route('tools.index'));
 

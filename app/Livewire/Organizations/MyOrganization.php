@@ -4,38 +4,30 @@ declare(strict_types=1);
 
 namespace App\Livewire\Organizations;
 
+use App\Filament\Resources\Organizations\Schemas\OrganizationFormSchema;
 use App\Models\Organization;
 use App\Models\Product;
 use App\Models\User;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Schemas\Schema;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Throwable;
 
 #[Layout('components.layouts.app')]
-class MyOrganization extends Component
+class MyOrganization extends Component implements HasSchemas
 {
+    use InteractsWithSchemas;
+
     public Organization $organization;
 
-    #[Validate('required|string')]
-    public string $name = '';
-
-    #[Validate('nullable|string')]
-    public string $city = '';
-
-    #[Validate('nullable|string')]
-    public string $address = '';
-
-    #[Validate('nullable|string')]
-    public string $zip = '';
-
-    #[Validate('required|max:24')]
-    public string $tax_number = '';
+    public ?array $data = [];
 
     public function mount(): void
     {
@@ -53,21 +45,29 @@ class MyOrganization extends Component
         }
 
         $this->organization = $organization;
-        $this->name = $organization->name;
-        $this->city = (string) $organization->city;
-        $this->address = (string) $organization->address;
-        $this->zip = (string) $organization->zip;
-        $this->tax_number = (string) $organization->tax_number;
+
+        $this->form->fill([
+            'name' => $organization->name,
+            'city' => $organization->city,
+            'address' => $organization->address,
+            'zip' => $organization->zip,
+            'tax_number' => $organization->tax_number,
+        ]);
+    }
+
+    public function form(Schema $schema): Schema
+    {
+        return OrganizationFormSchema::make($schema)->statePath('data');
     }
 
     public function updateOrganization(): void
     {
-        $validated = $this->validate();
+        $data = $this->form->getState();
 
         DB::beginTransaction();
 
         try {
-            $this->organization->update($validated);
+            $this->organization->update($data);
             DB::commit();
         } catch (Throwable $throwable) {
             DB::rollback();

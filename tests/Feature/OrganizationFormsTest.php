@@ -23,8 +23,8 @@ it('creates an organization and assigns it to the current user', function (): vo
     actingAs($user);
 
     livewire(Create::class)
-        ->set('name', 'Acme')
-        ->set('tax_number', '12345678-1-42')
+        ->set('data.name', 'Acme')
+        ->set('data.tax_number', '12345678-1-42')
         ->call('save')
         ->assertRedirect(route('organizations.myorganization'));
 
@@ -37,10 +37,10 @@ it('requires a name and a tax number', function (): void {
     actingAs(User::factory()->createOne());
 
     livewire(Create::class)
-        ->set('name', '')
-        ->set('tax_number', '')
+        ->set('data.name', '')
+        ->set('data.tax_number', '')
         ->call('save')
-        ->assertHasErrors(['name' => 'required', 'tax_number' => 'required']);
+        ->assertHasErrors(['data.name' => 'required', 'data.tax_number' => 'required']);
 });
 
 it('updates an organization', function (): void {
@@ -48,7 +48,7 @@ it('updates an organization', function (): void {
     $organization = Organization::factory()->createOne(['name' => 'Old']);
 
     livewire(Edit::class, ['organization' => $organization])
-        ->set('name', 'New')
+        ->set('data.name', 'New')
         ->call('save')
         ->assertRedirect(route('organizations.index'));
 
