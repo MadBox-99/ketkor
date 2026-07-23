@@ -203,7 +203,17 @@ class MaintenanceReminderScheduler
             'last_maintenance_at' => $reminder->schedule->fromMaintenanceLog
                 ? $reminder->schedule->baseDate->toDateString()
                 : null,
+            'status' => MaintenanceReminderStatus::Pending,
+            'sent_at' => null,
+            'error' => null,
         ]);
+
+        try {
+            $log->save();
+        } catch (QueryException $exception) {
+            /** Egy párhuzamos futás már lefoglalta ezt az emlékeztetőt. */
+            return null;
+        }
 
         try {
             Mail::to($reminder->user->email)->send(new MaintenanceReminderMail(
@@ -228,12 +238,7 @@ class MaintenanceReminderScheduler
             ]);
         }
 
-        try {
-            $log->save();
-        } catch (QueryException $exception) {
-            /** Egy párhuzamos futás ugyanezt az emlékeztetőt már rögzítette. */
-            return null;
-        }
+        $log->save();
 
         return $log;
     }

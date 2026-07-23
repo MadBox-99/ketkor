@@ -13,6 +13,7 @@ use App\Services\MaintenanceReminderScheduler;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 
 beforeEach(function (): void {
@@ -188,7 +189,41 @@ it('does not abort the run when a concurrent send already inserted the same occu
         ]);
     });
 
-    expect(fn () => runOn('2026-02-08'))->not->toThrow(QueryException::class);
+    try {
+        expect(fn () => runOn('2026-02-08'))->not->toThrow(QueryException::class);
+
+        expect(MaintenanceReminder::query()->count())->toBe(1);
+        Mail::assertNothingQueued();
+    } finally {
+        Event::forget('eloquent.creating: ' . MaintenanceReminder::class);
+    }
+});
+
+it('retries a pending reminder left behind by a crashed process', function (): void {
+    $product = sendableProduct();
+
+    $pending = MaintenanceReminder::query()->create([
+        'product_id' => $product->id,
+        'user_id' => $product->users()->first()->id,
+        'email' => $product->users()->first()->email,
+        'stage' => MaintenanceReminderStage::Advance,
+        'stage_key' => 30,
+        'due_date' => '2026-03-10',
+        'last_maintenance_at' => '2025-03-10',
+        'status' => MaintenanceReminderStatus::Pending,
+        'sent_at' => null,
+        'error' => null,
+    ]);
+
+    expect(runOn('2026-02-08'))->toBe(1);
+
+    Mail::assertQueued(MaintenanceReminderMail::class, 1);
 
     expect(MaintenanceReminder::query()->count())->toBe(1);
+
+    $reminder = MaintenanceReminder::query()->sole();
+
+    expect($reminder->id)->toBe($pending->id)
+        ->and($reminder->status)->toBe(MaintenanceReminderStatus::Sent)
+        ->and($reminder->sent_at)->not->toBeNull();
 });

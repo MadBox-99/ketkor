@@ -12,11 +12,14 @@ enum MaintenanceReminderStatus: string implements HasLabel
 
     case Failed = 'failed';
 
+    case Pending = 'pending';
+
     public function getLabel(): string
     {
         return match ($this) {
             self::Sent => 'Elküldve',
             self::Failed => 'Hiba',
+            self::Pending => 'Folyamatban',
         };
     }
 }
