@@ -8,14 +8,23 @@ use App\Services\MaintenanceReminderScheduler;
 use App\Support\PendingMaintenanceReminder;
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Console\Isolatable;
 
-class SendMaintenanceRemindersCommand extends Command
+class SendMaintenanceRemindersCommand extends Command implements Isolatable
 {
     protected $signature = 'maintenance:send-reminders
                             {--dry-run : Csak kiírja, mi menne ki, nem küld és nem naplóz}
                             {--catch-up=1 : Ennyi korábbi napot is ellenőriz visszamenőleg}';
 
     protected $description = 'Karbantartás emlékeztető e-mailek kiküldése';
+
+    /**
+     * Alapértelmezetten elszigetelt: egy kézi futtatás sem futhat a 08:00-as ütemezett futással
+     * párhuzamosan. Az `--isolated` explicit megadása nélkül is érvényes, mert alapból be van
+     * kapcsolva. A `Schedule::command()` `withoutOverlapping()`-ja ettől függetlenül megmarad, mert
+     * két ütemezett futás közötti átfedést önmagában kezeli.
+     */
+    protected $isolated = true;
 
     public function handle(MaintenanceReminderScheduler $scheduler): int
     {
