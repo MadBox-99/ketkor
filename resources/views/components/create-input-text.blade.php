@@ -15,7 +15,7 @@
                     class="@error($name) border-l-danger-600 @enderror block w-full rounded border-0 p-2 py-1.5 text-3xl text-gray-900 shadow ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     id="{{ $name }}" name="{{ $name }}" type="{{ $type }}"
                     value="{{ !empty(old($name)) ? old($name) : $slot }}" placeholder="{{ __($headText) }}"
-                    @if ($disabled) {!! 'readonly ' !!} @endif>
+                    @if ($disabled) {!! 'readonly ' !!} @endif {{ $attributes }}>
             </div>
         </div>
     </div>

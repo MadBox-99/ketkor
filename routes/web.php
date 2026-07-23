@@ -5,12 +5,12 @@ declare(strict_types=1);
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ToolController;
 use App\Livewire\Home;
 use App\Livewire\Products\Edit;
 use App\Livewire\Products\Index;
 use App\Livewire\Products\MyProducts;
 use App\Livewire\Products\Search;
+use App\Livewire\Tools;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/auth.php';
@@ -35,12 +35,9 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::put('organizations/{organization}', [OrganizationController::class, 'update'])->name('organizations.update');
     Route::delete('organizations/{organization}', [OrganizationController::class, 'destroy'])->name('organizations.destroy');
 
-    Route::get('tools', [ToolController::class, 'index'])->name('tools.index');
-    Route::get('tools/create', [ToolController::class, 'create'])->name('tools.create');
-    Route::post('tools', [ToolController::class, 'store'])->name('tools.store');
-    Route::get('tools/{tool}/edit', [ToolController::class, 'edit'])->name('tools.edit');
-    Route::put('tools/{tool}', [ToolController::class, 'update'])->name('tools.update');
-    Route::delete('tools/{tool}', [ToolController::class, 'destroy'])->name('tools.destroy');
+    Route::livewire('tools', Tools\Index::class)->name('tools.index');
+    Route::livewire('tools/create', Tools\Create::class)->name('tools.create');
+    Route::livewire('tools/{tool}/edit', Tools\Edit::class)->name('tools.edit');
 
     Route::prefix('organization')->name('organizations.')->group(function (): void {
         Route::get('/{user}/{organization}/{product}', [OrganizationController::class, 'removeUserProduct'])->name('detach');
