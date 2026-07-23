@@ -79,10 +79,10 @@ it('clamps a month-end base date to the end of the target month', function (): v
         ->toBe('2026-02-28');
 });
 
-it('keeps a month-end base date on a yearly interval', function (): void {
-    $product = Product::factory()->createOne(['installation_date' => '2025-01-01']);
-    ProductLog::factory()->on('2025-08-31 09:00:00')->createOne(['product_id' => $product->id]);
+it('clamps a leap day base date on a yearly interval', function (): void {
+    $product = Product::factory()->createOne(['installation_date' => '2023-01-01']);
+    ProductLog::factory()->on('2024-02-29 09:00:00')->createOne(['product_id' => $product->id]);
 
     expect(MaintenanceSchedule::for($product->fresh())->dueDate->toDateString())
-        ->toBe('2026-08-31');
+        ->toBe('2025-02-28');
 });
