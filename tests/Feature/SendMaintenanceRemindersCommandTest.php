@@ -81,6 +81,9 @@ it('is scheduled to run daily', function (): void {
             'maintenance:send-reminders',
         ));
 
+    $event = $events->first();
+
     expect($events)->toHaveCount(1)
-        ->and($events->first()->expression)->toBe('0 8 * * *');
+        ->and($event->expression)->toBe('0 8 * * *')
+        ->and($event->withoutOverlapping)->toBeTrue();
 });
