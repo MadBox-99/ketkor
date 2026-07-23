@@ -32,6 +32,8 @@ use Override;
     'tool_id',
     'user_id',
     'comments',
+    'maintenance_interval_months',
+    'maintenance_reminders_enabled',
     'created_at',
 ])]
 class Product extends Model
@@ -46,6 +48,8 @@ class Product extends Model
             'warrantee_date' => 'date:Y-m-d',
             'purchase_date' => 'date:Y-m-d',
             'installation_date' => 'date:Y-m-d',
+            'maintenance_interval_months' => 'integer',
+            'maintenance_reminders_enabled' => 'boolean',
         ];
     }
 
