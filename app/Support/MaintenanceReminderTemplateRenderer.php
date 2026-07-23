@@ -41,7 +41,9 @@ final class MaintenanceReminderTemplateRenderer
             'serial_number' => (string) $product->serial_number,
             'tool_name' => (string) ($product->tool?->name ?? ''),
             'maintenance_type' => $product->maintenance_interval_months === 6 ? 'féléves' : 'éves',
-            'last_maintenance_date' => $reminder->schedule->baseDate->format(self::DATE_FORMAT),
+            'last_maintenance_date' => $reminder->schedule->fromMaintenanceLog
+                ? $reminder->schedule->baseDate->format(self::DATE_FORMAT)
+                : '',
             'due_date' => $reminder->schedule->dueDate->format(self::DATE_FORMAT),
             'contact_phone' => (string) ($settings->contact_phone ?? ''),
             'contact_email' => (string) ($settings->contact_email ?? ''),

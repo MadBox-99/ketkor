@@ -34,6 +34,26 @@ function pendingReminder(array $productAttributes = [], int $intervalMonths = 12
     );
 }
 
+function pendingReminderWithoutMaintenanceLog(array $productAttributes = [], int $intervalMonths = 12): PendingMaintenanceReminder
+{
+    $tool = Tool::factory()->createOne(['name' => 'Vaillant ecoTEC']);
+    $product = Product::factory()->createOne(array_merge([
+        'tool_id' => $tool->id,
+        'owner_name' => 'Kiss Béla',
+        'serial_number' => 'AB-1234-CDEF',
+        'installation_date' => '2024-01-01',
+        'maintenance_interval_months' => $intervalMonths,
+    ], $productAttributes));
+
+    return new PendingMaintenanceReminder(
+        product: $product->fresh(),
+        user: User::factory()->createOne(),
+        stage: MaintenanceReminderStage::Advance,
+        stageKey: 30,
+        schedule: MaintenanceSchedule::for($product->fresh()),
+    );
+}
+
 it('replaces every supported variable', function (): void {
     MaintenanceReminderSetting::current()->update([
         'contact_phone' => '+36 1 234 5678',
@@ -53,6 +73,15 @@ it('replaces every supported variable', function (): void {
             'Kiss Béla | Vaillant ecoTEC | éves | 2025. 03. 10. | 2026. 03. 10. | '
             . '+36 1 234 5678 | szerviz@example.test | https://example.test/foglalas',
         );
+});
+
+it('renders an empty last maintenance date when there is no maintenance log', function (): void {
+    MaintenanceReminderSetting::current()->update(['email_body' => 'Előző karbantartás: [{{ last_maintenance_date }}]']);
+
+    $rendered = (new MaintenanceReminderTemplateRenderer())
+        ->render(pendingReminderWithoutMaintenanceLog(), MaintenanceReminderSetting::current());
+
+    expect($rendered['body'])->toBe('Előző karbantartás: []');
 });
 
 it('labels a six month interval as half-yearly', function (): void {
