@@ -8,6 +8,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ToolController;
 use App\Livewire\Home;
+use App\Livewire\Products\MyProducts;
 use App\Livewire\Products\Search;
 use Illuminate\Support\Facades\Route;
 
@@ -54,8 +55,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
 
     Route::prefix('product')->name('products.')->group(function (): void {
         Route::livewire('/search', Search::class)->name('search');
-        Route::get('/myproducts', [ProductController::class, 'myproducts'])->name('myproducts');
-        Route::delete('/remove/{product}', [ProductController::class, 'remove'])->name('remove');
+        Route::livewire('/myproducts', MyProducts::class)->name('myproducts');
         Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('edit');
         Route::get('/', [ProductController::class, 'index'])->name('index');
         Route::put('/update/{product}', [ProductController::class, 'update'])->name('update');

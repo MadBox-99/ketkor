@@ -8,11 +8,9 @@ use App\Models\Partial;
 use App\Models\Product;
 use App\Models\Tool;
 use App\Models\User;
-use Filament\Notifications\Notification;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -63,23 +61,5 @@ class ProductController extends Controller
 
             return to_route('products.edit', ['product' => $product])->with('error', $throwable->getMessage());
         }
-    }
-
-    public function remove(Product $product): RedirectResponse
-    {
-        /** @var User $user */
-        $user = Auth::user();
-        $user->products()->detach($product->id);
-        Notification::make()
-            ->title(__('Succesfuly removed the product from your account.'))
-            ->success()
-            ->send();
-
-        return to_route('products.myproducts');
-    }
-
-    public function myproducts(): View
-    {
-        return view('product.myproduct');
     }
 }

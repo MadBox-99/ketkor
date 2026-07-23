@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Livewire;
+namespace App\Livewire\Products;
 
 use App\Models\Product;
 use App\Models\User;
@@ -11,6 +11,7 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\Icons\Heroicon;
@@ -23,9 +24,11 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-class ProductSearchUser extends Component implements HasActions, HasSchemas, HasTable
+#[Layout('components.layouts.app')]
+class MyProducts extends Component implements HasActions, HasSchemas, HasTable
 {
     use InteractsWithActions;
     use InteractsWithSchemas;
@@ -145,6 +148,11 @@ class ProductSearchUser extends Component implements HasActions, HasSchemas, Has
                         /** @var User $user */
                         $user = Auth::user();
                         $record->users()->detach($user->id);
+
+                        Notification::make()
+                            ->title(__('Succesfuly removed the product from your account.'))
+                            ->success()
+                            ->send();
                     }),
             ])
             ->defaultSort('created_at', 'desc')
@@ -167,6 +175,6 @@ class ProductSearchUser extends Component implements HasActions, HasSchemas, Has
 
     public function render(): Factory|View
     {
-        return view('livewire.product-search-user');
+        return view('livewire.products.my-products');
     }
 }
