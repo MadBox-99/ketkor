@@ -2066,23 +2066,28 @@ Ha bármi más megjelenik, az egy törött hivatkozás — javítsd.
 
 - [ ] **Step 4: Ellenőrizd, hogy nincs feloldatlan Livewire hivatkozás**
 
-Run:
+Gyűjtsd ki a nézetekben hivatkozott komponensneveket, és oldd fel mindegyiket a Livewire v4 `Finder`-ével:
+
+```bash
+grep -rhoE "<livewire:[a-z0-9.:-]+|@livewire\('[a-z0-9.:-]+'" resources/views \
+  | sed "s/<livewire://;s/@livewire('//" | sort -u | tr '\n' ' '
+```
+
+A kapott neveket add át ennek a parancsnak (a `NEVEK` helyére, szóközzel elválasztva):
 
 ```bash
 php artisan tinker --execute='
 $f = app(\Livewire\Finder\Finder::class);
-$names = [];
-foreach (glob(resource_path("views/**/*.blade.php"), GLOB_BRACE) as $file) {}
-' 
+foreach (explode(" ", "NEVEK") as $n) {
+    if ($n === "") { continue; }
+    $ok = $f->resolveClassComponentClassName($n)
+        || $f->resolveSingleFileComponentPath($n)
+        || $f->resolveMultiFileComponentPath($n);
+    printf("%-40s %s\n", $n, $ok ? "OK" : "HIÁNYZIK");
+}'
 ```
 
-Egyszerűbben: gyűjtsd ki a hivatkozott komponensneveket és ellenőrizd őket:
-
-```bash
-grep -rhoE "<livewire:[a-z0-9.:-]+|@livewire\('[a-z0-9.:-]+'" resources/views | sed "s/<livewire://;s/@livewire('//" | sort -u
-```
-
-Minden névhez léteznie kell komponensnek. A `notifications` kivétel — azt a Filament regisztrálja futásidőben.
+Expected: minden név `OK`. Egyetlen elfogadott kivétel a `notifications` — azt a Filament regisztrálja futásidőben, a `Finder` nem látja.
 
 - [ ] **Step 5: Teljes tesztfutás**
 
