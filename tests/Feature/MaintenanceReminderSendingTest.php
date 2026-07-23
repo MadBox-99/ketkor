@@ -227,3 +227,28 @@ it('retries a pending reminder left behind by a crashed process', function (): v
         ->and($reminder->status)->toBe(MaintenanceReminderStatus::Sent)
         ->and($reminder->sent_at)->not->toBeNull();
 });
+
+it('keeps processing other reminders when the final save fails after the mail was sent', function (): void {
+    sendableProduct(['serial_number' => 'SN-0001']);
+    sendableProduct(['serial_number' => 'SN-0002']);
+
+    $hasThrown = false;
+
+    MaintenanceReminder::updating(function (MaintenanceReminder $reminder) use (&$hasThrown): void {
+        if ($hasThrown) {
+            return;
+        }
+
+        $hasThrown = true;
+
+        throw new RuntimeException('Deadlock found when trying to get lock');
+    });
+
+    try {
+        expect(fn () => runOn('2026-02-08'))->not->toThrow(Throwable::class);
+
+        Mail::assertQueued(MaintenanceReminderMail::class, 2);
+    } finally {
+        Event::forget('eloquent.updating: ' . MaintenanceReminder::class);
+    }
+});

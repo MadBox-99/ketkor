@@ -17,6 +17,8 @@ use App\Support\PendingMaintenanceReminder;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
 
@@ -179,41 +181,61 @@ class MaintenanceReminderScheduler
 
     /**
      * Kiküld egy emlékeztetőt és naplózza az eredményt.
-     * Null, ha korábban már sikeresen kiment ugyanez a szakasz.
+     * Null, ha korábban már sikeresen kiment ugyanez a szakasz, vagy ha egy párhuzamos
+     * futás közben nyerte el a lefoglalást.
+     *
+     * A levél kiküldése utáni utolsó mentés hibáját elnyeljük: ha az elszáll, a levél már
+     * kiment, de a sor `Pending` állapotban marad, így egy későbbi futás újra megpróbálja
+     * elküldeni. Egy ritka duplikált levél elfogadhatóbb, mint az egész köteg megszakítása.
      */
     public function send(PendingMaintenanceReminder $reminder): ?MaintenanceReminder
     {
-        $log = MaintenanceReminder::query()->firstOrNew([
+        $keys = [
             'product_id' => $reminder->product->getKey(),
             'user_id' => $reminder->user->getKey(),
             'due_date' => $reminder->schedule->dueDate->toDateString(),
             'stage' => $reminder->stage,
             'stage_key' => $reminder->stageKey,
-        ]);
+        ];
 
-        if ($log->exists && $log->status === MaintenanceReminderStatus::Sent) {
+        $log = DB::transaction(function () use ($reminder, $keys): ?MaintenanceReminder {
+            $existing = MaintenanceReminder::query()
+                ->where($keys)
+                ->lockForUpdate()
+                ->first();
+
+            if ($existing !== null && $existing->status === MaintenanceReminderStatus::Sent) {
+                return null;
+            }
+
+            $log = $existing ?? new MaintenanceReminder($keys);
+
+            $log->fill([
+                'email' => $reminder->user->email,
+                'last_maintenance_at' => $reminder->schedule->fromMaintenanceLog
+                    ? $reminder->schedule->baseDate->toDateString()
+                    : null,
+                'status' => MaintenanceReminderStatus::Pending,
+                'sent_at' => null,
+                'error' => null,
+            ]);
+
+            try {
+                $log->save();
+            } catch (QueryException $exception) {
+                /** Egy párhuzamos futás már lefoglalta ezt az emlékeztetőt. */
+                return null;
+            }
+
+            return $log;
+        });
+
+        if ($log === null) {
             return null;
         }
 
         $settings = MaintenanceReminderSetting::current();
         $rendered = $this->renderer->render($reminder, $settings);
-
-        $log->fill([
-            'email' => $reminder->user->email,
-            'last_maintenance_at' => $reminder->schedule->fromMaintenanceLog
-                ? $reminder->schedule->baseDate->toDateString()
-                : null,
-            'status' => MaintenanceReminderStatus::Pending,
-            'sent_at' => null,
-            'error' => null,
-        ]);
-
-        try {
-            $log->save();
-        } catch (QueryException $exception) {
-            /** Egy párhuzamos futás már lefoglalta ezt az emlékeztetőt. */
-            return null;
-        }
 
         try {
             Mail::to($reminder->user->email)->send(new MaintenanceReminderMail(
@@ -238,7 +260,15 @@ class MaintenanceReminderScheduler
             ]);
         }
 
-        $log->save();
+        try {
+            $log->save();
+        } catch (Throwable $exception) {
+            Log::error('Nem sikerült elmenteni az emlékeztető állapotát a levél kiküldése után.', [
+                'product_id' => $reminder->product->getKey(),
+                'user_id' => $reminder->user->getKey(),
+                'exception' => $exception->getMessage(),
+            ]);
+        }
 
         return $log;
     }
