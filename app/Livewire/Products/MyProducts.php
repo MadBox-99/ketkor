@@ -11,7 +11,6 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Support\Icons\Heroicon;
@@ -148,11 +147,6 @@ class MyProducts extends Component implements HasActions, HasSchemas, HasTable
                         /** @var User $user */
                         $user = Auth::user();
                         $record->users()->detach($user->id);
-
-                        Notification::make()
-                            ->title(__('Succesfuly removed the product from your account.'))
-                            ->success()
-                            ->send();
                     }),
             ])
             ->defaultSort('created_at', 'desc')
