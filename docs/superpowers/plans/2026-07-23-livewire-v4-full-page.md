@@ -1068,7 +1068,9 @@ class Index extends Component implements HasActions, HasSchemas, HasTable
         Route::livewire('/', Index::class)->name('index');
 ```
 
-Import: `use App\Livewire\Products\Index as ProductIndex;` — figyelj a névütközésre az `App\Livewire\Index`-szel (Task 2). Használj aliast, és a route-ban is az aliast add meg.
+Import: `use App\Livewire\Products\Index;` — nincs névütközés, mert a Task 2 komponense `App\Livewire\Home` lett, nem `Index`.
+
+**Livewire v4 névfeloldás, amit tudni kell:** a `Finder::generateNameFromClass()` (`vendor/livewire/livewire/src/Finder/Finder.php:319-338`) szándékosan levágja a záró `.index`-et, hogy egy almappa index-komponense a mappa nevén legyen szólítható. Az `App\Livewire\Products\Index` tehát `products` néven oldódik fel — ez **helyes és működik**. A levágás viszont megelőzi a névtér-prefix eltávolítását, ezért egy **gyökérszintű** `App\Livewire\Index` `app.livewire`-ré torzulna és soha nem oldódna fel. Emiatt lett a Task 2 komponense `Home`. Almappás `Index` komponenst (Task 7, 8, 9) nyugodtan használhatsz.
 
 - [ ] **Step 7: Töröld a régi nézetet**
 
