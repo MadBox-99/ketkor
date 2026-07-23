@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\ProfileController;
 use App\Livewire\Home;
 use App\Livewire\Organizations;
 use App\Livewire\Products\Edit;
 use App\Livewire\Products\Index;
 use App\Livewire\Products\MyProducts;
 use App\Livewire\Products\Search;
+use App\Livewire\Profile;
 use App\Livewire\Tools;
 use Illuminate\Support\Facades\Route;
 
@@ -38,8 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
 
     Route::prefix('organization')->name('organizations.')->group(function (): void {
         Route::middleware(['role:Organizer|Admin|Super Admin'])->group(function (): void {
-            Route::put('/store', [EmployeeController::class, 'store'])->name('employee.store');
-            Route::get('/create', [EmployeeController::class, 'create'])->name('employee.create');
+            Route::livewire('/create', Organizations\CreateEmployee::class)->name('employee.create');
             Route::livewire('/myorganization', Organizations\MyOrganization::class)->name('myorganization');
         });
     });
@@ -51,7 +49,5 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         Route::livewire('/edit/{product}', Edit::class)->name('edit');
     });
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::livewire('/profile', Profile\Edit::class)->name('profile.edit');
 });
