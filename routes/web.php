@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Home;
 use App\Livewire\Organizations;
@@ -32,21 +31,16 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
     Route::livewire('organizations', Organizations\Index::class)->name('organizations.index');
     Route::livewire('organizations/create', Organizations\Create::class)->name('organizations.create');
     Route::livewire('organizations/{organization}/edit', Organizations\Edit::class)->name('organizations.edit');
-    Route::delete('organizations/{organization}', [OrganizationController::class, 'destroy'])->name('organizations.destroy');
 
     Route::livewire('tools', Tools\Index::class)->name('tools.index');
     Route::livewire('tools/create', Tools\Create::class)->name('tools.create');
     Route::livewire('tools/{tool}/edit', Tools\Edit::class)->name('tools.edit');
 
     Route::prefix('organization')->name('organizations.')->group(function (): void {
-        Route::get('/{user}/{organization}/{product}', [OrganizationController::class, 'removeUserProduct'])->name('detach');
         Route::middleware(['role:Organizer|Admin|Super Admin'])->group(function (): void {
             Route::put('/store', [EmployeeController::class, 'store'])->name('employee.store');
             Route::get('/create', [EmployeeController::class, 'create'])->name('employee.create');
-            Route::get('/myorganization', [OrganizationController::class, 'myOrganization'])->name('myorganization');
-            Route::post('/move', [OrganizationController::class, 'productMove'])->name('productMove');
-            Route::put('/myorganizationupdate/{organization}', [OrganizationController::class, 'myOrganizationUpdate'])->name('myorganizationupdate');
-            Route::get('/removeUserFromOrganization/{user}', [OrganizationController::class, 'removeUserFromOrganization'])->name('removeUserFromOrganization');
+            Route::livewire('/myorganization', Organizations\MyOrganization::class)->name('myorganization');
         });
     });
 

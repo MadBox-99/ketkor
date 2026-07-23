@@ -3,11 +3,14 @@
 declare(strict_types=1);
 
 use App\Enums\UserRole;
+use App\Livewire\Organizations\MyOrganization;
 use App\Models\Organization;
 use App\Models\User;
+use Illuminate\Support\Facades\Route;
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
+use function Pest\Livewire\livewire;
 
 use Spatie\Permission\Models\Role;
 
@@ -28,5 +31,37 @@ it('links the create employee button to the employee create route', function ():
 
     actingAs($organizer);
 
-    get(route('organizations.myorganization'))->assertOk()->assertSeeHtml(route('organizations.employee.create'))->assertDontSeeHtml('href="' . route('organizations.create') . '"');
+    get(route('organizations.myorganization'))->assertOk()->assertSeeHtml(route('organizations.employee.create'))->assertDontSeeHtml('href="' . route('organizations.create') . '"')->assertSeeLivewire(MyOrganization::class);
+});
+
+it('no longer exposes GET routes for mutations', function (string $name): void {
+    expect(Route::has($name))->toBeFalse();
+})->with([
+    'organizations.detach',
+    'organizations.removeUserFromOrganization',
+    'organizations.productMove',
+    'organizations.myorganizationupdate',
+]);
+
+it('refuses to remove a member from a different organization', function (): void {
+    $organization = Organization::factory()->createOne();
+    $organizer = User::factory()->createOne(['organization_id' => $organization->id]);
+    $outsider = User::factory()->createOne(['organization_id' => null]);
+
+    actingAs($organizer);
+
+    livewire(MyOrganization::class)->call('removeMember', $outsider->id);
+
+    expect(User::query()->whereKey($outsider->id)->exists())->toBeTrue();
+});
+
+it('refuses to remove a member when the actor has no organization', function (): void {
+    $actor = User::factory()->createOne(['organization_id' => null]);
+    $target = User::factory()->createOne(['organization_id' => null]);
+
+    actingAs($actor);
+
+    livewire(MyOrganization::class)->call('removeMember', $target->id);
+
+    expect(User::query()->whereKey($target->id)->exists())->toBeTrue();
 });

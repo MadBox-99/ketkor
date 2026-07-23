@@ -1,5 +1,4 @@
-<x-layouts.app>
-    <!-- Page Heading -->
+<div>
     <x-slot name="header">
         <x-button-style-link text="Organization edit" route="organizations.employee.create">
             Create Employee
@@ -14,23 +13,20 @@
             <div class="flex w-full max-w-7xl flex-wrap justify-center text-center">
                 <div class="w-full" name='form_field'>
                     <form class="mb-4 flex basis-full flex-wrap justify-center rounded bg-white px-8 pb-8 pt-6 shadow-md"
-                        method="POST"
-                        action="{{ route('organizations.myorganizationupdate', ['organization' => $organization->id]) }}">
-                        @csrf
-                        @method('PUT')
+                        wire:submit="updateOrganization">
                         <div class="flex flex-wrap">
                             <div class="basis-full text-left text-xl">
                                 <div class="flex flex-wrap">
-                                    <x-create-input-text name="name"
-                                        headText="Organization name">{{ $organization->name }}</x-create-input-text>
-                                    <x-create-input-text name="city"
-                                        headText="City">{{ $organization->city }}</x-create-input-text>
-                                    <x-create-input-text name="address"
-                                        headText="Address">{{ $organization->address }}</x-create-input-text>
-                                    <x-create-input-text name="tax_number"
-                                        headText="Tax number">{{ $organization->tax_number }}</x-create-input-text>
-                                    <x-create-input-text name="zip"
-                                        headText="Zip">{{ $organization->zip }}</x-create-input-text>
+                                    <x-create-input-text name="name" headText="Organization name"
+                                        wire:model="name"></x-create-input-text>
+                                    <x-create-input-text name="city" headText="City"
+                                        wire:model="city"></x-create-input-text>
+                                    <x-create-input-text name="address" headText="Address"
+                                        wire:model="address"></x-create-input-text>
+                                    <x-create-input-text name="tax_number" headText="Tax number"
+                                        wire:model="tax_number"></x-create-input-text>
+                                    <x-create-input-text name="zip" headText="Zip"
+                                        wire:model="zip"></x-create-input-text>
                                 </div>
                             </div>
                             <div class="basis-full text-left">
@@ -57,8 +53,9 @@
                                     &nbsp;
                                 </div>
                                 <div class="basis-3/12 rounded-md bg-red-600 text-center text-white">
-                                    <a
-                                        href="{{ route('organizations.removeUserFromOrganization', ['user' => $user]) }}">{{ __('user delete') }}</a>
+                                    <button type="button"
+                                        wire:click="removeMember({{ $user->id }})"
+                                        wire:confirm="{{ __('Are you sure you want to remove this user from your organization?') }}">{{ __('user delete') }}</button>
                                 </div>
                             </div>
                         </div>
@@ -113,51 +110,39 @@
                                                     x-data=""
                                                     x-on:click.prevent="$dispatch('open-modal','{{ 'confirm-user-move-' . $product->id . '-' . $user->id }}')">{{ __('Moving to') }}</x-danger-button>
 
-                                                    <x-modal :name="'confirm-user-move-' . $product->id . '-' . $user->id" :show="$errors->productMove->isNotEmpty()" focusable>
-                                                        <form class="p-6" method="POST"
-                                                            action="{{ route('organizations.productMove') }}">
-                                                            @csrf
+                                                    <x-modal :name="'confirm-user-move-' . $product->id . '-' . $user->id" focusable>
+                                                        <form class="p-6" x-data="{ selectedUserId: null }"
+                                                            wire:submit="moveProduct({{ $product->id }}, {{ $user->id }}, selectedUserId)">
                                                             <h2 class="text-lg font-medium text-gray-900">
                                                                 {{ __('Are you sure you want to move the product?') }}
                                                             </h2>
-                                                            <input name="product_id" type="hidden"
-                                                                value="{{ $product->id }}">
-                                                            <input name="user_id" type="hidden"
-                                                                value="{{ $user->id }}">
 
                                                             <div class="mt-6">
-                                                                <x-select-input name="selected_user_id" headText="User">
+                                                                <x-select-input name="selected_user_id" headText="User"
+                                                                    x-model="selectedUserId">
                                                                     @foreach ($user->organization->users ?? [] as $user_2)
                                                                         <x-select-input-option :value="$user_2->id">
                                                                             {{ $user_2->name }}
                                                                         </x-select-input-option>
                                                                     @endforeach
                                                                 </x-select-input>
-
-                                                                <x-input-error class="mt-2" :messages="$errors->productMove->get(
-                                                                    'selected_user_id',
-                                                                )" />
                                                             </div>
 
                                                             <div class="mt-6 flex justify-end">
-                                                                <x-secondary-button x-on:click="$dispatch('close')">
+                                                                <x-secondary-button type="button" x-on:click="$dispatch('close')">
                                                                     {{ __('Cancel') }}
                                                                 </x-secondary-button>
                                                                 <x-secondary-button
                                                                     class="bg-orange text-white hover:bg-primary-500"
-                                                                    type="subbmit">
+                                                                    type="submit">
                                                                     {{ __('Move') }}
                                                                 </x-secondary-button>
-                                                                <x-danger-button class="ml-3">
-                                                                    <a href="{{ route('organizations.detach', [
-                                                                        'organization' => $organization->id,
-                                                                        'product' => $product->id,
-                                                                        'user' => $user->id,
-                                                                    ]) }}"
-                                                                        wire:navigate>{{ __('Remove product from user') }}</a>
+                                                                <x-danger-button class="ml-3" type="button"
+                                                                    wire:click="detachProduct({{ $user->id }}, {{ $product->id }})"
+                                                                    wire:confirm="{{ __('Are you sure you want to remove this product from the user?') }}">
+                                                                    {{ __('Remove product from user') }}
                                                                 </x-danger-button>
                                                             </div>
-
                                                         </form>
                                                     </x-modal>
 
@@ -180,4 +165,4 @@
             </div>
         </div>
     </div>
-</x-layouts.app>
+</div>
