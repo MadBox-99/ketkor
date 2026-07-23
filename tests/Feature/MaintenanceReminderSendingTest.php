@@ -229,7 +229,7 @@ it('retries a pending reminder left behind by a crashed process', function (): v
 });
 
 it('keeps processing other reminders when the final save fails after the mail was sent', function (): void {
-    sendableProduct(['serial_number' => 'SN-0001']);
+    $productOne = sendableProduct(['serial_number' => 'SN-0001']);
     sendableProduct(['serial_number' => 'SN-0002']);
 
     $hasThrown = false;
@@ -248,6 +248,12 @@ it('keeps processing other reminders when the final save fails after the mail wa
         expect(fn () => runOn('2026-02-08'))->not->toThrow(Throwable::class);
 
         Mail::assertQueued(MaintenanceReminderMail::class, 2);
+
+        $failedSaveReminder = MaintenanceReminder::query()
+            ->where('product_id', $productOne->id)
+            ->sole();
+
+        expect($failedSaveReminder->status)->toBe(MaintenanceReminderStatus::Pending);
     } finally {
         Event::forget('eloquent.updating: ' . MaintenanceReminder::class);
     }

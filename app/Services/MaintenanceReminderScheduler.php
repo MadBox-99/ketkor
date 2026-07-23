@@ -181,12 +181,19 @@ class MaintenanceReminderScheduler
 
     /**
      * Kiküld egy emlékeztetőt és naplózza az eredményt.
-     * Null, ha korábban már sikeresen kiment ugyanez a szakasz, vagy ha egy párhuzamos
-     * futás közben nyerte el a lefoglalást.
      *
-     * A levél kiküldése utáni utolsó mentés hibáját elnyeljük: ha az elszáll, a levél már
-     * kiment, de a sor `Pending` állapotban marad, így egy későbbi futás újra megpróbálja
-     * elküldeni. Egy ritka duplikált levél elfogadhatóbb, mint az egész köteg megszakítása.
+     * Az emlékeztetőt lefoglal az adatbázisban a levél kiküldése előtt, így egy párhuzamos futás
+     * nem tudja ugyanaz az új emlékeztetőt kétszer elküldeni (az egyedi index ezt kényszeríti).
+     * Egy már `Pending` vagy `Failed` állapotban lévő sor helyén újra próbálkozik, de ez a
+     * visszapróbálkozási útvonal nem kizárólagos: két egyidejű ütemezőfutás mindkettő elküldheti.
+     * A napi parancs `withoutOverlapping()` alatt fut, ez gyakorlatban megakadályozza ezt.
+     *
+     * Ha a levél kiküldése után a végső mentés hibába ütközik, a levél már kiment, de a sor
+     * `Pending` állapotban marad, így egy további futás újra megpróbálja elküldeni — ezt szándékosan
+     * vállaljuk, mivel az egész köteg leállítása rosszabb volna.
+     *
+     * Null-t ad vissza, ha az emlékeztetőt korábban már sikeresen elküldte, vagy ha egy párhuzamos
+     * futás közben egy új emlékeztetőt már lefoglalt.
      */
     public function send(PendingMaintenanceReminder $reminder): ?MaintenanceReminder
     {
