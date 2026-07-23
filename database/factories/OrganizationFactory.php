@@ -20,7 +20,11 @@ class OrganizationFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->company(),
+            'city' => fake()->city(),
+            'tax_number' => fake()->numerify('########-#-##'),
+            'address' => fake()->streetAddress(),
+            'zip' => fake()->numerify('####'),
         ];
     }
 }

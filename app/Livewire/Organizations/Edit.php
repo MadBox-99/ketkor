@@ -30,7 +30,7 @@ class Edit extends Component
     #[Validate('nullable|string')]
     public string $zip = '';
 
-    #[Validate('nullable|max:24')]
+    #[Validate('required|max:24')]
     public string $tax_number = '';
 
     public function mount(Organization $organization): void
