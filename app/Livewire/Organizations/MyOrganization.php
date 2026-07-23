@@ -43,7 +43,6 @@ class MyOrganization extends Component
         $user = Auth::user();
 
         $organization = Organization::query()
-            ->with('users.products')
             ->whereKey($user->organization_id)
             ->first();
 
