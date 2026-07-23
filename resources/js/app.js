@@ -1,5 +1,5 @@
 import "../css/app.css";
-import.meta.glob(["../img/**"]);
+import.meta.glob(["../img/**"], { eager: true });
 import "./bootstrap";
 // Dark mode functionality
 function initializeDarkMode() {
@@ -97,12 +97,6 @@ if (document.readyState === "loading") {
     initializeNavigation();
     initializeDarkMode();
 }
-
-// Initialize when Livewire loads (first time)
-document.addEventListener("livewire:load", function () {
-    initializeNavigation();
-    initializeDarkMode();
-});
 
 // Reinitialize after Livewire navigation
 document.addEventListener("livewire:navigated", function () {
