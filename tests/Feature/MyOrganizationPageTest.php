@@ -55,11 +55,22 @@ it('refuses to remove a member from a different organization', function (): void
     expect(User::query()->whereKey($outsider->id)->exists())->toBeTrue();
 });
 
-it('refuses to remove a member when the actor has no organization', function (): void {
+it('redirects a user with no organization away from the my-organization page', function (): void {
     $actor = User::factory()->createOne(['organization_id' => null]);
-    $target = User::factory()->createOne(['organization_id' => null]);
+    $actor->assignRole(UserRole::Organizer);
 
     actingAs($actor);
+
+    get(route('organizations.myorganization'))->assertRedirect(route('organizations.create'));
+});
+
+it('refuses to remove a member whose organization is null', function (): void {
+    $organization = Organization::factory()->createOne();
+    $organizer = User::factory()->createOne(['organization_id' => $organization->id]);
+    $organizer->assignRole(UserRole::Organizer);
+    $target = User::factory()->createOne(['organization_id' => null]);
+
+    actingAs($organizer);
 
     livewire(MyOrganization::class)->call('removeMember', $target->id);
 
