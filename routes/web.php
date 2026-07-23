@@ -57,7 +57,6 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
         Route::livewire('/search', Search::class)->name('search');
         Route::livewire('/myproducts', MyProducts::class)->name('myproducts');
         Route::livewire('/edit/{product}', Edit::class)->name('edit');
-        Route::get('/', [ProductController::class, 'index'])->name('index');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
