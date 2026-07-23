@@ -31,7 +31,7 @@ final readonly class MaintenanceSchedule
 
         return new self(
             baseDate: $baseDate,
-            dueDate: $baseDate->addMonths($product->maintenance_interval_months),
+            dueDate: $baseDate->addMonthsNoOverflow($product->maintenance_interval_months),
             fromMaintenanceLog: $log !== null,
         );
     }
