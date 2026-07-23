@@ -3,20 +3,22 @@
 declare(strict_types=1);
 
 use App\Enums\ProductCategory;
-use App\Livewire\ProductSearchUser;
+use App\Livewire\Products\MyProducts;
 use App\Models\Product;
 use App\Models\Tool;
 use App\Models\User;
+use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;
+use function Pest\Laravel\get;
 
 it('renders the product search user component', function (): void {
     $user = User::factory()->createOne();
 
     actingAs($user);
 
-    Livewire::test(ProductSearchUser::class)
+    Livewire::test(MyProducts::class)
         ->assertStatus(200);
 });
 
@@ -38,7 +40,7 @@ it('displays user products in the table', function (): void {
 
     actingAs($user);
 
-    Livewire::test(ProductSearchUser::class)
+    Livewire::test(MyProducts::class)
         ->assertCanSeeTableRecords([$product])
         ->assertSee('TEST-123');
 });
@@ -61,7 +63,7 @@ it('filters products by serial number', function (): void {
 
     actingAs($user);
 
-    Livewire::test(ProductSearchUser::class)
+    Livewire::test(MyProducts::class)
         ->filterTable('serial_number', ['value' => 'ABC'])
         ->assertCanSeeTableRecords([$product1])
         ->assertCanNotSeeTableRecords([$product2]);
@@ -86,7 +88,7 @@ it('filters products by tool name', function (): void {
 
     actingAs($user);
 
-    Livewire::test(ProductSearchUser::class)
+    Livewire::test(MyProducts::class)
         ->filterTable('tool_name', ['value' => 'Drill'])
         ->assertCanSeeTableRecords([$product1])
         ->assertCanNotSeeTableRecords([$product2]);
@@ -112,7 +114,7 @@ it('filters products by warranty date range', function (): void {
 
     actingAs($user);
 
-    Livewire::test(ProductSearchUser::class)
+    Livewire::test(MyProducts::class)
         ->filterTable('warranty_date', [
             'from' => now()->addMonths(6)->format('Y-m-d'),
             'to' => now()->addMonths(18)->format('Y-m-d'),
@@ -134,7 +136,7 @@ it('can remove product from user list', function (): void {
 
     actingAs($user);
 
-    Livewire::test(ProductSearchUser::class)
+    Livewire::test(MyProducts::class)
         ->callTableAction('delete', $product);
 
     // Product still exists
@@ -157,7 +159,7 @@ it('shows non-visible products in the table', function (): void {
 
     actingAs($user);
 
-    Livewire::test(ProductSearchUser::class)
+    Livewire::test(MyProducts::class)
         ->assertCanSeeTableRecords([$product])
         ->assertSee('HIDDEN-001');
 });
@@ -181,7 +183,19 @@ it('only shows products for authenticated user', function (): void {
 
     actingAs($user1);
 
-    Livewire::test(ProductSearchUser::class)
+    Livewire::test(MyProducts::class)
         ->assertCanSeeTableRecords([$product1])
         ->assertCanNotSeeTableRecords([$product2]);
+});
+
+it('renders as a full-page livewire component', function (): void {
+    actingAs(User::factory()->createOne());
+
+    get(route('products.myproducts'))
+        ->assertOk()
+        ->assertSeeLivewire(MyProducts::class);
+});
+
+it('no longer exposes a separate remove route', function (): void {
+    expect(Route::has('products.remove'))->toBeFalse();
 });

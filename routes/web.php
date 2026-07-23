@@ -2,15 +2,17 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\OrganizationController;
-use App\Http\Controllers\PartialController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProductLogController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ToolController;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
+use App\Livewire\Home;
+use App\Livewire\Organizations;
+use App\Livewire\Organizations\Create;
+use App\Livewire\Organizations\CreateEmployee;
+use App\Livewire\Organizations\MyOrganization;
+use App\Livewire\Products\Edit;
+use App\Livewire\Products\Index;
+use App\Livewire\Products\MyProducts;
+use App\Livewire\Products\Search;
+use App\Livewire\Profile;
+use App\Livewire\Tools;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/auth.php';
@@ -26,35 +28,35 @@ require __DIR__ . '/auth.php';
 */
 
 Route::middleware(['auth', 'verified'])->group(function (): void {
-    Route::get('/', fn (): Factory|View => view('index'))->name('index');
+    Route::livewire('/', Home::class)->name('index');
 
-    Route::resource('organizations', OrganizationController::class);
-    Route::resource('partials', PartialController::class);
-    Route::resource('tools', ToolController::class);
-    Route::resource('productlogs', ProductLogController::class);
+    Route::middleware(['role:Admin|Super Admin|Operator'])->group(function (): void {
+        Route::livewire('organizations', Organizations\Index::class)->name('organizations.index');
+    });
+    Route::livewire('organizations/create', Create::class)->name('organizations.create');
+    Route::livewire('organizations/{organization}/edit', Organizations\Edit::class)->name('organizations.edit');
+
+    Route::middleware(['role:Admin|Super Admin|Operator'])->group(function (): void {
+        Route::livewire('tools', Tools\Index::class)->name('tools.index');
+        Route::livewire('tools/create', Tools\Create::class)->name('tools.create');
+        Route::livewire('tools/{tool}/edit', Tools\Edit::class)->name('tools.edit');
+    });
+
     Route::prefix('organization')->name('organizations.')->group(function (): void {
-        Route::get('/{user}/{organization}/{product}', [OrganizationController::class, 'removeUserProduct'])->name('detach');
         Route::middleware(['role:Organizer|Admin|Super Admin'])->group(function (): void {
-            Route::put('/store', [EmployeeController::class, 'store'])->name('employee.store');
-            Route::get('/create', [EmployeeController::class, 'create'])->name('employee.create');
-            Route::get('/myorganization', [OrganizationController::class, 'myOrganization'])->name('myorganization');
-            Route::post('/move', [OrganizationController::class, 'productMove'])->name('productMove');
-            Route::put('/myorganizationupdate/{organization}', [OrganizationController::class, 'myOrganizationUpdate'])->name('myorganizationupdate');
-            Route::get('/removeUserFromOrganization/{user}', [OrganizationController::class, 'removeUserFromOrganization'])->name('removeUserFromOrganization');
+            Route::livewire('/create', CreateEmployee::class)->name('employee.create');
+            Route::livewire('/myorganization', MyOrganization::class)->name('myorganization');
         });
     });
 
     Route::prefix('product')->name('products.')->group(function (): void {
-        Route::get('/search', [ProductController::class, 'search'])->name('search');
-        Route::get('/myproducts', [ProductController::class, 'myproducts'])->name('myproducts');
-        Route::get('/add/{product}', [ProductController::class, 'add'])->name('add');
-        Route::delete('/remove/{product}', [ProductController::class, 'remove'])->name('remove');
-        Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('edit');
-        Route::get('/', [ProductController::class, 'index'])->name('index');
-        Route::put('/update/{product}', [ProductController::class, 'update'])->name('update');
+        Route::middleware(['role:Admin|Super Admin|Operator'])->group(function (): void {
+            Route::livewire('/', Index::class)->name('index');
+        });
+        Route::livewire('/search', Search::class)->name('search');
+        Route::livewire('/myproducts', MyProducts::class)->name('myproducts');
+        Route::livewire('/edit/{product}', Edit::class)->name('edit');
     });
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::livewire('/profile', Profile\Edit::class)->name('profile.edit');
 });

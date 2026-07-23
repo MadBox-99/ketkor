@@ -29,6 +29,15 @@ pest()->extend(TestCase::class)
         $this->freezeTime();
     })
     ->in('Feature', 'Unit');
+
+/*
+| Browser tests drive a real browser against a booted server, so they must not
+| inherit the time freezing and Sleep faking above — those only affect the test
+| process and would desynchronise it from the server.
+*/
+pest()->extend(TestCase::class)
+    ->use(RefreshDatabase::class)
+    ->in('Browser');
 /*
 |--------------------------------------------------------------------------
 | Expectations

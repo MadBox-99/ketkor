@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Livewire\ProductEdit;
+use App\Livewire\Products\Edit;
 use App\Models\Product;
 use App\Models\ProductLog;
 use App\Models\Tool;
@@ -27,7 +27,7 @@ describe('commissioning validation', function (): void {
         $tool = Tool::factory()->createOne();
         $product = createTestProduct($tool, ['purchase_date' => now()->subMonths(3)]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->set('eventData.what', 'commissioning')
             ->set('eventData.comment', 'First commissioning')
             ->call('createEvent');
@@ -45,7 +45,7 @@ describe('commissioning validation', function (): void {
         $tool = Tool::factory()->createOne();
         $product = createTestProduct($tool, ['purchase_date' => null]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->set('eventData.what', 'commissioning')
             ->set('eventData.comment', 'Commissioning without purchase date')
             ->call('createEvent');
@@ -66,7 +66,7 @@ describe('maintenance validation', function (): void {
             'when' => now()->subMonths(11),
         ]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->set('eventData.what', 'maintenance')
             ->set('eventData.comment', 'First maintenance')
             ->call('createEvent');
@@ -82,7 +82,7 @@ describe('maintenance validation', function (): void {
         $tool = Tool::factory()->createOne();
         $product = createTestProduct($tool, ['purchase_date' => now()->subMonths(12)]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->set('eventData.what', 'maintenance')
             ->set('eventData.comment', 'Maintenance without commissioning')
             ->call('createEvent');
@@ -115,7 +115,7 @@ describe('maintenance validation', function (): void {
             'when' => now()->subMonths(12),
         ]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->set('eventData.what', 'maintenance')
             ->set('eventData.comment', 'Third maintenance')
             ->call('createEvent');
@@ -141,7 +141,7 @@ describe('maintenance validation', function (): void {
             'when' => now()->subMonths(12),
         ]);
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->set('eventData.what', 'maintenance')
             ->set('eventData.comment', 'Second maintenance')
             ->call('createEvent');
@@ -163,7 +163,7 @@ describe('maintenance validation', function (): void {
         $product->update(['warrantee_date' => now()->addMonths(1)]);
         $originalWarrantyDate = $product->fresh()->warrantee_date->format('Y-m-d H:i:s');
 
-        Livewire::test(ProductEdit::class, ['product' => $product])
+        Livewire::test(Edit::class, ['product' => $product])
             ->set('eventData.what', 'maintenance')
             ->set('eventData.comment', 'First maintenance')
             ->call('createEvent');
