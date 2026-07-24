@@ -16,12 +16,17 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Override;
+use UnitEnum;
 
 final class ToolResource extends Resource
 {
     protected static ?string $model = Tool::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedWrenchScrewdriver;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Törzsadatok';
+
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationLabel = 'Eszközök';
 

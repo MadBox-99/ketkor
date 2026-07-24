@@ -16,12 +16,17 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Override;
+use UnitEnum;
 
 final class LogResource extends Resource
 {
     protected static ?string $model = Log::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedListBullet;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Előzmények';
+
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationLabel = 'Előzmények';
 

@@ -10,10 +10,12 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -34,6 +36,13 @@ final class AdminPanelServiceProvider extends PanelProvider
             ->profile()
             ->colors([
                 'primary' => Color::Stone,
+            ])
+            ->navigationGroups([
+                NavigationGroup::make('Törzsadatok'),
+                NavigationGroup::make('Ügyfelek'),
+                NavigationGroup::make('Karbantartás'),
+                NavigationGroup::make('Előzmények'),
+                NavigationGroup::make('Rendszer'),
             ])
             ->darkMode()
             ->databaseNotifications()
@@ -60,6 +69,11 @@ final class AdminPanelServiceProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->plugin(FilamentShieldPlugin::make());
+            ->plugin(
+                FilamentShieldPlugin::make()
+                    ->navigationGroup('Rendszer')
+                    ->navigationSort(2)
+                    ->navigationIcon(Heroicon::OutlinedShieldCheck),
+            );
     }
 }

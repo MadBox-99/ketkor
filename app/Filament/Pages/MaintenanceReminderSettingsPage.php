@@ -24,6 +24,7 @@ use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use UnitEnum;
 
 /**
  * @property-read Schema $form
@@ -32,7 +33,11 @@ final class MaintenanceReminderSettingsPage extends Page
 {
     protected string $view = 'filament.pages.maintenance-reminder-settings';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAdjustmentsHorizontal;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Karbantartás';
+
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationLabel = 'Emlékeztető beállítások';
 

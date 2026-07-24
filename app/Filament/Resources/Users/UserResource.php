@@ -16,18 +16,33 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Override;
+use UnitEnum;
 
 final class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Rendszer';
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $navigationLabel = 'Felhasználók';
 
     protected static ?string $modelLabel = 'Felhasználó';
 
     protected static ?string $pluralModelLabel = 'Felhasználók';
+
+    public static function getNavigationBadge(): string
+    {
+        return (string) User::query()->count();
+    }
+
+    public static function getNavigationBadgeColor(): string
+    {
+        return 'gray';
+    }
 
     #[Override]
     public static function form(Schema $schema): Schema

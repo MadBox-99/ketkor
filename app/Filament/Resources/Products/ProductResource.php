@@ -16,18 +16,33 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Override;
+use UnitEnum;
 
 final class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFire;
+
+    protected static string|UnitEnum|null $navigationGroup = 'Törzsadatok';
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $navigationLabel = 'Termékek';
 
     protected static ?string $modelLabel = 'Termék';
 
     protected static ?string $pluralModelLabel = 'Termékek';
+
+    public static function getNavigationBadge(): string
+    {
+        return (string) Product::query()->count();
+    }
+
+    public static function getNavigationBadgeColor(): string
+    {
+        return 'primary';
+    }
 
     #[Override]
     public static function form(Schema $schema): Schema
