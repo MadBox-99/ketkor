@@ -82,7 +82,7 @@ trait BuildsProductSchemas
                             ->label(__('Users'))
                             ->multiple()
                             ->relationship('users', 'name')
-                            ->preload()
+                            ->preload($isAdminOrOperator)
                             ->hidden(! $isAdminOrOperator),
 
                         Select::make('tool_id')
