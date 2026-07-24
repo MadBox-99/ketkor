@@ -5,107 +5,70 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Models\ProductLog;
-use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
 
 class ProductLogPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
-    {
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
+    use HandlesAuthorization;
 
-        return $user->checkPermissionTo('view-any ProductLog');
+    public function viewAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('ViewAny:ProductLog');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, ProductLog $productlog): bool
+    public function view(AuthUser $authUser, ProductLog $productLog): bool
     {
-        return $user->checkPermissionTo('view ProductLog');
+        return $authUser->can('View:ProductLog');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('create ProductLog');
+        return $authUser->can('Create:ProductLog');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, ProductLog $productlog): bool
+    public function update(AuthUser $authUser, ProductLog $productLog): bool
     {
-        return $user->checkPermissionTo('update ProductLog');
+        return $authUser->can('Update:ProductLog');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, ProductLog $productlog): bool
+    public function delete(AuthUser $authUser, ProductLog $productLog): bool
     {
-        return $user->checkPermissionTo('delete ProductLog');
+        return $authUser->can('Delete:ProductLog');
     }
 
-    /**
-     * Determine whether the user can delete any models.
-     */
-    public function deleteAny(User $user): bool
+    public function deleteAny(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('delete-any ProductLog');
+        return $authUser->can('DeleteAny:ProductLog');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, ProductLog $productlog): bool
+    public function restore(AuthUser $authUser, ProductLog $productLog): bool
     {
-        return $user->checkPermissionTo('restore ProductLog');
+        return $authUser->can('Restore:ProductLog');
     }
 
-    /**
-     * Determine whether the user can restore any models.
-     */
-    public function restoreAny(User $user): bool
+    public function forceDelete(AuthUser $authUser, ProductLog $productLog): bool
     {
-        return $user->checkPermissionTo('restore-any ProductLog');
+        return $authUser->can('ForceDelete:ProductLog');
     }
 
-    /**
-     * Determine whether the user can replicate the model.
-     */
-    public function replicate(User $user, ProductLog $productlog): bool
+    public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('replicate ProductLog');
+        return $authUser->can('ForceDeleteAny:ProductLog');
     }
 
-    /**
-     * Determine whether the user can reorder the models.
-     */
-    public function reorder(User $user): bool
+    public function restoreAny(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('reorder ProductLog');
+        return $authUser->can('RestoreAny:ProductLog');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, ProductLog $productlog): bool
+    public function replicate(AuthUser $authUser, ProductLog $productLog): bool
     {
-        return $user->checkPermissionTo('force-delete ProductLog');
+        return $authUser->can('Replicate:ProductLog');
     }
 
-    /**
-     * Determine whether the user can permanently delete any models.
-     */
-    public function forceDeleteAny(User $user): bool
+    public function reorder(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('force-delete-any ProductLog');
+        return $authUser->can('Reorder:ProductLog');
     }
 }

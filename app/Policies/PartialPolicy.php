@@ -5,107 +5,70 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Models\Partial;
-use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
 
 class PartialPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
-    {
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
+    use HandlesAuthorization;
 
-        return $user->checkPermissionTo('view-any Partial');
+    public function viewAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('ViewAny:Partial');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Partial $partial): bool
+    public function view(AuthUser $authUser, Partial $partial): bool
     {
-        return $user->checkPermissionTo('view Partial');
+        return $authUser->can('View:Partial');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('create Partial');
+        return $authUser->can('Create:Partial');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Partial $partial): bool
+    public function update(AuthUser $authUser, Partial $partial): bool
     {
-        return $user->checkPermissionTo('update Partial');
+        return $authUser->can('Update:Partial');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Partial $partial): bool
+    public function delete(AuthUser $authUser, Partial $partial): bool
     {
-        return $user->checkPermissionTo('delete Partial');
+        return $authUser->can('Delete:Partial');
     }
 
-    /**
-     * Determine whether the user can delete any models.
-     */
-    public function deleteAny(User $user): bool
+    public function deleteAny(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('delete-any Partial');
+        return $authUser->can('DeleteAny:Partial');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Partial $partial): bool
+    public function restore(AuthUser $authUser, Partial $partial): bool
     {
-        return $user->checkPermissionTo('restore Partial');
+        return $authUser->can('Restore:Partial');
     }
 
-    /**
-     * Determine whether the user can restore any models.
-     */
-    public function restoreAny(User $user): bool
+    public function forceDelete(AuthUser $authUser, Partial $partial): bool
     {
-        return $user->checkPermissionTo('restore-any Partial');
+        return $authUser->can('ForceDelete:Partial');
     }
 
-    /**
-     * Determine whether the user can replicate the model.
-     */
-    public function replicate(User $user, Partial $partial): bool
+    public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('replicate Partial');
+        return $authUser->can('ForceDeleteAny:Partial');
     }
 
-    /**
-     * Determine whether the user can reorder the models.
-     */
-    public function reorder(User $user): bool
+    public function restoreAny(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('reorder Partial');
+        return $authUser->can('RestoreAny:Partial');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Partial $partial): bool
+    public function replicate(AuthUser $authUser, Partial $partial): bool
     {
-        return $user->checkPermissionTo('force-delete Partial');
+        return $authUser->can('Replicate:Partial');
     }
 
-    /**
-     * Determine whether the user can permanently delete any models.
-     */
-    public function forceDeleteAny(User $user): bool
+    public function reorder(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('force-delete-any Partial');
+        return $authUser->can('Reorder:Partial');
     }
 }

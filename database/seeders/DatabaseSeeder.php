@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\Tool;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
@@ -24,42 +25,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $permissions = [
-            // Products
-            'products.list' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
-            'products.create' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
-            'products.update' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value, UserRole::Servicer->value, UserRole::Organizer->value],
-            'products.delete' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
-
-            // Organizations
-            'organizations.list' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
-            'organizations.create' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
-            'organizations.update' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value, UserRole::Organizer->value],
-            'organizations.delete' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
-
-            // Users
-            'users.*' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
-
-            // Tools
-            'tools.*' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
-
-            // Organizations wildcard
-            'organizations.*' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
-
-            // Products wildcard
-            'products.*' => [UserRole::Admin->value, UserRole::SuperAdmin->value, UserRole::Operator->value],
-        ];
-
         // Create roles
         foreach (UserRole::cases() as $role) {
             Role::query()->firstOrCreate(['name' => $role->value, 'guard_name' => 'web']);
         }
 
-        // Create permissions and sync with roles
-        foreach ($permissions as $name => $permissionRoles) {
-            $permission = Permission::query()->firstOrCreate(['name' => $name, 'guard_name' => 'web']);
-            $permission->syncRoles($permissionRoles);
-        }
+        // Generate the Filament Shield permissions for every admin-panel entity,
+        // then grant the Super Admin role the full set. Finer-grained access for
+        // the other roles is managed through Shield's role manager in the panel.
+        Artisan::call('shield:generate', [
+            '--all' => true,
+            '--panel' => 'admin',
+            '--option' => 'permissions',
+            '--no-interaction' => true,
+        ]);
+
+        Role::findByName(UserRole::SuperAdmin->value, 'web')
+            ->givePermissionTo(Permission::query()->get());
         $organization = Organization::factory()->createOne([
             'id' => 1,
             'name' => 'Default Organization',

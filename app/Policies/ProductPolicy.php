@@ -5,107 +5,70 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Models\Product;
-use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
 
 class ProductPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
-    {
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
+    use HandlesAuthorization;
 
-        return $user->checkPermissionTo('view-any Product');
+    public function viewAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('ViewAny:Product');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Product $product): bool
+    public function view(AuthUser $authUser, Product $product): bool
     {
-        return $user->checkPermissionTo('view Product');
+        return $authUser->can('View:Product');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('create Product');
+        return $authUser->can('Create:Product');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Product $product): bool
+    public function update(AuthUser $authUser, Product $product): bool
     {
-        return $user->checkPermissionTo('update Product');
+        return $authUser->can('Update:Product');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Product $product): bool
+    public function delete(AuthUser $authUser, Product $product): bool
     {
-        return $user->checkPermissionTo('delete Product');
+        return $authUser->can('Delete:Product');
     }
 
-    /**
-     * Determine whether the user can delete any models.
-     */
-    public function deleteAny(User $user): bool
+    public function deleteAny(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('delete-any Product');
+        return $authUser->can('DeleteAny:Product');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Product $product): bool
+    public function restore(AuthUser $authUser, Product $product): bool
     {
-        return $user->checkPermissionTo('restore Product');
+        return $authUser->can('Restore:Product');
     }
 
-    /**
-     * Determine whether the user can restore any models.
-     */
-    public function restoreAny(User $user): bool
+    public function forceDelete(AuthUser $authUser, Product $product): bool
     {
-        return $user->checkPermissionTo('restore-any Product');
+        return $authUser->can('ForceDelete:Product');
     }
 
-    /**
-     * Determine whether the user can replicate the model.
-     */
-    public function replicate(User $user, Product $product): bool
+    public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('replicate Product');
+        return $authUser->can('ForceDeleteAny:Product');
     }
 
-    /**
-     * Determine whether the user can reorder the models.
-     */
-    public function reorder(User $user): bool
+    public function restoreAny(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('reorder Product');
+        return $authUser->can('RestoreAny:Product');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Product $product): bool
+    public function replicate(AuthUser $authUser, Product $product): bool
     {
-        return $user->checkPermissionTo('force-delete Product');
+        return $authUser->can('Replicate:Product');
     }
 
-    /**
-     * Determine whether the user can permanently delete any models.
-     */
-    public function forceDeleteAny(User $user): bool
+    public function reorder(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('force-delete-any Product');
+        return $authUser->can('Reorder:Product');
     }
 }

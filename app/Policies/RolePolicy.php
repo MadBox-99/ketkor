@@ -4,108 +4,71 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
 use Spatie\Permission\Models\Role;
 
 class RolePolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
-    {
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
+    use HandlesAuthorization;
 
-        return $user->checkPermissionTo('view-any Role');
+    public function viewAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('ViewAny:Role');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Role $role): bool
+    public function view(AuthUser $authUser, Role $role): bool
     {
-        return $user->checkPermissionTo('view Role');
+        return $authUser->can('View:Role');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('create Role');
+        return $authUser->can('Create:Role');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Role $role): bool
+    public function update(AuthUser $authUser, Role $role): bool
     {
-        return $user->checkPermissionTo('update Role');
+        return $authUser->can('Update:Role');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Role $role): bool
+    public function delete(AuthUser $authUser, Role $role): bool
     {
-        return $user->checkPermissionTo('delete Role');
+        return $authUser->can('Delete:Role');
     }
 
-    /**
-     * Determine whether the user can delete any models.
-     */
-    public function deleteAny(User $user): bool
+    public function deleteAny(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('delete-any Role');
+        return $authUser->can('DeleteAny:Role');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Role $role): bool
+    public function restore(AuthUser $authUser, Role $role): bool
     {
-        return $user->checkPermissionTo('restore Role');
+        return $authUser->can('Restore:Role');
     }
 
-    /**
-     * Determine whether the user can restore any models.
-     */
-    public function restoreAny(User $user): bool
+    public function forceDelete(AuthUser $authUser, Role $role): bool
     {
-        return $user->checkPermissionTo('restore-any Role');
+        return $authUser->can('ForceDelete:Role');
     }
 
-    /**
-     * Determine whether the user can replicate the model.
-     */
-    public function replicate(User $user, Role $role): bool
+    public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('replicate Role');
+        return $authUser->can('ForceDeleteAny:Role');
     }
 
-    /**
-     * Determine whether the user can reorder the models.
-     */
-    public function reorder(User $user): bool
+    public function restoreAny(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('reorder Role');
+        return $authUser->can('RestoreAny:Role');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Role $role): bool
+    public function replicate(AuthUser $authUser, Role $role): bool
     {
-        return $user->checkPermissionTo('force-delete Role');
+        return $authUser->can('Replicate:Role');
     }
 
-    /**
-     * Determine whether the user can permanently delete any models.
-     */
-    public function forceDeleteAny(User $user): bool
+    public function reorder(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('force-delete-any Role');
+        return $authUser->can('Reorder:Role');
     }
 }
