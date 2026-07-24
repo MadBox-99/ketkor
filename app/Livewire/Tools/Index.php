@@ -38,18 +38,24 @@ class Index extends Component implements HasActions, HasSchemas, HasTable
             ->query($this->getTableQuery())
             ->columns([
                 TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable(),
                 TextColumn::make('category')
+                    ->label(__('Category'))
                     ->searchable(),
                 TextColumn::make('tag')
+                    ->label(__('Tag'))
                     ->searchable(),
                 TextColumn::make('factory_name')
+                    ->label(__('Factory name'))
                     ->searchable(),
                 TextColumn::make('created_at')
+                    ->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
