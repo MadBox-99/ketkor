@@ -32,9 +32,9 @@ Route::middleware(['auth', 'verified'])->group(function (): void {
 
     Route::middleware(['role:Admin|Super Admin|Operator'])->group(function (): void {
         Route::livewire('organizations', Organizations\Index::class)->name('organizations.index');
+        Route::livewire('organizations/create', Create::class)->name('organizations.create');
+        Route::livewire('organizations/{organization}/edit', Organizations\Edit::class)->name('organizations.edit');
     });
-    Route::livewire('organizations/create', Create::class)->name('organizations.create');
-    Route::livewire('organizations/{organization}/edit', Organizations\Edit::class)->name('organizations.edit');
 
     Route::middleware(['role:Admin|Super Admin|Operator'])->group(function (): void {
         Route::livewire('tools', Tools\Index::class)->name('tools.index');

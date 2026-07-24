@@ -12,8 +12,13 @@ use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\get;
 use function Pest\Livewire\livewire;
 
+use Spatie\Permission\Models\Role;
+
 it('renders the create page', function (): void {
-    actingAs(User::factory()->createOne());
+    Role::findOrCreate('Operator', 'web');
+    $user = User::factory()->createOne();
+    $user->assignRole('Operator');
+    actingAs($user);
 
     get(route('organizations.create'))->assertOk()->assertSeeLivewire(Create::class);
 });

@@ -11,6 +11,8 @@ use Livewire\Livewire;
 
 use function Pest\Laravel\actingAs;
 
+use Spatie\Permission\Models\Role;
+
 function createTestProduct(Tool $tool, array $attributes = []): Product
 {
     return Product::factory()->createOne(array_merge([
@@ -19,7 +21,10 @@ function createTestProduct(Tool $tool, array $attributes = []): Product
 }
 
 beforeEach(function (): void {
-    actingAs(User::factory()->createOne());
+    Role::findOrCreate('Admin', 'web');
+    $user = User::factory()->createOne();
+    $user->assignRole('Admin');
+    actingAs($user);
 });
 
 describe('commissioning validation', function (): void {

@@ -65,13 +65,29 @@ class Edit extends Component implements HasActions, HasSchemas
 
     public function mount(Product $product): void
     {
+        /** @var User $user */
+        $user = Auth::user();
+        $canManageAll = $user->hasAnyRole([UserRole::Admin, UserRole::Operator, UserRole::SuperAdmin]);
+
+        // A management role may edit any product; everyone else may only open a
+        // product that is assigned to them. This blocks editing arbitrary
+        // products by guessing the id in the URL.
+        abort_unless(
+            $canManageAll || $product->users()->whereKey($user->id)->exists(),
+            403,
+        );
+
         $this->product = $product;
         $this->partials = Partial::query()
             ->where('product_id', $product->id)
             ->latest()
             ->limit(6)
             ->get();
-        $this->users = User::query()->orderBy('name')->get();
+        // Only management roles assign users to a product, so only they need the
+        // full user list — it must not be serialised into other users' snapshots.
+        $this->users = $canManageAll
+            ? User::query()->orderBy('name')->get()
+            : new Collection();
         $this->tools = Tool::query()->orderBy('name')->get();
 
         // Fill product form
