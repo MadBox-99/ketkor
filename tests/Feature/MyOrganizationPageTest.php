@@ -139,10 +139,7 @@ it('initialises the move-product selector to a real user id instead of null', fu
 
     actingAs($organizer);
 
-    get(route('organizations.myorganization'))
-        ->assertOk()
-        ->assertDontSee('selectedUserId: null', false)
-        ->assertSee('selectedUserId: ' . $organizer->id . ' }', false);
+    get(route('organizations.myorganization'))->assertOk()->assertDontSeeHtml('selectedUserId: null')->assertSeeHtml('selectedUserId: ' . $organizer->id . ' }');
 });
 
 it('moves a product from one member to another', function (): void {

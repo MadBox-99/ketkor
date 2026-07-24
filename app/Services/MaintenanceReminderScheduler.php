@@ -25,7 +25,7 @@ use Throwable;
 class MaintenanceReminderScheduler
 {
     public function __construct(
-        private MaintenanceReminderTemplateRenderer $renderer,
+        private readonly MaintenanceReminderTemplateRenderer $renderer,
     ) {}
 
     /**
@@ -51,7 +51,7 @@ class MaintenanceReminderScheduler
             ->flatMap(function (Product $product) use ($day, $settings): Collection {
                 $schedule = MaintenanceSchedule::for($product);
 
-                if ($schedule === null) {
+                if (! $schedule instanceof MaintenanceSchedule) {
                     return collect();
                 }
 
@@ -176,7 +176,7 @@ class MaintenanceReminderScheduler
 
         $schedule = MaintenanceSchedule::for($product);
 
-        if ($schedule === null) {
+        if (! $schedule instanceof MaintenanceSchedule) {
             return 0;
         }
 
@@ -253,7 +253,7 @@ class MaintenanceReminderScheduler
 
             try {
                 $log->save();
-            } catch (QueryException $exception) {
+            } catch (QueryException) {
                 /** Egy párhuzamos futás már lefoglalta ezt az emlékeztetőt. */
                 return null;
             }

@@ -8,7 +8,7 @@ use App\Models\MaintenanceReminderSetting;
 
 final class MaintenanceReminderTemplateRenderer
 {
-    private const DATE_FORMAT = 'Y. m. d.';
+    private const string DATE_FORMAT = 'Y. m. d.';
 
     /**
      * A tárgy és a törzs feloldott változókkal.

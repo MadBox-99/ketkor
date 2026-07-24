@@ -31,7 +31,7 @@ function eligibleProduct(array $attributes = []): Product
 
 function scheduler(): MaintenanceReminderScheduler
 {
-    return app(MaintenanceReminderScheduler::class);
+    return resolve(MaintenanceReminderScheduler::class);
 }
 
 function pendingOn(string $day): Collection

@@ -27,7 +27,7 @@ pest()->extend(TestCase::class)
         // leaves assignRole() resolving roles that the fresh database no longer
         // holds, throwing RoleDoesNotExist. Forgetting the cache before each test
         // forces every lookup to hit the just-migrated database.
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        resolve(PermissionRegistrar::class)->forgetCachedPermissions();
 
         Str::createRandomStringsNormally();
         Str::createUuidsNormally();

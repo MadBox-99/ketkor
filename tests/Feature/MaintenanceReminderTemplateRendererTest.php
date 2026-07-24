@@ -65,7 +65,7 @@ it('replaces every supported variable', function (): void {
             . '{{ contact_email }} | {{ booking_url }}',
     ]);
 
-    $rendered = (new MaintenanceReminderTemplateRenderer())
+    $rendered = new MaintenanceReminderTemplateRenderer()
         ->render(pendingReminder(), MaintenanceReminderSetting::current());
 
     expect($rendered['subject'])->toBe('Karbantartás: AB-1234-CDEF')
@@ -78,7 +78,7 @@ it('replaces every supported variable', function (): void {
 it('renders an empty last maintenance date when there is no maintenance log', function (): void {
     MaintenanceReminderSetting::current()->update(['email_body' => 'Előző karbantartás: [{{ last_maintenance_date }}]']);
 
-    $rendered = (new MaintenanceReminderTemplateRenderer())
+    $rendered = new MaintenanceReminderTemplateRenderer()
         ->render(pendingReminderWithoutMaintenanceLog(), MaintenanceReminderSetting::current());
 
     expect($rendered['body'])->toBe('Előző karbantartás: []');
@@ -87,7 +87,7 @@ it('renders an empty last maintenance date when there is no maintenance log', fu
 it('labels a six month interval as half-yearly', function (): void {
     MaintenanceReminderSetting::current()->update(['email_body' => '{{ maintenance_type }}']);
 
-    $rendered = (new MaintenanceReminderTemplateRenderer())
+    $rendered = new MaintenanceReminderTemplateRenderer()
         ->render(pendingReminder(intervalMonths: 6), MaintenanceReminderSetting::current());
 
     expect($rendered['body'])->toBe('féléves');
@@ -96,7 +96,7 @@ it('labels a six month interval as half-yearly', function (): void {
 it('replaces unknown variables with an empty string', function (): void {
     MaintenanceReminderSetting::current()->update(['email_body' => 'A[{{ nincs_ilyen }}]B']);
 
-    $rendered = (new MaintenanceReminderTemplateRenderer())
+    $rendered = new MaintenanceReminderTemplateRenderer()
         ->render(pendingReminder(), MaintenanceReminderSetting::current());
 
     expect($rendered['body'])->toBe('A[]B');
@@ -108,7 +108,7 @@ it('tolerates missing optional contact details', function (): void {
         'email_body' => 'Tel: [{{ contact_phone }}]',
     ]);
 
-    $rendered = (new MaintenanceReminderTemplateRenderer())
+    $rendered = new MaintenanceReminderTemplateRenderer()
         ->render(pendingReminder(), MaintenanceReminderSetting::current());
 
     expect($rendered['body'])->toBe('Tel: []');
@@ -117,7 +117,7 @@ it('tolerates missing optional contact details', function (): void {
 it('handles variables written without spaces', function (): void {
     MaintenanceReminderSetting::current()->update(['email_body' => '{{serial_number}}']);
 
-    $rendered = (new MaintenanceReminderTemplateRenderer())
+    $rendered = new MaintenanceReminderTemplateRenderer()
         ->render(pendingReminder(), MaintenanceReminderSetting::current());
 
     expect($rendered['body'])->toBe('AB-1234-CDEF');

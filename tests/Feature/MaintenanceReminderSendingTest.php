@@ -35,7 +35,7 @@ function sendableProduct(array $attributes = []): Product
 
 function runOn(string $day): int
 {
-    return app(MaintenanceReminderScheduler::class)->run(CarbonImmutable::parse($day));
+    return resolve(MaintenanceReminderScheduler::class)->run(CarbonImmutable::parse($day));
 }
 
 it('sends the reminder and logs it as sent', function (): void {
@@ -137,7 +137,7 @@ it('stops the overdue series once a new maintenance log is recorded', function (
 
 it('sends manually regardless of the day, and allows repeated manual sends', function (): void {
     $product = sendableProduct();
-    $scheduler = app(MaintenanceReminderScheduler::class);
+    $scheduler = resolve(MaintenanceReminderScheduler::class);
 
     expect($scheduler->sendManually($product))->toBe(1)
         ->and($scheduler->sendManually($product))->toBe(1);
@@ -156,7 +156,7 @@ it('sends manually regardless of the day, and allows repeated manual sends', fun
 it('refuses a manual send for an ineligible product', function (): void {
     $product = sendableProduct(['warrantee_date' => '2020-01-01']);
 
-    expect(app(MaintenanceReminderScheduler::class)->sendManually($product))->toBe(0);
+    expect(resolve(MaintenanceReminderScheduler::class)->sendManually($product))->toBe(0);
 
     Mail::assertNothingQueued();
 });
@@ -190,7 +190,7 @@ it('does not abort the run when a concurrent send already inserted the same occu
     });
 
     try {
-        expect(fn () => runOn('2026-02-08'))->not->toThrow(QueryException::class);
+        expect(fn (): int => runOn('2026-02-08'))->not->toThrow(QueryException::class);
 
         expect(MaintenanceReminder::query()->count())->toBe(1);
         Mail::assertNothingQueued();
@@ -281,7 +281,7 @@ it('keeps processing other reminders when the final save fails after the mail wa
     });
 
     try {
-        expect(fn () => runOn('2026-02-08'))->not->toThrow(Throwable::class);
+        expect(fn (): int => runOn('2026-02-08'))->not->toThrow(Throwable::class);
 
         Mail::assertQueued(MaintenanceReminderMail::class, 2);
 

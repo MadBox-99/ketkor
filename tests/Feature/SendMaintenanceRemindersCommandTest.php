@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Console\Scheduling\Event;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Mail;
+use Tests\TestCase;
 
 beforeEach(function (): void {
     Mail::fake();
@@ -29,6 +30,7 @@ function commandProduct(): Product
 }
 
 it('sends the reminders due today', function (): void {
+    /** @var TestCase $this */
     commandProduct();
     $this->travelTo('2026-02-08 08:00:00');
 
@@ -40,6 +42,7 @@ it('sends the reminders due today', function (): void {
 });
 
 it('sends nothing and logs nothing in dry run mode', function (): void {
+    /** @var TestCase $this */
     commandProduct();
     $this->travelTo('2026-02-08 08:00:00');
 
@@ -51,6 +54,7 @@ it('sends nothing and logs nothing in dry run mode', function (): void {
 });
 
 it('catches up a missed day', function (): void {
+    /** @var TestCase $this */
     commandProduct();
     $this->travelTo('2026-02-09 08:00:00');
 
@@ -62,6 +66,7 @@ it('catches up a missed day', function (): void {
 });
 
 it('does not resend on catch up when the reminder already went out', function (): void {
+    /** @var TestCase $this */
     commandProduct();
 
     $this->travelTo('2026-02-08 08:00:00');
@@ -75,7 +80,7 @@ it('does not resend on catch up when the reminder already went out', function ()
 });
 
 it('is scheduled to run daily', function (): void {
-    $events = collect(app(Schedule::class)->events())
+    $events = collect(resolve(Schedule::class)->events())
         ->filter(fn (Event $event): bool => str_contains(
             (string) $event->command,
             'maintenance:send-reminders',
