@@ -16,11 +16,19 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Sleep;
 use Illuminate\Support\Str;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
     ->beforeEach(function (): void {
+        // Spatie's PermissionRegistrar caches roles and permissions in a static
+        // store that survives RefreshDatabase's truncation. Under --parallel this
+        // leaves assignRole() resolving roles that the fresh database no longer
+        // holds, throwing RoleDoesNotExist. Forgetting the cache before each test
+        // forces every lookup to hit the just-migrated database.
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
         Str::createRandomStringsNormally();
         Str::createUuidsNormally();
         Http::preventStrayRequests();
