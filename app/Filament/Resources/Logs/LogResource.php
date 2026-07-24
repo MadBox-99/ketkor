@@ -23,6 +23,12 @@ final class LogResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static ?string $navigationLabel = 'Előzmények';
+
+    protected static ?string $modelLabel = 'Előzmény';
+
+    protected static ?string $pluralModelLabel = 'Előzmények';
+
     #[Override]
     public static function form(Schema $schema): Schema
     {

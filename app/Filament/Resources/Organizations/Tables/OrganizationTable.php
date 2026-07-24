@@ -18,25 +18,32 @@ class OrganizationTable
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label('Név')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('city')
+                    ->label('Város')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('tax_number')
+                    ->label('Adószám')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('address')
+                    ->label('Cím')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('zip')
+                    ->label('Irányítószám')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('created_at')
+                    ->label('Létrehozva')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('Módosítva')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

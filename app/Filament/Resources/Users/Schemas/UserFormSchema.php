@@ -18,12 +18,15 @@ class UserFormSchema
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('Név')
                     ->required()
                     ->maxLength(255),
                 TextInput::make('email')
+                    ->label('E-mail')
                     ->email()
                     ->maxLength(255),
                 Select::make('organization_id')
+                    ->label('Szervezet')
                     ->relationship('organization', 'name'),
                 Select::make('roles')
                     ->label('Szerepkörök')
@@ -31,7 +34,7 @@ class UserFormSchema
                     ->preload()
                     ->relationship('roles', 'name'),
                 DateTimePicker::make('email_verified_at')
-                    ->label('Email megerősítve'),
+                    ->label('E-mail megerősítve'),
                 TextInput::make('password')
                     ->label('Jelszó')
                     ->revealable()

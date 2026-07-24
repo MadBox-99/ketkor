@@ -23,6 +23,12 @@ final class UserResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static ?string $navigationLabel = 'Felhasználók';
+
+    protected static ?string $modelLabel = 'Felhasználó';
+
+    protected static ?string $pluralModelLabel = 'Felhasználók';
+
     #[Override]
     public static function form(Schema $schema): Schema
     {

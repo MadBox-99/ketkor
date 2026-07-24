@@ -16,12 +16,15 @@ class LogFormSchema
         return $schema
             ->components([
                 Select::make('user_id')
+                    ->label('Felhasználó')
                     ->relationship('user', 'name')
                     ->required(),
                 Textarea::make('what')
+                    ->label('Művelet')
                     ->required()
                     ->columnSpanFull(),
-                DatePicker::make('when'),
+                DatePicker::make('when')
+                    ->label('Időpont'),
             ]);
     }
 }

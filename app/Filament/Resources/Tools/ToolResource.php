@@ -23,6 +23,12 @@ final class ToolResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static ?string $navigationLabel = 'Eszközök';
+
+    protected static ?string $modelLabel = 'Eszköz';
+
+    protected static ?string $pluralModelLabel = 'Eszközök';
+
     #[Override]
     public static function form(Schema $schema): Schema
     {

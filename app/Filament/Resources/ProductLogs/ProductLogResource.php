@@ -23,6 +23,12 @@ final class ProductLogResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static ?string $navigationLabel = 'Termék előzmények';
+
+    protected static ?string $modelLabel = 'Termék előzmény';
+
+    protected static ?string $pluralModelLabel = 'Termék előzmények';
+
     #[Override]
     public static function form(Schema $schema): Schema
     {

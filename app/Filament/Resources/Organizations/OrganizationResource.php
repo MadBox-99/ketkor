@@ -23,6 +23,12 @@ final class OrganizationResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static ?string $navigationLabel = 'Szervezetek';
+
+    protected static ?string $modelLabel = 'Szervezet';
+
+    protected static ?string $pluralModelLabel = 'Szervezetek';
+
     #[Override]
     public static function form(Schema $schema): Schema
     {

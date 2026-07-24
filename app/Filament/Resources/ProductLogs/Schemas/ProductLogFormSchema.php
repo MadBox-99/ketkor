@@ -19,13 +19,17 @@ class ProductLogFormSchema
         return $schema
             ->components([
                 Select::make('product_id')
+                    ->label('Termék')
                     ->relationship('product', 'id')
                     ->required(),
                 TextInput::make('what')
+                    ->label('Művelet')
                     ->maxLength(500),
                 TextInput::make('comment')
+                    ->label('Megjegyzés')
                     ->maxLength(255),
                 DateTimePicker::make('when')
+                    ->label('Időpont')
                     ->required(),
                 Toggle::make('is_online')
                     ->label('Online')

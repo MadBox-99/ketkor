@@ -19,13 +19,17 @@ class ProductLogTable
         return $table
             ->columns([
                 TextColumn::make('product.id')
+                    ->label('Termék azonosító')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('what')
+                    ->label('Művelet')
                     ->searchable(),
                 TextColumn::make('comment')
+                    ->label('Megjegyzés')
                     ->searchable(),
                 TextColumn::make('when')
+                    ->label('Időpont')
                     ->dateTime()
                     ->sortable(),
                 IconColumn::make('is_online')
@@ -38,10 +42,12 @@ class ProductLogTable
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('created_at')
+                    ->label('Létrehozva')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('Módosítva')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

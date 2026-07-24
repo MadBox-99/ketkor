@@ -17,16 +17,20 @@ class LogTable
         return $table
             ->columns([
                 TextColumn::make('user.name')
+                    ->label('Felhasználó')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('when')
+                    ->label('Időpont')
                     ->date()
                     ->sortable(),
                 TextColumn::make('created_at')
+                    ->label('Létrehozva')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('Módosítva')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

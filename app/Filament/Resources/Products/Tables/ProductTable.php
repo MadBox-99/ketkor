@@ -27,34 +27,47 @@ class ProductTable
         return $table
             ->columns([
                 TextColumn::make('owner_name')
+                    ->label('Tulajdonos neve')
                     ->searchable(),
                 TextColumn::make('installer_name')
+                    ->label('Beüzemelő neve')
                     ->searchable(),
                 TextColumn::make('user_id')
+                    ->label('Felhasználó')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('city')
+                    ->label('Város')
                     ->searchable(),
                 TextColumn::make('street')
+                    ->label('Utca')
                     ->searchable(),
                 TextColumn::make('zip')
+                    ->label('Irányítószám')
                     ->searchable(),
                 TextColumn::make('purchase_place')
+                    ->label('Vásárlás helye')
                     ->searchable(),
                 TextColumn::make('serial_number')
+                    ->label('Gyári szám')
                     ->searchable(),
                 TextColumn::make('comments')
+                    ->label('Megjegyzések')
                     ->searchable(),
                 TextColumn::make('installation_date')
+                    ->label('Beüzemelés dátuma')
                     ->date()
                     ->sortable(),
                 TextColumn::make('warrantee_date')
+                    ->label('Garancia lejárata')
                     ->date()
                     ->sortable(),
                 TextColumn::make('purchase_date')
+                    ->label('Vásárlás dátuma')
                     ->date()
                     ->sortable(),
                 TextColumn::make('tool.name')
+                    ->label('Eszköz')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('next_maintenance_due_date')
@@ -65,10 +78,12 @@ class ProductTable
                     ->label('Emlékeztető')
                     ->boolean(),
                 TextColumn::make('created_at')
+                    ->label('Létrehozva')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('Módosítva')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

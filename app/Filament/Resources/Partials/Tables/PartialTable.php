@@ -17,19 +17,25 @@ class PartialTable
         return $table
             ->columns([
                 TextColumn::make('email')
+                    ->label('E-mail')
                     ->searchable(),
                 TextColumn::make('phone')
+                    ->label('Telefon')
                     ->searchable(),
                 TextColumn::make('name')
+                    ->label('Név')
                     ->searchable(),
                 TextColumn::make('product.id')
+                    ->label('Termék azonosító')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
+                    ->label('Létrehozva')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('Módosítva')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

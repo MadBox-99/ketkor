@@ -20,16 +20,20 @@ class UserTable
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label('Név')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('email')
+                    ->label('E-mail')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('organization.name')
+                    ->label('Szervezet')
                     ->sortable()
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('email_verified_at')
+                    ->label('E-mail megerősítve')
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('roles.name')
@@ -37,10 +41,12 @@ class UserTable
                     ->searchable()
                     ->getStateUsing(fn (User $record) => $record->roles->pluck('name')->implode(', ')),
                 TextColumn::make('created_at')
+                    ->label('Létrehozva')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
+                    ->label('Módosítva')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

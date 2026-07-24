@@ -15,14 +15,18 @@ class PartialFormSchema
         return $schema
             ->components([
                 TextInput::make('email')
+                    ->label('E-mail')
                     ->email()
                     ->maxLength(255),
                 TextInput::make('phone')
+                    ->label('Telefon')
                     ->tel()
                     ->maxLength(255),
                 TextInput::make('name')
+                    ->label('Név')
                     ->maxLength(255),
                 Select::make('product_id')
+                    ->label('Termék')
                     ->relationship('product', 'id')
                     ->required(),
             ]);

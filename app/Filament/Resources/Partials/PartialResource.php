@@ -23,6 +23,12 @@ final class PartialResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
+    protected static ?string $navigationLabel = 'Kapcsolattartók';
+
+    protected static ?string $modelLabel = 'Kapcsolattartó';
+
+    protected static ?string $pluralModelLabel = 'Kapcsolattartók';
+
     #[Override]
     public static function form(Schema $schema): Schema
     {
