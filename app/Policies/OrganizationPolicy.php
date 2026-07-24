@@ -5,107 +5,70 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Models\Organization;
-use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
 
 class OrganizationPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
-    {
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
+    use HandlesAuthorization;
 
-        return $user->checkPermissionTo('view-any Organization');
+    public function viewAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('ViewAny:Organization');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Organization $organization): bool
+    public function view(AuthUser $authUser, Organization $organization): bool
     {
-        return $user->checkPermissionTo('view Organization');
+        return $authUser->can('View:Organization');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('create Organization');
+        return $authUser->can('Create:Organization');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Organization $organization): bool
+    public function update(AuthUser $authUser, Organization $organization): bool
     {
-        return $user->checkPermissionTo('update Organization');
+        return $authUser->can('Update:Organization');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Organization $organization): bool
+    public function delete(AuthUser $authUser, Organization $organization): bool
     {
-        return $user->checkPermissionTo('delete Organization');
+        return $authUser->can('Delete:Organization');
     }
 
-    /**
-     * Determine whether the user can delete any models.
-     */
-    public function deleteAny(User $user): bool
+    public function deleteAny(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('delete-any Organization');
+        return $authUser->can('DeleteAny:Organization');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Organization $organization): bool
+    public function restore(AuthUser $authUser, Organization $organization): bool
     {
-        return $user->checkPermissionTo('restore Organization');
+        return $authUser->can('Restore:Organization');
     }
 
-    /**
-     * Determine whether the user can restore any models.
-     */
-    public function restoreAny(User $user): bool
+    public function forceDelete(AuthUser $authUser, Organization $organization): bool
     {
-        return $user->checkPermissionTo('restore-any Organization');
+        return $authUser->can('ForceDelete:Organization');
     }
 
-    /**
-     * Determine whether the user can replicate the model.
-     */
-    public function replicate(User $user, Organization $organization): bool
+    public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('replicate Organization');
+        return $authUser->can('ForceDeleteAny:Organization');
     }
 
-    /**
-     * Determine whether the user can reorder the models.
-     */
-    public function reorder(User $user): bool
+    public function restoreAny(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('reorder Organization');
+        return $authUser->can('RestoreAny:Organization');
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Organization $organization): bool
+    public function replicate(AuthUser $authUser, Organization $organization): bool
     {
-        return $user->checkPermissionTo('force-delete Organization');
+        return $authUser->can('Replicate:Organization');
     }
 
-    /**
-     * Determine whether the user can permanently delete any models.
-     */
-    public function forceDeleteAny(User $user): bool
+    public function reorder(AuthUser $authUser): bool
     {
-        return $user->checkPermissionTo('force-delete-any Organization');
+        return $authUser->can('Reorder:Organization');
     }
 }
