@@ -6,8 +6,12 @@ namespace App\Providers;
 
 use App\Policies\PermissionPolicy;
 use App\Policies\RolePolicy;
-use Filament\Support\Assets\Js;
-use Filament\Support\Facades\FilamentAsset;
+use Filament\Actions\Action;
+use Filament\Forms\Components\Field;
+use Filament\Infolists\Components\Entry;
+use Filament\Tables\Columns\Column;
+use Filament\Tables\Filters\BaseFilter;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -37,9 +41,11 @@ final class AppServiceProvider extends ServiceProvider
         Gate::policy(Role::class, RolePolicy::class);
         Gate::policy(Permission::class, PermissionPolicy::class);
 
-        // Register Filament assets
-        FilamentAsset::register([
-            Js::make('signature-pad-field', __DIR__ . '/../../resources/js/filament/forms/components/signature-pad.bundle.js'),
-        ]);
+        Table::configureUsing(fn (Table $table): Table => $table->reorderableColumns());
+        Field::configureUsing(static fn (Field $field): Field => $field->translateLabel());
+        Column::configureUsing(static fn (Column $column): Column => $column->translateLabel()->searchable()->toggleable()->sortable());
+        Entry::configureUsing(static fn (Entry $entry): Entry => $entry->translateLabel());
+        Action::configureUsing(static fn (Action $action): Action => $action->translateLabel());
+        BaseFilter::configureUsing(static fn (BaseFilter $filter): BaseFilter => $filter->translateLabel());
     }
 }

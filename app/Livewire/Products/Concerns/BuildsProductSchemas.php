@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Livewire\Products\Concerns;
 
 use App\Enums\UserRole;
-use App\Filament\Forms\Components\SignaturePad;
 use App\Models\User;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
@@ -16,6 +15,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Auth;
+use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 
 trait BuildsProductSchemas
 {

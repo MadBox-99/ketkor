@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\ProductLogs\Schemas;
 
-use App\Filament\Forms\Components\SignaturePad;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Saade\FilamentAutograph\Forms\Components\SignaturePad;
 
 class ProductLogFormSchema
 {
