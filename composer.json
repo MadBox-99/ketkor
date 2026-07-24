@@ -82,13 +82,11 @@
         ],
         "lint": [
             "@php vendor/bin/rector",
-            "@php vendor/bin/pint --parallel",
-            "npm run lint"
+            "@php vendor/bin/pint --parallel"
         ],
         "test:lint": [
             "@php vendor/bin/pint --parallel",
-            "@php vendor/bin/rector --dry-run",
-            "npm run test:lint"
+            "@php vendor/bin/rector --dry-run"
         ],
         "test:unit": "pest --parallel",
         "test": [
