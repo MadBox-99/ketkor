@@ -17,12 +17,16 @@ class ToolTable
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label('Név')
                     ->searchable(),
                 TextColumn::make('category')
+                    ->label('Kategória')
                     ->searchable(),
                 TextColumn::make('tag')
+                    ->label('Címke')
                     ->searchable(),
                 TextColumn::make('factory_name')
+                    ->label('Gyártó')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()

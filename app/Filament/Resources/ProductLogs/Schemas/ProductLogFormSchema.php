@@ -32,10 +32,10 @@ class ProductLogFormSchema
                     ->live()
                     ->default(false),
                 TextInput::make('worksheet_id')
-                    ->label('Worksheet ID')
+                    ->label('Munkalap azonosító')
                     ->visible(fn (string $operation, Get $get): bool => $get('is_online') === false),
                 SignaturePad::make('signature')
-                    ->label('Customer signature')
+                    ->label('Ügyfél aláírása')
                     ->disabled(fn (string $operation): bool => $operation === 'edit')
                     ->columnSpanFull(),
             ]);

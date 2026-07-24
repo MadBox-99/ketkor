@@ -93,9 +93,9 @@ class ProductImporter extends Importer
                 ->options(ProductCategory::class)
                 ->default(ProductCategory::FERROLI)
                 ->required()
-                ->label('Select Product Brand'),
+                ->label('Termékmárka kiválasztása'),
             Checkbox::make('updateExisting')
-                ->label('Update existing records'),
+                ->label('Meglévő rekordok frissítése'),
         ];
     }
 }

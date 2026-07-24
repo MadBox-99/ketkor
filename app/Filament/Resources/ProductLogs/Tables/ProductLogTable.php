@@ -34,7 +34,7 @@ class ProductLogTable
                     ->trueIcon(Heroicon::OutlinedCheck)
                     ->falseIcon(Heroicon::OutlinedXMark),
                 TextColumn::make('worksheet_id')
-                    ->label('Worksheet ID')
+                    ->label('Munkalap azonosító')
                     ->sortable()
                     ->toggleable(),
                 TextColumn::make('created_at')

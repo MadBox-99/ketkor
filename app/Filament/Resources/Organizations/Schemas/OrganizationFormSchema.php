@@ -14,21 +14,21 @@ class OrganizationFormSchema
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->label('Organization name')
+                    ->label('Cég neve')
                     ->required()
                     ->maxLength(300),
                 TextInput::make('city')
-                    ->label('City')
+                    ->label('Város')
                     ->maxLength(300),
                 TextInput::make('tax_number')
-                    ->label('Tax number')
+                    ->label('Adószám')
                     ->required()
                     ->maxLength(24),
                 TextInput::make('address')
-                    ->label('Address')
+                    ->label('Cím')
                     ->maxLength(300),
                 TextInput::make('zip')
-                    ->label('ZIP code')
+                    ->label('Irányítószám')
                     ->maxLength(300),
             ]);
     }

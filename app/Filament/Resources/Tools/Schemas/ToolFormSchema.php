@@ -16,15 +16,19 @@ class ToolFormSchema
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('Név')
                     ->required()
                     ->maxLength(200),
                 Select::make('category')
+                    ->label('Kategória')
                     ->enum(ProductCategory::class)
                     ->options(ProductCategory::class)
                     ->nullable(),
                 TextInput::make('tag')
+                    ->label('Címke')
                     ->maxLength(200),
                 TextInput::make('factory_name')
+                    ->label('Gyártó')
                     ->maxLength(200),
             ]);
     }
